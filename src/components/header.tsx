@@ -15,7 +15,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-indigo-600 dark:bg-red-500 text-white dark:text-blue-600 p-4 flex justify-between items-center">
+    <header className="bg-indigo-600 dark:bg-indigo-950 text-white dark:text-blue-600 p-4 flex justify-between items-center">
       <div className="flex items-center">
         <Link to="/home" className="text-2xl font-bold hover:text-gray-300">
           NM
@@ -23,17 +23,17 @@ const Header: React.FC = () => {
       </div>
       <div className="flex items-center space-x-4">
         <ThemeToggle />
-        <Button className="focus:outline-none hover:text-gray-300">
+        <Button className="focus:outline-none hover:text-gray-300 dark:bg-indigo-900 dark:text-white">
           <Bell size={24} />
         </Button>
         <Button
-          className="focus:outline-none hover:text-gray-300"
+          className="focus:outline-none hover:text-gray-300 dark:bg-indigo-900 dark:text-white"
           onClick={() => navigate("/profile")}
         >
           <User size={24} />
         </Button>
         <Button
-          className="focus:outline-none hover:text-gray-300"
+          className="focus:outline-none hover:text-gray-300 dark:bg-indigo-900 dark:text-white"
           onClick={handleLogout}
         >
           <LogOut size={24} />
