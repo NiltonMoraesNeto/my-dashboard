@@ -1,0 +1,169 @@
+import { useState } from "react";
+import { Facebook, Instagram, Linkedin, Wifi } from "lucide-react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Checkbox } from "./ui/checkbox";
+import { Label } from "./ui/label";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/auth-context";
+
+export function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    // Simulação de autenticação - em um caso real, você faria uma chamada API
+    if (email === "nilton@nilton.com" && password === "senha123") {
+      // Gerar um token fake para demonstração
+      const fakeToken =
+        "fake-jwt-token-" + Math.random().toString(36).substring(2);
+      login(fakeToken);
+      navigate("/home");
+    } else {
+      setError("Email ou senha inválidos");
+    }
+  };
+
+  return (
+    <div className="flex h-screen w-full overflow-hidden">
+      {/* Coluna esquerda - Roxo  */}
+      <div className="hidden w-1/2 flex-col justify-between bg-indigo-600 p-12 text-white md:flex h-full">
+        <div>
+          <div className="flex items-center gap-2 text-xl font-semibold">
+            <Wifi />
+            Nilton Moraes Neto
+          </div>
+        </div>
+        <div className="space-y-6">
+          <h1 className="text-4xl font-bold">Hey There!</h1>
+          <div className="space-y-2">
+            <p className="text-xl">Welcome Back.</p>
+          </div>
+          <div>
+            <p className="mb-4">Don't have an account?</p>
+            <Button
+              variant="outline"
+              className="border-white text-white hover:bg-white/10 hover:text-white"
+            >
+              Sign Up
+            </Button>
+          </div>
+        </div>
+        <div></div>
+      </div>
+
+      {/* Coluna direita - Branco */}
+      <div className="flex w-full flex-col items-center justify-center bg-white p-6 md:w-1/2 md:p-12 h-full">
+        <div className="w-full max-w-md">
+          <div className="text-center">
+            <h2 className="text-2xl font-semibold text-indigo-600">SIGN IN</h2>
+          </div>
+          {error && (
+            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-indigo-400">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="exemplo@gmail.com"
+                  className="border-indigo-200 focus-visible:ring-indigo-500"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-indigo-400">
+                  Password
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  className="border-indigo-200 focus-visible:ring-indigo-500"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember"
+                    checked={rememberMe}
+                    onCheckedChange={(checked) =>
+                      setRememberMe(checked as boolean)
+                    }
+                  />
+                  <Label htmlFor="remember" className="text-sm text-gray-500">
+                    Keep me logged in
+                  </Label>
+                </div>
+                <a
+                  href="#"
+                  className="text-sm font-medium text-orange-400 hover:text-orange-500"
+                >
+                  Forgot Password?
+                </a>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-indigo-500 text-white hover:bg-indigo-600"
+            >
+              Sign In
+            </Button>
+
+            <div className="flex justify-center space-x-4">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+              >
+                <Facebook className="h-5 w-5" />
+                <span className="sr-only">Facebook</span>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+              >
+                <Instagram className="h-5 w-5" />
+                <span className="sr-only">Instagram</span>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+              >
+                <Linkedin className="h-5 w-5" />
+                <span className="sr-only">LinkedIn</span>
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
