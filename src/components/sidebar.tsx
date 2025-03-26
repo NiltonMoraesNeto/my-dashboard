@@ -1,16 +1,17 @@
 import {
   Apple,
   ArrowDown,
+  ArrowLeft,
   ArrowUp,
   ChartArea,
   Home,
   Menu,
   NotebookPen,
-  X,
 } from "lucide-react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Separator } from "./ui/separator";
+import { useAuth } from "../contexts/auth-context";
 
 const Sidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -18,6 +19,7 @@ const Sidebar: React.FC = () => {
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+  const { dataUser } = useAuth();
 
   interface OpenSubmenus {
     [key: string]: boolean;
@@ -47,7 +49,7 @@ const Sidebar: React.FC = () => {
     <div className="flex h-auto">
       <div className="fixed top-13 left-0 p-4 min-md:hidden text-indigo-600">
         <button className="focus:outline-none" onClick={toggleSidebar}>
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
+          {isOpen ? <ArrowLeft size={24} /> : <Menu size={24} />}
         </button>
       </div>
       <div
@@ -58,14 +60,15 @@ const Sidebar: React.FC = () => {
     `}
       >
         <button className="focus:outline-none" onClick={toggleSidebar}>
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
+          {isOpen ? <ArrowLeft size={24} /> : <Menu size={24} />}
         </button>
         <h2
           className={`text-2xl mb-6 transition-opacity duration-300 ${
             isOpen ? "opacity-100" : "opacity-0"
           }`}
         >
-          {getGreeting()} Nilton
+          <div className="">{getGreeting()}</div>
+          <div className="">{dataUser?.nome}</div>
         </h2>
         <nav>
           <ul>
@@ -129,10 +132,7 @@ const Sidebar: React.FC = () => {
               {openSubmenus["cadastros"] && (
                 <ul className="ml-8 mt-2">
                   <li className="mb-2">
-                    <Link
-                      to="/cadastros/submenu1"
-                      className="text-md hover:text-gray-300"
-                    >
+                    <Link to="/profile" className="text-md hover:text-gray-300">
                       Perfil
                     </Link>
                   </li>

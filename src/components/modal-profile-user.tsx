@@ -8,37 +8,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { useEffect, useState } from "react";
-import { fetchProfileById } from "../services/profile";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { jwtDecode } from "jwt-decode";
-
-type TokenPayload = {
-  id: string;
-  email: string;
-  nome: string;
-  exp: number;
-  perfil: string;
-};
+import { useAuth } from "../contexts/auth-context";
 
 export function ModalProfileUser() {
-  const [dataUser, setDataUser] = useState<TokenPayload | undefined>();
-  const [profileUser, setProfileUser] = useState("");
-  useEffect(() => {
-    const token = localStorage.getItem("auth_token");
-
-    if (token) {
-      const decoded = jwtDecode<TokenPayload>(token);
-      setDataUser(decoded);
-
-      const loadPerfil = async () => {
-        const response = await fetchProfileById(decoded.perfil);
-        setProfileUser(response.descricao);
-      };
-
-      loadPerfil();
-    }
-  }, []);
+  const { dataUser, profileUser } = useAuth();
 
   return (
     <Dialog>
@@ -58,7 +32,7 @@ export function ModalProfileUser() {
                     <div className="relative shrink-0">
                       <Avatar className="h-24 w-24 rounded-full border-2 border-zinc-200/80 dark:border-zinc-800/80 shadow-xs">
                         <AvatarImage
-                          src="https://upload.wikimedia.org/wikipedia/commons/2/22/Logo_Flamengo_crest_1980-2018.png"
+                          src={dataUser?.avatar}
                           className="rounded-full object-cover"
                         />
                         <AvatarFallback className="bg-zinc-100 dark:bg-zinc-900">

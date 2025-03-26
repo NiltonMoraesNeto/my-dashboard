@@ -6,7 +6,8 @@
       "email": "nilton@nilton.com",
       "password": "senha123",
       "perfil": "1",
-      "cep": "80000000"
+      "cep": "80000000",
+      "avatar": "https://upload.wikimedia.org/wikipedia/commons/2/22/Logo_Flamengo_crest_1980-2018.png"
     }
   ],
   "perfil": [
