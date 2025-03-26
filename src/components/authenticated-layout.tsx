@@ -8,7 +8,7 @@ export function AuthenticatedLayout() {
       <Header />
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 p-1 overflow-auto bg-gray-100">
+        <main className="flex-1 p-1 overflow-auto bg-gray-100 dark:bg-indigo-900">
           <Outlet />
         </main>
       </div>

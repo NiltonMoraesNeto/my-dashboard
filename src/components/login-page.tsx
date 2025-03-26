@@ -6,6 +6,8 @@ import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/auth-context";
+import { ThemeToggle } from "./theme-toogle";
+import { fetchLogin } from "../services/usuarios";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,16 +17,18 @@ export function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    // Simulação de autenticação - em um caso real, você faria uma chamada API
-    if (email === "nilton@nilton.com" && password === "senha123") {
-      // Gerar um token fake para demonstração
-      const fakeToken =
-        "fake-jwt-token-" + Math.random().toString(36).substring(2);
-      login(fakeToken);
+    const result = await fetchLogin(email, password);
+    console.log("🚀 result - ", result);
+
+    if (result) {
+      //login(result.token);
+      const { token } = result;
+      console.log("🚀 token - ", token);
+      login(token);
       navigate("/home");
     } else {
       setError("Email ou senha inválidos");
@@ -34,11 +38,12 @@ export function LoginPage() {
   return (
     <div className="flex h-screen w-full overflow-hidden">
       {/* Coluna esquerda - Roxo  */}
-      <div className="hidden w-1/2 flex-col justify-between bg-indigo-600 p-12 text-white md:flex h-full">
+      <div className="hidden w-1/2 flex-col justify-between bg-indigo-600 dark:bg-indigo-900 p-12 text-white md:flex h-full">
         <div>
           <div className="flex items-center gap-2 text-xl font-semibold">
             <Wifi />
             Nilton Moraes Neto
+            <ThemeToggle />
           </div>
         </div>
         <div className="space-y-6">
@@ -49,7 +54,7 @@ export function LoginPage() {
           <div>
             <p className="mb-4">Don't have an account?</p>
             <Button
-              variant="outline"
+              variant="ghost"
               className="border-white text-white hover:bg-white/10 hover:text-white"
             >
               Sign Up
@@ -60,7 +65,7 @@ export function LoginPage() {
       </div>
 
       {/* Coluna direita - Branco */}
-      <div className="flex w-full flex-col items-center justify-center bg-white p-6 md:w-1/2 md:p-12 h-full">
+      <div className="flex w-full flex-col items-center justify-center bg-white dark:bg-indigo-950 p-6 md:w-1/2 md:p-12 h-full">
         <div className="w-full max-w-md">
           <div className="text-center">
             <h2 className="text-2xl font-semibold text-indigo-600">SIGN IN</h2>
@@ -74,7 +79,10 @@ export function LoginPage() {
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-indigo-400">
+                <Label
+                  htmlFor="email"
+                  className="text-indigo-400 dark:text-white"
+                >
                   Email
                 </Label>
                 <Input
@@ -83,13 +91,16 @@ export function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="exemplo@gmail.com"
-                  className="border-indigo-200 focus-visible:ring-indigo-500"
+                  className="border-indigo-200 focus-visible:ring-indigo-500 dark:text-white"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-indigo-400">
+                <Label
+                  htmlFor="password"
+                  className="text-indigo-400 dark:text-white"
+                >
                   Password
                 </Label>
                 <Input
@@ -98,7 +109,7 @@ export function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
-                  className="border-indigo-200 focus-visible:ring-indigo-500"
+                  className="border-indigo-200 focus-visible:ring-indigo-500 dark:text-white"
                   required
                 />
               </div>
@@ -107,12 +118,16 @@ export function LoginPage() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="remember"
+                    className="dark:border-white"
                     checked={rememberMe}
                     onCheckedChange={(checked) =>
                       setRememberMe(checked as boolean)
                     }
                   />
-                  <Label htmlFor="remember" className="text-sm text-gray-500">
+                  <Label
+                    htmlFor="remember"
+                    className="text-sm text-gray-500 dark:text-white"
+                  >
                     Keep me logged in
                   </Label>
                 </div>

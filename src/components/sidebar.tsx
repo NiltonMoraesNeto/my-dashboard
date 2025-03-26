@@ -3,6 +3,7 @@ import {
   ArrowDown,
   ArrowUp,
   ChartArea,
+  Home,
   Menu,
   NotebookPen,
   X,
@@ -53,7 +54,7 @@ const Sidebar: React.FC = () => {
         className={`
       fixed inset-y-0 left-0 transform text-white
       ${isOpen ? "translate-x-0" : "-translate-x-full sm:w-16 sm:translate-x-0"}
-      ransition-transform duration-300 ease-in-out bg-indigo-600 text-white w-64 p-4 h-full md:relative md:translate-x-0 md:transform-none
+      ransition-transform duration-300 ease-in-out bg-indigo-600 dark:bg-indigo-950 text-indigo-300 w-64 p-4 h-full md:relative md:translate-x-0 md:transform-none
     `}
       >
         <button className="focus:outline-none" onClick={toggleSidebar}>
@@ -76,7 +77,22 @@ const Sidebar: React.FC = () => {
               <Link to="/home" className="text-lg hover:text-gray-300">
                 {isOpen ? (
                   <div className="flex items-center">
-                    <ChartArea /> <span className="ml-2">Home</span>
+                    <Home /> <span className="ml-2">Home</span>
+                  </div>
+                ) : (
+                  <Home />
+                )}
+              </Link>
+            </li>
+            <Separator
+              orientation="horizontal"
+              className="mb-4 bg-indigo-400"
+            />
+            <li className="mb-4">
+              <Link to="/dashboard" className="text-lg hover:text-gray-300">
+                {isOpen ? (
+                  <div className="flex items-center">
+                    <ChartArea /> <span className="ml-2">Dashboard</span>
                   </div>
                 ) : (
                   <ChartArea />
