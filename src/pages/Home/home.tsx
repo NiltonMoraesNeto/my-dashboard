@@ -1,20 +1,35 @@
-import { BarCharts } from "../../components/charts/barCharts";
-import { LineCharts } from "../../components/charts/lineCharts";
+import { VendasCharts } from "../../components/charts/vendasCharts";
+import { ComparativoVendasCharts } from "../../components/charts/comparativoVendasCharts";
 
 export function HomePage() {
-  const data = [
-    { name: "JAN", uv: 4000, pv: 2400, amt: 2400 },
-    { name: "FEV", uv: 3000, pv: 1398, amt: 2210 },
-    { name: "MAR", uv: 2000, pv: 9800, amt: 2290 },
-    { name: "ABR", uv: 2780, pv: 3908, amt: 2000 },
-    { name: "MAI", uv: 1890, pv: 4800, amt: 2181 },
-    { name: "JUN", uv: 2390, pv: 3800, amt: 2500 },
-    { name: "JUL", uv: 3490, pv: 4300, amt: 2100 },
-    { name: "AGO", uv: 4000, pv: 2400, amt: 2400 },
-    { name: "SET", uv: 3000, pv: 1398, amt: 2210 },
-    { name: "OUT", uv: 2000, pv: 9800, amt: 2290 },
-    { name: "NOV", uv: 2780, pv: 3908, amt: 2000 },
-    { name: "DEZ", uv: 1890, pv: 4800, amt: 2181 },
+  const vendasData = [
+    { name: "JAN", value: 8 },
+    { name: "FEV", value: 10 },
+    { name: "MAR", value: 12 },
+    { name: "ABR", value: 11 },
+    { name: "MAI", value: 9 },
+    { name: "JUN", value: 11 },
+    { name: "JUL", value: 12 },
+    { name: "AGO", value: 2 },
+    { name: "SET", value: 5 },
+    { name: "OUT", value: 42 },
+    { name: "NOV", value: 30 },
+    { name: "DEZ", value: 8 },
+  ];
+
+  const comparativoData = [
+    { name: "JAN", occupied: 15, booked: 10, available: 25 },
+    { name: "FEV", occupied: 20, booked: 12, available: 18 },
+    { name: "MAR", occupied: 18, booked: 15, available: 17 },
+    { name: "ABR", occupied: 22, booked: 10, available: 18 },
+    { name: "MAI", occupied: 20, booked: 15, available: 15 },
+    { name: "JUN", occupied: 18, booked: 12, available: 20 },
+    { name: "JUL", occupied: 15, booked: 10, available: 25 },
+    { name: "AGO", occupied: 15, booked: 10, available: 25 },
+    { name: "SET", occupied: 15, booked: 10, available: 25 },
+    { name: "OUT", occupied: 15, booked: 10, available: 25 },
+    { name: "NOV", occupied: 15, booked: 10, available: 25 },
+    { name: "DEZ", occupied: 15, booked: 10, available: 25 },
   ];
 
   return (
@@ -25,15 +40,9 @@ export function HomePage() {
             Bem Vindo - Home
           </h1>
         </div>
-        <div className="p-4 bg-indigo-50 dark:bg-indigo-900 rounded-md overflow-x-auto">
-          <div className="flex min-w-[800px] justify-between max-sm:block">
-            <div className="w-2/2 p-2">
-              <LineCharts data={data} />
-            </div>
-            <div className="w-2/2 p-2">
-              <BarCharts data={data} />
-            </div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 md:gap-6 mb-6">
+          <VendasCharts vendasData={vendasData} />
+          <ComparativoVendasCharts comparativoData={comparativoData} />
         </div>
       </div>
     </div>

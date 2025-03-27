@@ -6,6 +6,7 @@ import { useAuth } from "./contexts/auth-context";
 import { HomePage } from "./pages/Home/home";
 import { Profile } from "./pages/Profile/profile";
 import { NotFoundPage } from "./pages/NotFound/not-found";
+import { Dashboard } from "./pages/Dashboard/dashboard";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -25,18 +26,12 @@ export function AppRoutes() {
         <Route element={<AuthenticatedLayout />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           {/* Rota para página não encontrada */}
           <Route path="*" element={<NotFoundPage />} />
           {/* Rota para página não encontrada */}
         </Route>
       </Route>
-
-      {/* Redirecionar para login ou home dependendo do estado de autenticação */}
-      {/* <Route
-        path="*"
-        element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />}
-      /> */}
-      {/* <Route path="*" element={<NotFoundPage />} /> */}
     </Routes>
   );
 }
