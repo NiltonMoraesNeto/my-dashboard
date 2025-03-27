@@ -1,8 +1,8 @@
-import { VendasCharts } from "../../components/charts/vendasCharts";
-import { ComparativoVendasCharts } from "../../components/charts/comparativoVendasCharts";
+import { SalesCharts } from "../../components/charts/sales-charts";
+import { SalesComparisonCharts } from "../../components/charts/sales-comparison-charts";
 
 export function HomePage() {
-  const vendasData = [
+  const salesData = [
     { name: "JAN", value: 8 },
     { name: "FEV", value: 10 },
     { name: "MAR", value: 12 },
@@ -17,7 +17,7 @@ export function HomePage() {
     { name: "DEZ", value: 8 },
   ];
 
-  const comparativoData = [
+  const comparisonsData = [
     { name: "JAN", occupied: 15, booked: 10, available: 25 },
     { name: "FEV", occupied: 20, booked: 12, available: 18 },
     { name: "MAR", occupied: 18, booked: 15, available: 17 },
@@ -41,8 +41,8 @@ export function HomePage() {
           </h1>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-1 gap-4 md:gap-6 mb-6">
-          <VendasCharts vendasData={vendasData} />
-          <ComparativoVendasCharts comparativoData={comparativoData} />
+          <SalesCharts salesData={salesData} />
+          <SalesComparisonCharts comparisonsData={comparisonsData} />
         </div>
       </div>
     </div>

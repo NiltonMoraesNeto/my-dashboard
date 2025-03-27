@@ -10,7 +10,7 @@ import {
 } from "recharts";
 
 interface ComparativoVendasChartsProps {
-  comparativoData: {
+  comparisonsData: {
     name: string;
     occupied: number;
     booked: number;
@@ -18,8 +18,8 @@ interface ComparativoVendasChartsProps {
   }[];
 }
 
-export function ComparativoVendasCharts({
-  comparativoData,
+export function SalesComparisonCharts({
+  comparisonsData,
 }: ComparativoVendasChartsProps) {
   return (
     <Card>
@@ -48,7 +48,7 @@ export function ComparativoVendasCharts({
         </div>
         <div className="h-[180px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <RechartsBarChart data={comparativoData}>
+            <RechartsBarChart data={comparisonsData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="name" axisLine={false} tickLine={false} />
               <YAxis hide={true} />
