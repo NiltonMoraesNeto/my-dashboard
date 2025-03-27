@@ -22,12 +22,9 @@ export function LoginPage() {
     setError("");
 
     const result = await fetchLogin(email, password);
-    console.log("🚀 result - ", result);
 
     if (result) {
-      //login(result.token);
       const { token } = result;
-      console.log("🚀 token - ", token);
       login(token);
       navigate("/home");
     } else {

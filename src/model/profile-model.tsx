@@ -6,3 +6,8 @@ export interface TokenPayload {
   perfil: string;
   avatar: string;
 }
+
+export interface ProfileList {
+  id: string;
+  descricao: string;
+}

@@ -98,7 +98,35 @@ app.get('/api/perfil/filterById', (req, res) => {
   }
 });
 
+app.get('/api/perfil/list', (req, res) => {
+  const db = readDB();
+  const perfil = db.perfil;
 
+  // Obtenha os parâmetros de consulta page, totalItemsByPage e search
+  const page = parseInt(req.query.page, 10) || 1;
+  const totalItemsByPage = parseInt(req.query.totalItemsByPage, 10) || 10;
+  const search = req.query.search?.toLowerCase() || '';
+
+  // Filtrar os perfis com base na consulta de pesquisa
+  const filteredPerfil = perfil.filter(p => p.descricao.toLowerCase().includes(search));
+
+  // Calcular o total de itens filtrados
+  const total = filteredPerfil.length;
+
+  // Calcular os índices de início e fim dos itens a serem retornados com base na paginação
+  const startIndex = (page - 1) * totalItemsByPage;
+  const endIndex = startIndex + totalItemsByPage;
+
+  // Extrair os itens referentes à página atual
+  const paginatedPerfil = filteredPerfil.slice(startIndex, endIndex);
+
+  const response = {
+    total,
+    perfil: paginatedPerfil
+  };
+
+  res.json(response);
+});
 
 
 
