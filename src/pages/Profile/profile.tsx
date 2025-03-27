@@ -8,7 +8,13 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  EllipsisVertical,
+  Search,
+} from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 export function Profile() {
   const [profileList, setProfileList] = useState<ProfileList[]>([]);
@@ -42,17 +48,15 @@ export function Profile() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-indigo-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-indigo-600 dark:text-indigo-300">
-            Profile
+            Lista de Perfis
           </h1>
         </div>
-        <Card className="flex flex-col mt-5">
+        <Card className="flex flex-col mt-5 dark:bg-indigo-800">
           <CardHeader className="">
-            <CardTitle className="text-xl font-sans text-blackDefault-secondary tracking-[0.6px] dark:text-white">
+            <CardTitle className="text-xl font-sans tracking-[0.6px]">
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-sans text-blackDefault-secondary tracking-[0.6px] dark:text-white">
-                    Titulo
-                  </h2>
+                  <Button>Adicionar Novo</Button>
                 </div>
                 <div className="relative w-64 flex items-center font-sans">
                   <Input
@@ -68,41 +72,46 @@ export function Profile() {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col justify-between">
-            <div className="overflow-hidden">
-              <div className="flex gap-4">
-                <div className="text-black rounded-lg flex-[3] grid grid-cols-[1fr_1fr_120px]">
-                  <div className="p-4 font-medium uppercase text-sm font-sans">
-                    ID
-                  </div>
-                  <div className="p-4 font-medium uppercase text-sm font-sans">
-                    Nome Perfil
-                  </div>
-                  <div className="p-4 font-medium uppercase text-sm font-sans">
-                    Ação
-                  </div>
-                </div>
-              </div>
-
-              <div className="divide-y divide-gray-200 mt-4">
-                {profileList.map((profile) => (
-                  <div
-                    key={profile.id}
-                    className="grid grid-cols-[2fr_1fr_1fr_120px] hover:bg-gray-50 dark:hover:bg-blackDefault-secondary"
-                  >
-                    <div className="p-4 flex items-center gap-3">
-                      <span className="font-medium font-sans">
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white dark:bg-indigo-600 rounded-lg overflow-hidden shadow-lg">
+                <thead>
+                  <tr>
+                    <th className="py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
+                      ID
+                    </th>
+                    <th className="py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
+                      Nome do Perfil
+                    </th>
+                    <th className="py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
+                      Ação
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {profileList?.map((profile) => (
+                    <tr
+                      key={profile.id}
+                      className="hover:bg-gray-100 dark:hover:bg-indigo-700"
+                    >
+                      <td className="py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
                         {profile.id}
-                      </span>
-                    </div>
-                    <div className="p-4 flex items-center font-sans">
-                      {profile.descricao}
-                    </div>
-                    <div className="p-4 flex items-center font-sans">
-                      Editar
-                    </div>
-                  </div>
-                ))}
-              </div>
+                      </td>
+                      <td className="py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
+                        {profile.descricao}
+                      </td>
+                      <td className="py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
+                        <Button
+                          variant="link"
+                          onClick={() => console.log(profile.id)}
+                          className="dark:text-indigo-300"
+                        >
+                          <EllipsisVertical />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
             <div className="flex justify-end items-center mt-6">
