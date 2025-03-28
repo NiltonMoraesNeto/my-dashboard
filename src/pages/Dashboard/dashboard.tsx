@@ -4,6 +4,9 @@ import { Card, CardContent } from "../../components/ui/card";
 import { ArrowLeft, ArrowRight, CalendarClock } from "lucide-react";
 import { SalesChartsFilter } from "../../components/charts/sales-charts-filter";
 import { SalesChartsFilterByBuilding } from "../../components/charts/sales-charts-filter-by-building";
+import { useEffect, useState } from "react";
+import { SalesBuildingList, SalesList } from "../../model/sales-model";
+import { fetchSalesByBuilding, fetchSalesByYear } from "../../services/sales";
 
 export function Dashboard() {
   function getShortDayOfWeek(date: Date) {
@@ -23,35 +26,31 @@ export function Dashboard() {
     return formattedDate;
   }
 
-  const salesData = [
-    { name: "JAN", value: 8 },
-    { name: "FEV", value: 10 },
-    { name: "MAR", value: 12 },
-    { name: "ABR", value: 11 },
-    { name: "MAI", value: 9 },
-    { name: "JUN", value: 11 },
-    { name: "JUL", value: 12 },
-    { name: "AGO", value: 2 },
-    { name: "SET", value: 5 },
-    { name: "OUT", value: 42 },
-    { name: "NOV", value: 30 },
-    { name: "DEZ", value: 8 },
-  ];
+  const [salesData, setSalesData] = useState<SalesList[]>([]);
+  const [yearSales, setYearSales] = useState(new Date().getFullYear());
 
-  const salesDataByBuilding = [
-    { name: "JAN", value: 80 },
-    { name: "FEV", value: 10 },
-    { name: "MAR", value: 12 },
-    { name: "ABR", value: 11 },
-    { name: "MAI", value: 9 },
-    { name: "JUN", value: 11 },
-    { name: "JUL", value: 12 },
-    { name: "AGO", value: 2 },
-    { name: "SET", value: 5 },
-    { name: "OUT", value: 42 },
-    { name: "NOV", value: 30 },
-    { name: "DEZ", value: 8 },
-  ];
+  const [salesDataByBuilding, setSalesDataByBuilding] = useState<
+    SalesBuildingList[]
+  >([]);
+  const [buildingSelect, setBuildingSelect] = useState("Edifício A");
+
+  useEffect(() => {
+    const loadSalesData = async () => {
+      const salesDataResponse = await fetchSalesByYear(yearSales);
+      setSalesData(salesDataResponse);
+    };
+    loadSalesData();
+  }, [yearSales]);
+
+  useEffect(() => {
+    const loadSalesBuildingData = async () => {
+      const salesBuildingDataResponse = await fetchSalesByBuilding(
+        buildingSelect
+      );
+      setSalesDataByBuilding(salesBuildingDataResponse);
+    };
+    loadSalesBuildingData();
+  }, [buildingSelect]);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-indigo-900 p-8">
@@ -157,9 +156,15 @@ export function Dashboard() {
         </div>
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
-          <SalesChartsFilter salesData={salesData} />
+          <SalesChartsFilter
+            salesData={salesData}
+            yearSales={yearSales}
+            onYearChange={setYearSales}
+          />
           <SalesChartsFilterByBuilding
             salesDataByBuilding={salesDataByBuilding}
+            buildingSelect={buildingSelect}
+            onBuildingChange={setBuildingSelect}
           />
         </div>
       </div>

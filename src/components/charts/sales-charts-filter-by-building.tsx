@@ -16,33 +16,41 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
+import { SalesBuildingList } from "../../model/sales-model";
 
 interface SalesChartsFilterByBuildingProps {
-  salesDataByBuilding: {
-    name: string;
-    value: number;
-  }[];
+  salesDataByBuilding: SalesBuildingList[];
+  buildingSelect: string;
+  onBuildingChange: (buildingName: string) => void;
 }
 
 export function SalesChartsFilterByBuilding({
   salesDataByBuilding,
+  buildingSelect,
+  onBuildingChange,
 }: SalesChartsFilterByBuildingProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between p-4 pb-2">
         <CardTitle className="text-base font-medium">
-          Vendas - por edifício
+          Vendas - por edifício (ano atual)
         </CardTitle>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 text-xs">
-              Edifício A <ChevronDown className="ml-1 h-3 w-3" />
+              {buildingSelect} <ChevronDown className="ml-1 h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Edifício A</DropdownMenuItem>
-            <DropdownMenuItem>Edifício B</DropdownMenuItem>
-            <DropdownMenuItem>Edifício C</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onBuildingChange("Edifício A")}>
+              Edifício A
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onBuildingChange("Edifício B")}>
+              Edifício B
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onBuildingChange("Edifício C")}>
+              Edifício C
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
@@ -51,8 +59,13 @@ export function SalesChartsFilterByBuilding({
           <ResponsiveContainer width="100%" height="100%">
             <RechartsLineChart data={salesDataByBuilding}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" axisLine={false} tickLine={false} />
-              <YAxis hide={false} />
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                padding={{ left: 20, right: 20 }}
+              />
+              <YAxis hide={true} />
               <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {

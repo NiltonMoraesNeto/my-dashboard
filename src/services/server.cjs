@@ -27,48 +27,6 @@ function writeDB(data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 }
 
-app.get('/api/:table', (req, res) => {
-  const table = req.params.table;
-  const db = readDB();
-  if (db[table]) {
-    res.json(db[table]);
-  } else {
-    res.status(404).send(`Table ${table} does not exist`);
-  }
-});
-
-app.post('/api/:table', (req, res) => {
-  const table = req.params.table;
-  const newItem = req.body;
-  const db = readDB();
-  if (db[table]) {
-    db[table].push(newItem);
-    writeDB(db);
-    res.status(201).send(`Item added to ${table} successfully`);
-  } else {
-    res.status(404).send(`Table ${table} does not exist`);
-  }
-});
-
-app.put('/api/:table/:id', (req, res) => {
-  const table = req.params.table;
-  const id = req.params.id;
-  const updatedItem = req.body;
-  const db = readDB();
-  if (db[table]) {
-    const index = db[table].findIndex(item => item.id === id);
-    if (index !== -1) {
-      db[table][index] = { ...db[table][index], ...updatedItem };
-      writeDB(db);
-      res.send(`Item with id ${id} updated successfully`);
-    } else {
-      res.status(404).send(`Item with id ${id} not found`);
-    }
-  } else {
-    res.status(404).send(`Table ${table} does not exist`);
-  }
-});
-
 app.post('/api/usuarios/login', (req, res) => {
   const { email, password } = req.body;
   const db = readDB();
@@ -128,6 +86,29 @@ app.get('/api/perfil/list', (req, res) => {
   res.json(response);
 });
 
+app.get('/api/salesData/list', (req, res) => {
+  const year = parseInt(req.query.year, 10);
+  const db = readDB();
+  const salesData = db.salesData.filter(item => item.year === year);
+
+  if (salesData.length > 0) {
+    res.json(salesData);
+  } else {
+    res.status(404).send(`No sales data found for the year ${year}`);
+  }
+});
+
+app.get('/api/salesDataByBuilding/list', (req, res) => {
+  const buildingName = req.query.buildingName || "Edifício A";
+  const db = readDB();
+  const salesDataByBuilding = db.salesDataByBuilding.filter(item => item.buildingName === buildingName);
+
+  if (salesDataByBuilding.length > 0) {
+    res.json(salesDataByBuilding);
+  } else {
+    res.status(404).send(`No sales data found for the buildingName ${buildingName}`);
+  }
+});
 
 
 app.listen(port, () => {

@@ -16,30 +16,36 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
+import { SalesList } from "../../model/sales-model";
 
 interface SalesChartsFilterProps {
-  salesData: {
-    name: string;
-    value: number;
-  }[];
+  salesData: SalesList[];
+  yearSales: number;
+  onYearChange: (year: number) => void;
 }
 
-export function SalesChartsFilter({ salesData }: SalesChartsFilterProps) {
+export function SalesChartsFilter({
+  salesData,
+  yearSales,
+  onYearChange,
+}: SalesChartsFilterProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between p-4 pb-2">
-        <CardTitle className="text-base font-medium">
-          Vendas Ano passado
-        </CardTitle>
+        <CardTitle className="text-base font-medium">Vendas por mês</CardTitle>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 text-xs">
-              2024 <ChevronDown className="ml-1 h-3 w-3" />
+              {yearSales} <ChevronDown className="ml-1 h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>2025</DropdownMenuItem>
-            <DropdownMenuItem>2024</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onYearChange(2025)}>
+              2025
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onYearChange(2024)}>
+              2024
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
