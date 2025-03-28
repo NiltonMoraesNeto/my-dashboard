@@ -35,3 +35,17 @@ export const fetchProfileById = async (id: string) => {
     return false;
   }
 };
+
+export const newProfile = async (descricao: string) => {
+  try {
+    const response = await api.post("/perfil/new", { descricao });
+
+    if (response.data) {
+      return response;
+    }
+    return false;
+  } catch (error) {
+    console.error("Erro ao adicionar o Perfil", error);
+    return false;
+  }
+};

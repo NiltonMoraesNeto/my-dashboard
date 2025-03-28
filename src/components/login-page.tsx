@@ -51,7 +51,7 @@ export function LoginPage() {
           <div>
             <p className="mb-4">Don't have an account?</p>
             <Button
-              variant="ghost"
+              variant="default"
               className="border-white text-white hover:bg-white/10 hover:text-white"
             >
               Sign Up

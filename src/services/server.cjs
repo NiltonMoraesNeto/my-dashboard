@@ -110,6 +110,25 @@ app.get('/api/salesDataByBuilding/list', (req, res) => {
   }
 });
 
+app.post('/api/perfil/new', (req, res) => {
+  const { descricao } = req.body;
+
+  if (!descricao) {
+    return res.status(400).json({ error: 'Descrição é obrigatória' });
+  }
+
+  const db = readDB();
+  const newPerfil = {
+    id: db.perfil.length + 1,
+    descricao,
+  };
+
+  db.perfil.push(newPerfil);
+  writeDB(db);
+
+  res.status(201).json({ message: 'Perfil criado com sucesso', newPerfil });
+});
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

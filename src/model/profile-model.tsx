@@ -11,3 +11,7 @@ export interface ProfileList {
   id: string;
   descricao: string;
 }
+
+export interface FormDataAddProfile {
+  descricao: string;
+}
