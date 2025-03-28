@@ -8,7 +8,7 @@ export interface TokenPayload {
 }
 
 export interface ProfileList {
-  id: string;
+  id: number;
   descricao: string;
 }
 

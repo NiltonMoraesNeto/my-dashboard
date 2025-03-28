@@ -1,3 +1,4 @@
+import { isSuccessRequest } from "../utils/response-request";
 import api from "./api";
 
 export const fetchProfileList = async (
@@ -20,7 +21,7 @@ export const fetchProfileList = async (
   }
 };
 
-export const fetchProfileById = async (id: string) => {
+export const fetchProfileById = async (id: number) => {
   try {
     const response = await api.get("/perfil/filterById", {
       params: { id },
@@ -46,6 +47,20 @@ export const newProfile = async (descricao: string) => {
     return false;
   } catch (error) {
     console.error("Erro ao adicionar o Perfil", error);
+    return false;
+  }
+};
+
+export const deleteProfile = async (id: number) => {
+  try {
+    const response = await api.delete(`/perfil/delete/${id}`);
+
+    if (isSuccessRequest(response.status)) {
+      return response;
+    }
+    return false;
+  } catch (error) {
+    console.error("Erro ao deletar o Perfil", error);
     return false;
   }
 };

@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setDataUser(decoded);
 
         const loadPerfil = async () => {
-          const response = await fetchProfileById(decoded.perfil);
+          const response = await fetchProfileById(parseInt(decoded.perfil));
           setProfileUser(response.descricao);
         };
 
@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
 
     const loadPerfil = async () => {
-      const response = await fetchProfileById(decoded.perfil);
+      const response = await fetchProfileById(parseInt(decoded.perfil));
       setProfileUser(response.descricao);
     };
 

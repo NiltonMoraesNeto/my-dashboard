@@ -42,12 +42,13 @@ app.post('/api/usuarios/login', (req, res) => {
 });
 
 app.get('/api/perfil/filterById', (req, res) => {
-  const { id } = req.query;
-  const db = readDB();
+  const id = parseInt(req.query.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).json({ message: "ID inválido" });
+  }
 
-  const user = db.perfil.find(usuario => {
-    return usuario.id === id;
-  });
+  const db = readDB();
+  const user = db.perfil.find(usuario => usuario.id === id);
 
   if (user) {
     res.json(user);
@@ -55,6 +56,7 @@ app.get('/api/perfil/filterById', (req, res) => {
     res.status(404).json({ message: "Usuário não encontrado" });
   }
 });
+
 
 app.get('/api/perfil/list', (req, res) => {
   const db = readDB();
@@ -129,6 +131,21 @@ app.post('/api/perfil/new', (req, res) => {
   res.status(201).json({ message: 'Perfil criado com sucesso', newPerfil });
 });
 
+app.delete('/api/perfil/delete/:id', (req, res) => {
+  const { id } = req.params;
+  const db = readDB();
+
+  const perfilIndex = db.perfil.findIndex(perfil => perfil.id === parseInt(id, 10));
+
+  if (perfilIndex === -1) {
+    return res.status(404).json({ error: 'Perfil não encontrado' });
+  }
+
+  db.perfil.splice(perfilIndex, 1);
+  writeDB(db);
+
+  res.status(200).json({ message: 'Perfil deletado com sucesso' });
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

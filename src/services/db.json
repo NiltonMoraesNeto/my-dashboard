@@ -12,27 +12,27 @@
   ],
   "perfil": [
     {
-      "id": "1",
+      "id": 1,
       "descricao": "Adminstrador"
     },
     {
-      "id": "2",
+      "id": 2,
       "descricao": "RH"
     },
     {
-      "id": "3",
+      "id": 3,
       "descricao": "Financeiro"
     },
     {
-      "id": "4",
+      "id": 4,
       "descricao": "Compras"
     },
     {
-      "id": "5",
+      "id": 5,
       "descricao": "Vendas"
     },
     {
-      "id": "6",
+      "id": 6,
       "descricao": "Usuário"
     },
     {
@@ -48,24 +48,8 @@
       "descricao": "Teste 3"
     },
     {
-      "id": 10,
-      "descricao": "Teste 3dfd"
-    },
-    {
-      "id": 11,
-      "descricao": "Teste 3dfdasdasd"
-    },
-    {
-      "id": 12,
-      "descricao": "asdasdasd"
-    },
-    {
       "id": 13,
       "descricao": "XXXXXX"
-    },
-    {
-      "id": 14,
-      "descricao": "QQQQQQ"
     },
     {
       "id": 15,
