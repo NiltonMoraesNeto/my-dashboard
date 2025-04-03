@@ -18,7 +18,7 @@ export const fetchSalesByYear = async (year: number) => {
 
 export const fetchSalesByBuilding = async (buildingName: string) => {
   try {
-    const response = await api.get("/salesDataByBuilding/list", {
+    const response = await api.get("/salesData/ByBuilding/list", {
       params: { buildingName },
     });
 

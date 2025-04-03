@@ -1,0 +1,29 @@
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import authRoutes from './routes/authRoutes.js';
+import perfilRoutes from './routes/perfilRoutes.js';
+import salesDataRoutes from './routes/salesDataRoutes.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const app = express();
+const port = 3001;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Configuração do middleware CORS
+app.use(cors({
+  origin: 'http://localhost:5173' // Permita a origem do seu frontend
+}));
+
+app.use(express.json());
+
+app.use('/api/usuarios', authRoutes);
+app.use('/api/perfil', perfilRoutes);
+app.use('/api/salesData', salesDataRoutes);
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
