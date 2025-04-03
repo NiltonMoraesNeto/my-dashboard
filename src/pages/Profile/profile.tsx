@@ -12,7 +12,7 @@ import { TableProfile } from "../../components/table-profile";
 export function Profile() {
   const [profileList, setProfileList] = useState<ProfileList[]>([]);
   const [page, setPage] = useState(1);
-  const [limit] = useState(2);
+  const [limit] = useState(5);
   const [search, setSearch] = useState("");
   const [totalPages, setTotalPages] = useState(1);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -48,6 +48,15 @@ export function Profile() {
     };
   }, [search]);
 
+  const handleListData = () => {
+    const loadProfileData = async () => {
+      const data = await fetchProfileList(page, limit, debouncedSearch);
+      setProfileList(data.perfil);
+      setTotalPages(Math.ceil(data.total / limit));
+    };
+    loadProfileData();
+  };
+
   async function onSubmit(values: z.infer<typeof schemaAddProfile>) {
     try {
       const response = await newProfile(values.descricao);
@@ -56,7 +65,7 @@ export function Profile() {
           description: "Perfil adicionado com sucesso",
         });
         setOpenModal(false);
-        setPage(1);
+        handleListData();
       } else {
         toast.error("Error", {
           description: "Erro ao adicionar o Perfil",
@@ -88,6 +97,7 @@ export function Profile() {
           onSubmit={onSubmit}
           control={control}
           errors={errors}
+          handleListData={handleListData}
         />
       </div>
     </div>

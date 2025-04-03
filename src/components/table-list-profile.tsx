@@ -12,27 +12,23 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
 import { deleteProfile } from "../services/profile";
 import { toast } from "sonner";
 import { isSuccessRequest } from "../utils/response-request";
+import { ModalDeleteProfile } from "./modal-delete-profile";
+import { ModalEditProfile } from "./modal-edit-profile";
 
 interface TableListProfileProps {
   profileList: ProfileList[];
-  setPage: (value: React.SetStateAction<number>) => void;
+  handleListData: () => void;
 }
 
 export function TableListProfile({
   profileList,
-  setPage,
+  handleListData,
 }: TableListProfileProps) {
   const [profileToDelete, setProfileToDelete] = useState<number | null>(null);
+  const [profileToEdit, setProfileToEdit] = useState<ProfileList | null>(null);
 
   const openDeleteDialog = (id: number) => {
     setProfileToDelete(id);
@@ -40,6 +36,19 @@ export function TableListProfile({
 
   const closeDeleteDialog = () => {
     setProfileToDelete(null);
+  };
+
+  const openEditDialog = (id: number, descricao: string) => {
+    console.log("🚀 descricao - ", descricao);
+    console.log("🚀 id - ", id);
+    setProfileToEdit({
+      id,
+      descricao,
+    });
+  };
+
+  const closeEditDialog = () => {
+    setProfileToEdit(null);
   };
 
   async function onDelete(id: number) {
@@ -50,7 +59,7 @@ export function TableListProfile({
           description: "Perfil deletado com sucesso",
         });
         closeDeleteDialog();
-        setPage(1);
+        handleListData();
       } else {
         toast.error("Error", {
           description: "Erro ao deletar o Perfil",
@@ -100,7 +109,12 @@ export function TableListProfile({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onSelect={() => console.log(profile.id)}>
+                    <DropdownMenuItem
+                      onSelect={(e) => {
+                        e.preventDefault();
+                        openEditDialog(profile.id, profile.descricao);
+                      }}
+                    >
                       Editar
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -119,39 +133,17 @@ export function TableListProfile({
         </tbody>
       </table>
 
-      <Dialog
-        open={profileToDelete !== null}
-        onOpenChange={(open) => !open && closeDeleteDialog()}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Deletar Perfil</DialogTitle>
-            <DialogDescription asChild>
-              <div className="w-full mx-auto">
-                <div className="relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800">
-                  <div className="relative px-6 pt-12 pb-6">
-                    <div className="relative shrink-0 mb-2 text-red-500">
-                      Essa ação não pode ser desfeita.
-                    </div>
-                    <div className="relative shrink-0 mb-2 text-red-500">
-                      Tem certeza que deseja deletar o perfil?
-                    </div>
-                    <div className="h-px bg-zinc-200 dark:bg-zinc-800 my-6" />
-                    <Button
-                      variant="destructive"
-                      onClick={() =>
-                        profileToDelete && onDelete(profileToDelete)
-                      }
-                    >
-                      Deletar
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <ModalEditProfile
+        profileToEdit={profileToEdit}
+        closeEditDialog={closeEditDialog}
+        handleListData={handleListData}
+      />
+
+      <ModalDeleteProfile
+        profileToDelete={profileToDelete}
+        closeDeleteDialog={closeDeleteDialog}
+        onDelete={onDelete}
+      />
     </div>
   );
 }

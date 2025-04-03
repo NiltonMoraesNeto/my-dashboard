@@ -51,6 +51,20 @@ export const newProfile = async (descricao: string) => {
   }
 };
 
+export const updateProfile = async (id: number, descricao: string) => {
+  try {
+    const response = await api.put(`/perfil/update/${id}`, { descricao });
+
+    if (isSuccessRequest(response.status)) {
+      return response;
+    }
+    return false;
+  } catch (error) {
+    console.error("Erro ao atualizar o Perfil", error);
+    return false;
+  }
+};
+
 export const deleteProfile = async (id: number) => {
   try {
     const response = await api.delete(`/perfil/delete/${id}`);

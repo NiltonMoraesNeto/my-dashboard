@@ -131,6 +131,27 @@ app.post('/api/perfil/new', (req, res) => {
   res.status(201).json({ message: 'Perfil criado com sucesso', newPerfil });
 });
 
+app.put('/api/perfil/update/:id', (req, res) => {
+  const { id } = req.params;
+  const { descricao } = req.body;
+
+  if (!descricao) {
+    return res.status(400).json({ error: 'Descrição é obrigatória' });
+  }
+
+  const db = readDB();
+  const perfilIndex = db.perfil.findIndex(perfil => perfil.id === parseInt(id, 10));
+
+  if (perfilIndex === -1) {
+    return res.status(404).json({ error: 'Perfil não encontrado' });
+  }
+
+  db.perfil[perfilIndex].descricao = descricao;
+  writeDB(db);
+
+  res.status(200).json({ message: 'Perfil atualizado com sucesso', perfil: db.perfil[perfilIndex] });
+});
+
 app.delete('/api/perfil/delete/:id', (req, res) => {
   const { id } = req.params;
   const db = readDB();

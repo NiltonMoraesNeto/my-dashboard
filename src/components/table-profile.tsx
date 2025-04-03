@@ -41,6 +41,7 @@ interface TableProfileProps {
   errors: FieldErrors<{
     descricao: string;
   }>;
+  handleListData: () => void;
 }
 
 export function TableProfile({
@@ -56,6 +57,7 @@ export function TableProfile({
   onSubmit,
   control,
   errors,
+  handleListData,
 }: TableProfileProps) {
   return (
     <Card className="flex flex-col mt-5 dark:bg-indigo-800">
@@ -98,7 +100,10 @@ export function TableProfile({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col justify-between">
-        <TableListProfile profileList={profileList} setPage={setPage} />
+        <TableListProfile
+          profileList={profileList}
+          handleListData={handleListData}
+        />
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </CardContent>
     </Card>
