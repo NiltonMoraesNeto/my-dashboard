@@ -8,16 +8,22 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/auth-context";
 import { ThemeToggle } from "./theme-toogle";
 import { fetchLogin } from "../services/usuarios";
+import { ModalResetPassword } from "./modal-reset-password";
+import { ModalInputToken } from "./modal-input-token";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  const [openModalResetPassword, setOpenModalResetPassword] = useState(false);
+  const [openModalInputToken, setOpenModalInputToken] = useState(false);
+
+  const [tokenIsValid, setTokenIsValid] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -73,7 +79,7 @@ export function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <form onSubmit={handleSubmitLogin} className="mt-8 space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label
@@ -128,12 +134,17 @@ export function LoginPage() {
                     Keep me logged in
                   </Label>
                 </div>
-                <a
-                  href="#"
-                  className="text-sm font-medium text-orange-400 hover:text-orange-500"
-                >
-                  Forgot Password?
-                </a>
+                <ModalResetPassword
+                  openModalResetPassword={openModalResetPassword}
+                  setOpenModalResetPassword={setOpenModalResetPassword}
+                  setOpenModalInputToken={setOpenModalInputToken}
+                />
+                <ModalInputToken
+                  openModalInputToken={openModalInputToken}
+                  setOpenModalInputToken={setOpenModalInputToken}
+                  tokenIsValid={tokenIsValid}
+                  setTokenIsValid={setTokenIsValid}
+                />
               </div>
             </div>
 

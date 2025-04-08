@@ -39,8 +39,6 @@ export function TableListProfile({
   };
 
   const openEditDialog = (id: number, descricao: string) => {
-    console.log("🚀 descricao - ", descricao);
-    console.log("🚀 id - ", id);
     setProfileToEdit({
       id,
       descricao,

@@ -46,8 +46,6 @@ export function ModalEditProfile({
   }, [profileToEdit, setValue]);
 
   async function onSubmit(values: z.infer<typeof schemaAddProfile>) {
-    console.log("🚀 values - ", values);
-
     try {
       const response = await updateProfile(
         profileToEdit?.id !== undefined ? profileToEdit.id : 0,
