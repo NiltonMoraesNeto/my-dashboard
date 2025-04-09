@@ -137,10 +137,7 @@ const Sidebar: React.FC = () => {
                     </Link>
                   </li>
                   <li className="mb-2">
-                    <Link
-                      to="/cadastros/submenu2"
-                      className="text-md hover:text-gray-300"
-                    >
+                    <Link to="/user" className="text-md hover:text-gray-300">
                       Usuário
                     </Link>
                   </li>

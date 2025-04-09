@@ -1,3 +1,4 @@
+import { isSuccessRequest } from "../utils/response-request";
 import api from "./api";
 
 export const fetchLogin = async (email: string, password: string) => {
@@ -48,5 +49,39 @@ export const resetCodeDelete = async (email: string, resetCode: string) => {
   } catch (error) {
     console.error("Erro no resetCode Delete:", error);
     return error;
+  }
+};
+
+export const fetchUserList = async (
+  page: number,
+  totalItemsByPage: number,
+  search: string
+) => {
+  try {
+    const response = await api.get("usuarios/list", {
+      params: { page, totalItemsByPage, search },
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+    return false;
+  } catch (error) {
+    console.error("Erro", error);
+    return false;
+  }
+};
+
+export const deleteUser = async (id: string) => {
+  try {
+    const response = await api.delete(`/usuarios/delete/${id}`);
+
+    if (isSuccessRequest(response.status)) {
+      return response;
+    }
+    return false;
+  } catch (error) {
+    console.error("Erro ao deletar o Usuário", error);
+    return false;
   }
 };

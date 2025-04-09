@@ -9,7 +9,7 @@ interface PaginationProps {
 export function Pagination({ page, totalPages, setPage }: PaginationProps) {
   return (
     <div className="flex justify-end items-center mt-6">
-      <span className="text-sm text-gray-600 mr-4 font-sans">
+      <span className="text-sm text-gray-600 dark:text-white mr-4 font-sans">
         {page} de {totalPages}
       </span>
       <button

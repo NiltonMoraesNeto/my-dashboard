@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes.js';
 import perfilRoutes from './routes/perfilRoutes.js';
 import salesDataRoutes from './routes/salesDataRoutes.js';
 import resetPasswordRoutes from './routes/resetPasswordRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -25,6 +26,7 @@ app.use('/api/usuarios', authRoutes);
 app.use('/api/perfil', perfilRoutes);
 app.use('/api/salesData', salesDataRoutes);
 app.use('/api/usuarios', resetPasswordRoutes);
+app.use('/api/usuarios', userRoutes);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

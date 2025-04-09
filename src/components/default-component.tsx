@@ -1,8 +1,8 @@
-interface TableUsersProps {
+interface DefaultComponentProps {
   teste: string;
 }
 
-export function TableUsers({ teste }: TableUsersProps) {
+export function DefaultComponent({ teste }: DefaultComponentProps) {
   return (
     <div>
       <span>{teste}</span>
