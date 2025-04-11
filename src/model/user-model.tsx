@@ -5,4 +5,5 @@ export interface UserList {
   perfil: string;
   cep: string;
   avatar: string;
+  perfilDescricao: string;
 }

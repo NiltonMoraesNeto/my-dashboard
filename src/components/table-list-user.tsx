@@ -94,7 +94,7 @@ export function TableUsersList({
                 {user.email}
               </td>
               <td className="w-2/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
-                {user.perfil}
+                {user.perfilDescricao}
               </td>
               <td className="w-2/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
                 {user.cep}

@@ -22,28 +22,42 @@ router.get('/filterById', (req, res) => {
 router.get('/list', (req, res) => {
   const db = readDB();
   const usuarios = db.usuarios;
+  const perfis = db.perfil; // Obtenha os perfis para enriquecer os dados
 
   // Obtenha os parâmetros de consulta page, totalItemsByPage e search
-  const page = parseInt(req.query.page, 10) || 1;
-  const totalItemsByPage = parseInt(req.query.totalItemsByPage, 10) || 10;
+  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+  const totalItemsByPage = Math.max(parseInt(req.query.totalItemsByPage, 10) || 10, 1);
   const search = req.query.search?.toLowerCase() || '';
 
-  // Filtrar os perfis com base na consulta de pesquisa
-  const filteredPerfil = usuarios.filter(p => p.nome.toLowerCase().includes(search));
+  // Adicionar perfilDescrição ao usuário
+  const enrichedUsuarios = usuarios.map(user => {
+    const perfil = perfis.find(p => p.id.toString() === user.perfil); // Match pelo ID do perfil
+    return {
+      ...user,
+      perfilDescricao: perfil ? perfil.descricao : "Desconhecido" // Adiciona o campo `perfilDescricao`
+    };
+  });
+
+  // Filtrar os usuários com base na consulta de pesquisa
+  const filteredUsuarios = enrichedUsuarios.filter(user =>
+    user.nome.toLowerCase().includes(search) ||
+    user.email.toLowerCase().includes(search) ||
+    user.perfilDescricao.toLowerCase().includes(search) // Filtra pela descrição do perfil
+  );
 
   // Calcular o total de itens filtrados
-  const total = filteredPerfil.length;
+  const total = filteredUsuarios.length;
 
   // Calcular os índices de início e fim dos itens a serem retornados com base na paginação
   const startIndex = (page - 1) * totalItemsByPage;
   const endIndex = startIndex + totalItemsByPage;
 
   // Extrair os itens referentes à página atual
-  const paginatedPerfil = filteredPerfil.slice(startIndex, endIndex);
+  const paginatedUsuarios = filteredUsuarios.slice(startIndex, endIndex);
 
   const response = {
     total,
-    usuarios: paginatedPerfil
+    usuarios: paginatedUsuarios
   };
 
   res.json(response);
