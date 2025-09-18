@@ -16,6 +16,7 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [openModalResetPassword, setOpenModalResetPassword] = useState(false);
   const [openModalInputToken, setOpenModalInputToken] = useState(false);
 
@@ -26,15 +27,22 @@ export function LoginPage() {
   const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
-    const result = await fetchLogin(email, password);
+    try {
+      const result = await fetchLogin(email, password);
 
-    if (result) {
-      const { token } = result;
-      login(token);
-      navigate("/home");
-    } else {
-      setError("Email ou senha inválidos");
+      if (result && result.access_token) {
+        login(result.access_token);
+        navigate("/dashboard");
+      } else {
+        setError(result?.error || "Email ou senha inválidos");
+      }
+    } catch (err) {
+      console.error("Erro no login:", err);
+      setError("Erro inesperado. Tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -150,9 +158,10 @@ export function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full bg-indigo-500 text-white hover:bg-indigo-600"
+              disabled={isLoading}
+              className="w-full bg-indigo-500 text-white hover:bg-indigo-600 disabled:opacity-50"
             >
-              Sign In
+              {isLoading ? "Entrando..." : "Sign In"}
             </Button>
 
             <div className="flex justify-center space-x-4">

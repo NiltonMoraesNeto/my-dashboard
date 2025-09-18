@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schemaAddProfile } from "../schemas/profile-schema";
 import { Button } from "./ui/button";

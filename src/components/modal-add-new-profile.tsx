@@ -25,7 +25,9 @@ interface ModalAddNewProfileProps {
     {
       descricao: string;
     },
-    undefined
+    {
+      descricao: string;
+    }
   >;
   onSubmit(values: z.infer<typeof schemaAddProfile>): Promise<void>;
   control: Control<

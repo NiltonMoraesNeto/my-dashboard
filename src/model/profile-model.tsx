@@ -1,10 +1,11 @@
 export interface TokenPayload {
-  id: string;
+  sub: string; // user id
   email: string;
-  nome: string;
-  exp: number;
-  perfil: string;
-  avatar: string;
+  perfilId: number;
+  exp: number; // expiração do token
+  iat?: number; // issued at
+  nome?: string; // nome do usuário
+  avatar?: string; // avatar do usuário
 }
 
 export interface ProfileList {

@@ -20,19 +20,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem("auth_token");
     if (token) {
-      const decoded = jwtDecode<TokenPayload>(token);
-      const currentTime = Date.now() / 1000;
-      if (decoded.exp > currentTime) {
-        setIsAuthenticated(true);
-        setDataUser(decoded);
+      try {
+        const decoded = jwtDecode<TokenPayload>(token);
+        const currentTime = Date.now() / 1000;
+        if (decoded.exp > currentTime) {
+          setIsAuthenticated(true);
+          setDataUser(decoded);
 
-        const loadPerfil = async () => {
-          const response = await fetchProfileById(parseInt(decoded.perfil));
-          setProfileUser(response.descricao);
-        };
+          const loadPerfil = async () => {
+            const response = await fetchProfileById(decoded.perfilId);
+            if (response) {
+              setProfileUser(response.descricao);
+            }
+          };
 
-        loadPerfil();
-      } else {
+          loadPerfil();
+        } else {
+          localStorage.removeItem("auth_token");
+        }
+      } catch (error) {
+        console.error("Token inválido:", error);
         localStorage.removeItem("auth_token");
       }
     }
@@ -40,16 +47,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (token: string) => {
     localStorage.setItem("auth_token", token);
-    const decoded = jwtDecode<TokenPayload>(token);
-    setDataUser(decoded);
-    setIsAuthenticated(true);
+    try {
+      const decoded = jwtDecode<TokenPayload>(token);
+      setDataUser(decoded);
+      setIsAuthenticated(true);
 
-    const loadPerfil = async () => {
-      const response = await fetchProfileById(parseInt(decoded.perfil));
-      setProfileUser(response.descricao);
-    };
+      const loadPerfil = async () => {
+        const response = await fetchProfileById(decoded.perfilId);
+        if (response) {
+          setProfileUser(response.descricao);
+        }
+      };
 
-    loadPerfil();
+      loadPerfil();
+    } catch (error) {
+      console.error("Erro ao decodificar token:", error);
+      logout();
+    }
   };
 
   const logout = () => {

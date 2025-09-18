@@ -7,7 +7,7 @@ export const fetchProfileList = async (
   search: string
 ) => {
   try {
-    const response = await api.get("perfil/list", {
+    const response = await api.get("/profiles", {
       params: { page, totalItemsByPage, search },
     });
 
@@ -23,9 +23,7 @@ export const fetchProfileList = async (
 
 export const fetchProfileById = async (id: number) => {
   try {
-    const response = await api.get("/perfil/filterById", {
-      params: { id },
-    });
+    const response = await api.get(`/profiles/${id}`);
 
     if (response.data) {
       return response.data;
@@ -39,7 +37,7 @@ export const fetchProfileById = async (id: number) => {
 
 export const newProfile = async (descricao: string) => {
   try {
-    const response = await api.post("/perfil/new", { descricao });
+    const response = await api.post("/profiles", { descricao });
 
     if (response.data) {
       return response;
@@ -53,7 +51,7 @@ export const newProfile = async (descricao: string) => {
 
 export const updateProfile = async (id: number, descricao: string) => {
   try {
-    const response = await api.put(`/perfil/update/${id}`, { descricao });
+    const response = await api.patch(`/profiles/${id}`, { descricao });
 
     if (isSuccessRequest(response.status)) {
       return response;
@@ -67,7 +65,7 @@ export const updateProfile = async (id: number, descricao: string) => {
 
 export const deleteProfile = async (id: number) => {
   try {
-    const response = await api.delete(`/perfil/delete/${id}`);
+    const response = await api.delete(`/profiles/${id}`);
 
     if (isSuccessRequest(response.status)) {
       return response;

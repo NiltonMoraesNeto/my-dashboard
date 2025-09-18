@@ -3,20 +3,26 @@ import api from "./api";
 
 export const fetchLogin = async (email: string, password: string) => {
   try {
-    const response = await api.post("/usuarios/login", { email, password });
+    const response = await api.post("/auth/login", { email, password });
     return response.data;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Erro no fetchLogin:", error);
-    return false;
+    if (error && typeof error === "object" && "response" in error) {
+      const axiosError = error as { response?: { status?: number } };
+      if (axiosError.response?.status === 401) {
+        return { error: "Email ou senha inválidos" };
+      }
+    }
+    return { error: "Erro interno do servidor" };
   }
 };
 
 export const resetPasswordSendToken = async (email: string) => {
   try {
-    const response = await api.post("/usuarios/forgot-password", { email });
+    const response = await api.post("/users/forgot-password", { email });
     return response.data;
   } catch (error) {
-    console.error("Erro no fetchLogin:", error);
+    console.error("Erro no resetPasswordSendToken:", error);
     return false;
   }
 };
@@ -27,7 +33,7 @@ export const resetPassword = async (
   newPassword: string
 ) => {
   try {
-    const response = await api.put("/usuarios/reset-password", {
+    const response = await api.put("/users/reset-password", {
       email,
       resetCode,
       newPassword,
@@ -41,7 +47,7 @@ export const resetPassword = async (
 
 export const resetCodeDelete = async (email: string, resetCode: string) => {
   try {
-    const response = await api.put("/usuarios/clean-resetCode", {
+    const response = await api.put("/users/clean-resetCode", {
       email,
       resetCode,
     });
@@ -58,7 +64,7 @@ export const fetchUserList = async (
   search: string
 ) => {
   try {
-    const response = await api.get("usuarios/list", {
+    const response = await api.get("/users", {
       params: { page, totalItemsByPage, search },
     });
 
@@ -74,7 +80,7 @@ export const fetchUserList = async (
 
 export const deleteUser = async (id: string) => {
   try {
-    const response = await api.delete(`/usuarios/delete/${id}`);
+    const response = await api.delete(`/users/${id}`);
 
     if (isSuccessRequest(response.status)) {
       return response;

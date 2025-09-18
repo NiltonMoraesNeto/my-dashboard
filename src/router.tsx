@@ -15,11 +15,23 @@ export function AppRoutes() {
 
   return (
     <Routes>
+      {/* Rota raiz - redireciona automaticamente */}
+      <Route
+        path="/"
+        element={
+          isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
       {/* Rota pública - Login */}
       <Route
         path="/login"
         element={
-          isAuthenticated ? <Navigate to="/home" replace /> : <LoginPage />
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
         }
       />
 

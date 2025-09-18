@@ -2,7 +2,7 @@ import api from "./api";
 
 export const fetchSalesByYear = async (year: number) => {
   try {
-    const response = await api.get("/salesData/list", {
+    const response = await api.get("/sales", {
       params: { year },
     });
 
@@ -18,7 +18,7 @@ export const fetchSalesByYear = async (year: number) => {
 
 export const fetchSalesByBuilding = async (buildingName: string) => {
   try {
-    const response = await api.get("/salesData/ByBuilding/list", {
+    const response = await api.get("/sales/by-building", {
       params: { buildingName },
     });
 
