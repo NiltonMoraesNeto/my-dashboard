@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { UserList } from "../model/user-model";
 import {
   DropdownMenu,
@@ -23,6 +24,7 @@ export function TableUsersList({
   handleListData,
 }: TableUsersListProps) {
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const openDeleteDialog = (id: string) => {
     setUserToDelete(id);
@@ -58,20 +60,20 @@ export function TableUsersList({
       <table className="min-w-full table-fixed bg-white dark:bg-indigo-600 rounded-lg overflow-hidden shadow-lg">
         <thead>
           <tr>
-            <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-              ID
-            </th>
             <th className="w-2/6 py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
               Nome do Usuário
             </th>
             <th className="w-2/6 py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
               Email
             </th>
-            <th className="w-2/6 py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
+            <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
               Perfil
             </th>
-            <th className="w-2/6 py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
+            <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
               CEP
+            </th>
+            <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
+              Data de Criação
             </th>
             <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-indigo-800 dark:bg-indigo-600 dark:text-indigo-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
               Ação
@@ -84,20 +86,24 @@ export function TableUsersList({
               key={user.id}
               className="hover:bg-gray-100 dark:hover:bg-indigo-700"
             >
-              <td className="w-1/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
-                {user.id}
-              </td>
               <td className="w-2/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
                 {user.nome}
               </td>
               <td className="w-2/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
                 {user.email}
               </td>
-              <td className="w-2/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
-                {user.perfilDescricao}
+              <td className="w-1/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
+                {user.perfil?.descricao || "-"}
               </td>
-              <td className="w-2/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
+              <td className="w-1/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
                 {user.cep}
+              </td>
+              <td className="w-1/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
+                {new Date(user.createdAt).toLocaleDateString("pt-BR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}
               </td>
               <td className="w-1/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
                 <DropdownMenu>
@@ -110,7 +116,7 @@ export function TableUsersList({
                     <DropdownMenuItem
                       onSelect={(e) => {
                         e.preventDefault();
-                        //openEditDialog(user.id, user.descricao);
+                        navigate(`/user/${user.id}/edit`);
                       }}
                     >
                       Editar

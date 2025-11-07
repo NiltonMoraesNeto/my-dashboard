@@ -2,8 +2,12 @@ export interface UserList {
   id: string;
   nome: string;
   email: string;
-  perfil: string;
+  perfil: {
+    id: number;
+    descricao: string;
+  };
   cep: string;
   avatar: string;
-  perfilDescricao: string;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -4,6 +4,6 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   dataUser: TokenPayload | undefined;
   profileUser: string;
-  login: (token: string) => void;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  logout: () => Promise<void>;
 }

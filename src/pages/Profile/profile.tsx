@@ -31,9 +31,19 @@ export function Profile() {
 
   useEffect(() => {
     const loadProfileData = async () => {
-      const data = await fetchProfileList(page, limit, debouncedSearch);
-      setProfileList(data.perfil);
-      setTotalPages(Math.ceil(data.total / limit));
+      const response = await fetchProfileList(page, limit, debouncedSearch);
+      if (response) {
+        // Se a API retorna um objeto com data e total
+        if (response.data && response.total !== undefined) {
+          setProfileList(response.data);
+          setTotalPages(response.totalPages || Math.ceil(response.total / limit));
+        }
+        // Fallback: Se a API retorna um array direto
+        else if (Array.isArray(response)) {
+          setProfileList(response);
+          setTotalPages(Math.ceil(response.length / limit));
+        }
+      }
     };
     loadProfileData();
   }, [page, limit, debouncedSearch]);
@@ -50,9 +60,19 @@ export function Profile() {
 
   const handleListData = () => {
     const loadProfileData = async () => {
-      const data = await fetchProfileList(page, limit, debouncedSearch);
-      setProfileList(data.perfil);
-      setTotalPages(Math.ceil(data.total / limit));
+      const response = await fetchProfileList(page, limit, debouncedSearch);
+      if (response) {
+        // Se a API retorna um objeto com data e total
+        if (response.data && response.total !== undefined) {
+          setProfileList(response.data);
+          setTotalPages(response.totalPages || Math.ceil(response.total / limit));
+        }
+        // Fallback: Se a API retorna um array direto
+        else if (Array.isArray(response)) {
+          setProfileList(response);
+          setTotalPages(Math.ceil(response.length / limit));
+        }
+      }
     };
     loadProfileData();
   };

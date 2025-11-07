@@ -7,9 +7,9 @@ import { Label } from "./ui/label";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/auth-context";
 import { ThemeToggle } from "./theme-toogle";
-import { fetchLogin } from "../services/usuarios";
 import { ModalResetPassword } from "./modal-reset-password";
 import { ModalInputToken } from "./modal-input-token";
+import { ModalSignUp } from "./modal-sign-up";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,6 +19,7 @@ export function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [openModalResetPassword, setOpenModalResetPassword] = useState(false);
   const [openModalInputToken, setOpenModalInputToken] = useState(false);
+  const [openModalSignUp, setOpenModalSignUp] = useState(false);
 
   const [tokenIsValid, setTokenIsValid] = useState(false);
   const navigate = useNavigate();
@@ -30,13 +31,12 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
-      const result = await fetchLogin(email, password);
+      const result = await login(email, password);
 
-      if (result && result.access_token) {
-        login(result.access_token);
+      if (result.success) {
         navigate("/dashboard");
       } else {
-        setError(result?.error || "Email ou senha inválidos");
+        setError(result.message || "Email ou senha inválidos");
       }
     } catch (err) {
       console.error("Erro no login:", err);
@@ -65,8 +65,10 @@ export function LoginPage() {
           <div>
             <p className="mb-4">Don't have an account?</p>
             <Button
+              type="button"
               variant="default"
               className="border-white text-white hover:bg-white/10 hover:text-white"
+              onClick={() => setOpenModalSignUp(true)}
             >
               Sign Up
             </Button>
@@ -75,7 +77,6 @@ export function LoginPage() {
         <div></div>
       </div>
 
-      {/* Coluna direita - Branco */}
       <div className="flex w-full flex-col items-center justify-center bg-white dark:bg-indigo-950 p-6 md:w-1/2 md:p-12 h-full">
         <div className="w-full max-w-md">
           <div className="text-center">
@@ -196,6 +197,9 @@ export function LoginPage() {
           </form>
         </div>
       </div>
+
+      {/* Modals - FORA da estrutura principal */}
+      <ModalSignUp open={openModalSignUp} setOpen={setOpenModalSignUp} />
     </div>
   );
 }
