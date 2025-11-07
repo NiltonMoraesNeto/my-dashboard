@@ -9,9 +9,9 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { toast } from "sonner";
 import { schemaUserEdit } from "../../schemas/user-edit-schema";
-import { ProfileList } from "../../model/profile-model";
-import { fetchProfileList } from "../../services/profile";
 import { fetchUserById, updateUser } from "../../services/usuarios";
+import { FormErrorMessage } from "../../components/form-error-message";
+import { useProfiles } from "../../hooks/useProfiles";
 
 interface UserResponse {
   id: string;
@@ -28,14 +28,16 @@ interface UserResponse {
 export function UserEdit() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [profiles, setProfiles] = useState<ProfileList[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
-
+  const {
+    profiles,
+    isLoading: isLoadingProfiles,
+    error: profilesError,
+    refresh,
+  } = useProfiles();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
     setValue,
   } = useForm<z.infer<typeof schemaUserEdit>>({
@@ -47,24 +49,7 @@ export function UserEdit() {
       cep: "",
     },
   });
-
-  useEffect(() => {
-    const loadProfiles = async () => {
-      try {
-        const response = await fetchProfileList(1, 100, "");
-        if (response && response.data) {
-          setProfiles(response.data);
-        } else if (Array.isArray(response)) {
-          setProfiles(response);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar perfis:", error);
-        toast.error("Erro ao carregar perfis");
-      }
-    };
-
-    loadProfiles();
-  }, []);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -94,7 +79,7 @@ export function UserEdit() {
 
   const onSubmit = async (data: z.infer<typeof schemaUserEdit>) => {
     if (!id) return;
-    setIsSubmitting(true);
+
     try {
       await updateUser(id, {
         nome: data.nome,
@@ -108,9 +93,9 @@ export function UserEdit() {
       navigate("/user");
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error);
-      toast.error("Erro ao atualizar usuário");
-    } finally {
-      setIsSubmitting(false);
+      toast.error("Erro ao atualizar usuário", {
+        description: "Verifique os dados informados e tente novamente",
+      });
     }
   };
 
@@ -142,16 +127,8 @@ export function UserEdit() {
           >
             <div className="space-y-2">
               <Label htmlFor="nome">Nome completo *</Label>
-              <Input
-                id="nome"
-                placeholder="Digite o nome"
-                {...register("nome")}
-              />
-              {errors.nome && (
-                <span className="text-sm text-red-500">
-                  {errors.nome.message}
-                </span>
-              )}
+              <Input id="nome" placeholder="Digite o nome" {...register("nome")} />
+              <FormErrorMessage message={errors.nome?.message} />
             </div>
 
             <div className="space-y-2">
@@ -162,11 +139,7 @@ export function UserEdit() {
                 placeholder="Digite o email"
                 {...register("email")}
               />
-              {errors.email && (
-                <span className="text-sm text-red-500">
-                  {errors.email.message}
-                </span>
-              )}
+              <FormErrorMessage message={errors.email?.message} />
             </div>
 
             <div className="space-y-2">
@@ -175,6 +148,7 @@ export function UserEdit() {
                 id="perfilId"
                 className="w-full px-3 py-2 border border-indigo-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-indigo-900 dark:text-white"
                 {...register("perfilId", { valueAsNumber: true })}
+                disabled={isLoadingProfiles}
               >
                 <option value="0">Selecione um perfil</option>
                 {profiles.map((profile) => (
@@ -183,10 +157,23 @@ export function UserEdit() {
                   </option>
                 ))}
               </select>
-              {errors.perfilId && (
-                <span className="text-sm text-red-500">
-                  {errors.perfilId.message}
-                </span>
+              {isLoadingProfiles ? (
+                <span className="text-sm text-indigo-500">Carregando perfis...</span>
+              ) : (
+                <FormErrorMessage message={errors.perfilId?.message} />
+              )}
+              {profilesError && (
+                <div className="text-sm text-red-500 flex items-center gap-2">
+                  <span>{profilesError}</span>
+                  <Button
+                    type="button"
+                    variant="link"
+                    className="p-0 h-auto"
+                    onClick={refresh}
+                  >
+                    Tentar novamente
+                  </Button>
+                </div>
               )}
             </div>
 
@@ -198,11 +185,7 @@ export function UserEdit() {
                 maxLength={8}
                 {...register("cep")}
               />
-              {errors.cep && (
-                <span className="text-sm text-red-500">
-                  {errors.cep.message}
-                </span>
-              )}
+              <FormErrorMessage message={errors.cep?.message} />
             </div>
 
             <div className="md:col-span-2 flex justify-end gap-3">
@@ -210,10 +193,14 @@ export function UserEdit() {
                 type="button"
                 variant="outline"
                 onClick={() => navigate("/user")}
+                disabled={isSubmitting}
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                disabled={isSubmitting || isLoadingProfiles}
+              >
                 {isSubmitting ? "Salvando..." : "Salvar Alterações"}
               </Button>
             </div>

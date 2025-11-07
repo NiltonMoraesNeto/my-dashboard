@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -9,19 +8,22 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { toast } from "sonner";
 import { schemaUserNew } from "../../schemas/user-new-schema";
-import { ProfileList } from "../../model/profile-model";
-import { fetchProfileList } from "../../services/profile";
 import { createUser } from "../../services/usuarios";
+import { FormErrorMessage } from "../../components/form-error-message";
+import { useProfiles } from "../../hooks/useProfiles";
 
 export function UserNew() {
   const navigate = useNavigate();
-  const [profiles, setProfiles] = useState<ProfileList[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const {
+    profiles,
+    isLoading: isLoadingProfiles,
+    error: profilesError,
+    refresh,
+  } = useProfiles();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
   } = useForm<z.infer<typeof schemaUserNew>>({
     resolver: zodResolver(schemaUserNew),
@@ -34,26 +36,7 @@ export function UserNew() {
     },
   });
 
-  useEffect(() => {
-    const loadProfiles = async () => {
-      try {
-        const response = await fetchProfileList(1, 100, "");
-        if (response && response.data) {
-          setProfiles(response.data);
-        } else if (Array.isArray(response)) {
-          setProfiles(response);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar perfis:", error);
-        toast.error("Erro ao carregar perfis");
-      }
-    };
-
-    loadProfiles();
-  }, []);
-
   const onSubmit = async (data: z.infer<typeof schemaUserNew>) => {
-    setIsSubmitting(true);
     try {
       await createUser({
         nome: data.nome,
@@ -68,9 +51,9 @@ export function UserNew() {
       navigate("/user");
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
-      toast.error("Erro ao criar usuário");
-    } finally {
-      setIsSubmitting(false);
+      toast.error("Erro ao criar usuário", {
+        description: "Verifique os dados informados e tente novamente",
+      });
     }
   };
 
@@ -97,14 +80,8 @@ export function UserNew() {
         >
           <div className="space-y-2">
             <Label htmlFor="nome">Nome completo *</Label>
-            <Input
-              id="nome"
-              placeholder="Digite o nome"
-              {...register("nome")}
-            />
-            {errors.nome && (
-              <span className="text-sm text-red-500">{errors.nome.message}</span>
-            )}
+            <Input id="nome" placeholder="Digite o nome" {...register("nome")} />
+            <FormErrorMessage message={errors.nome?.message} />
           </div>
 
           <div className="space-y-2">
@@ -115,9 +92,7 @@ export function UserNew() {
               placeholder="Digite o email"
               {...register("email")}
             />
-            {errors.email && (
-              <span className="text-sm text-red-500">{errors.email.message}</span>
-            )}
+            <FormErrorMessage message={errors.email?.message} />
           </div>
 
           <div className="space-y-2">
@@ -128,9 +103,7 @@ export function UserNew() {
               placeholder="Digite a senha provisória"
               {...register("password")}
             />
-            {errors.password && (
-              <span className="text-sm text-red-500">{errors.password.message}</span>
-            )}
+            <FormErrorMessage message={errors.password?.message} />
           </div>
 
           <div className="space-y-2">
@@ -139,6 +112,7 @@ export function UserNew() {
               id="perfilId"
               className="w-full px-3 py-2 border border-indigo-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-indigo-900 dark:text-white"
               {...register("perfilId", { valueAsNumber: true })}
+              disabled={isLoadingProfiles}
             >
               <option value="0">Selecione um perfil</option>
               {profiles.map((profile) => (
@@ -147,10 +121,23 @@ export function UserNew() {
                 </option>
               ))}
             </select>
-            {errors.perfilId && (
-              <span className="text-sm text-red-500">
-                {errors.perfilId.message}
-              </span>
+            {isLoadingProfiles ? (
+              <span className="text-sm text-indigo-500">Carregando perfis...</span>
+            ) : (
+              <FormErrorMessage message={errors.perfilId?.message} />
+            )}
+            {profilesError && (
+              <div className="text-sm text-red-500 flex items-center gap-2">
+                <span>{profilesError}</span>
+                <Button
+                  type="button"
+                  variant="link"
+                  className="p-0 h-auto"
+                  onClick={refresh}
+                >
+                  Tentar novamente
+                </Button>
+              </div>
             )}
           </div>
 
@@ -162,9 +149,7 @@ export function UserNew() {
               maxLength={8}
               {...register("cep")}
             />
-            {errors.cep && (
-              <span className="text-sm text-red-500">{errors.cep.message}</span>
-            )}
+            <FormErrorMessage message={errors.cep?.message} />
           </div>
 
           <div className="md:col-span-2 flex justify-end gap-3">
@@ -172,10 +157,11 @@ export function UserNew() {
               type="button"
               variant="outline"
               onClick={() => navigate("/user")}
+              disabled={isSubmitting}
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting || isLoadingProfiles}>
               {isSubmitting ? "Salvando..." : "Salvar Usuário"}
             </Button>
           </div>
