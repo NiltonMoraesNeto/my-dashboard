@@ -1,0 +1,105 @@
+{
+  "language": {
+    "switcherLabel": "Idioma",
+    "br": "Português (Brasil)",
+    "en": "Inglês",
+    "es": "Espanhol"
+  },
+  "sidebar": {
+    "greeting": {
+      "morning": "Bom dia",
+      "afternoon": "Boa tarde",
+      "evening": "Boa noite"
+    },
+    "toggleOpen": "Expandir menu",
+    "toggleClose": "Recolher menu",
+    "menu": {
+      "home": "Início",
+      "dashboard": "Dashboard",
+      "registers": "Cadastros",
+      "profile": "Perfil",
+      "user": "Usuário",
+      "other": "Outro Menu",
+      "other1": "Outro 1",
+      "other2": "Outro 2",
+      "other3": "Outro 3"
+    }
+  },
+  "auth": {
+    "brand": "Nilton Moraes Neto",
+    "hero": {
+      "title": "Olá!",
+      "subtitle": "Bem-vindo de volta.",
+      "callToAction": "Ainda não tem uma conta?",
+      "signUp": "Criar conta"
+    },
+    "form": {
+      "title": "Entrar",
+      "emailLabel": "Email",
+      "emailPlaceholder": "exemplo@gmail.com",
+      "passwordLabel": "Senha",
+      "passwordPlaceholder": "Senha",
+      "rememberMe": "Manter-me conectado",
+      "submit": "Entrar",
+      "submitting": "Entrando...",
+      "social": {
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "linkedin": "LinkedIn"
+      },
+      "validation": {
+        "emailRequired": "Informe seu email",
+        "emailInvalid": "Email inválido",
+        "passwordRequired": "Informe sua senha",
+        "passwordMin": "Senha deve ter pelo menos 6 caracteres"
+      }
+    },
+    "errors": {
+      "invalidCredentials": "Email ou senha inválidos.",
+      "unexpected": "Erro inesperado. Tente novamente."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "date": {
+      "shortDayFormat": "eee",
+      "dayMonthYearFormat": "dd 'de' MMM, yyyy",
+      "separator": "//"
+    },
+    "summary": {
+      "weekLabel": "(Nesta semana)",
+      "completed": {
+        "title": "Vendas Concluídas",
+        "footer": "Semana passada: {{value}}"
+      },
+      "pending": {
+        "title": "Vendas não finalizadas",
+        "footer": "Semana passada: {{value}}"
+      },
+      "reserved": {
+        "title": "Reservas realizadas",
+        "footer": "Semana passada: {{value}}"
+      }
+    },
+    "topSales": {
+      "title": "Top Vendas",
+      "buildings": {
+        "A": "Edifício A",
+        "B": "Edifício B",
+        "C": "Edifício C"
+      },
+      "totalLabel": "Total Vendas",
+      "totalValue": "R$ 35.000.000,00"
+    },
+    "charts": {
+      "salesByMonth": {
+        "title": "Vendas por mês",
+        "tooltip": "{{value}} K"
+      },
+      "salesByBuilding": {
+        "title": "Vendas - por edifício (ano atual)",
+        "tooltip": "{{value}}"
+      }
+    }
+  }
+}

@@ -17,6 +17,7 @@ import {
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
 import { SalesBuildingList } from "../../model/sales-model";
+import { useTranslation } from "react-i18next";
 
 interface SalesChartsFilterByBuildingProps {
   salesDataByBuilding: SalesBuildingList[];
@@ -29,28 +30,39 @@ export function SalesChartsFilterByBuilding({
   buildingSelect,
   onBuildingChange,
 }: SalesChartsFilterByBuildingProps) {
+  const { t } = useTranslation();
+
+  const buildingOptions = [
+    { value: "Edifício A", label: t("dashboard.topSales.buildings.A") },
+    { value: "Edifício B", label: t("dashboard.topSales.buildings.B") },
+    { value: "Edifício C", label: t("dashboard.topSales.buildings.C") },
+  ];
+
+  const selectedBuildingLabel =
+    buildingOptions.find((option) => option.value === buildingSelect)?.label ||
+    buildingSelect;
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between p-4 pb-2">
         <CardTitle className="text-base font-medium">
-          Vendas - por edifício (ano atual)
+          {t("dashboard.charts.salesByBuilding.title")}
         </CardTitle>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 text-xs">
-              {buildingSelect} <ChevronDown className="ml-1 h-3 w-3" />
+              {selectedBuildingLabel} <ChevronDown className="ml-1 h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onSelect={() => onBuildingChange("Edifício A")}>
-              Edifício A
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onBuildingChange("Edifício B")}>
-              Edifício B
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onBuildingChange("Edifício C")}>
-              Edifício C
-            </DropdownMenuItem>
+            {buildingOptions.map((option) => (
+              <DropdownMenuItem
+                key={option.value}
+                onSelect={() => onBuildingChange(option.value)}
+              >
+                {option.label}
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
@@ -71,7 +83,11 @@ export function SalesChartsFilterByBuilding({
                   if (active && payload && payload.length) {
                     return (
                       <div className="bg-white p-2 border rounded shadow-sm">
-                        <p className="text-xs">{`${payload[0].value}`}</p>
+                        <p className="text-xs">
+                          {t("dashboard.charts.salesByBuilding.tooltip", {
+                            value: payload[0].value,
+                          })}
+                        </p>
                       </div>
                     );
                   }

@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Header from "./header";
-import Sidebar from "./sidebar";
+import { Sidebar } from "./sidebar";
 
 export function AuthenticatedLayout() {
   return (

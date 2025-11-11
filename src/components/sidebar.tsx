@@ -9,57 +9,60 @@ import {
   NotebookPen,
 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { Separator } from "./ui/separator";
 import { useAuth } from "../contexts/auth-context";
 import { cn } from "../lib/utils";
+import { LanguageSwitcher } from "./language-switcher";
 
 type SidebarMenuItem = {
   key: string;
   icon: React.ComponentType<{ size?: number }>;
-  label: string;
+  labelKey: string;
   to?: string;
   submenuKey?: string;
-  children?: Array<{ label: string; to: string }>;
+  children?: Array<{ labelKey: string; to: string }>;
 };
 
 const menuConfig: SidebarMenuItem[] = [
   {
     key: "home",
     icon: Home,
-    label: "Home",
+    labelKey: "sidebar.menu.home",
     to: "/home",
   },
   {
     key: "dashboard",
     icon: ChartArea,
-    label: "Dashboard",
+    labelKey: "sidebar.menu.dashboard",
     to: "/dashboard",
   },
   {
     key: "cadastros",
     icon: NotebookPen,
-    label: "Cadastros",
+    labelKey: "sidebar.menu.registers",
     submenuKey: "cadastros",
     children: [
-      { label: "Perfil", to: "/profile" },
-      { label: "Usuário", to: "/user" },
+      { labelKey: "sidebar.menu.profile", to: "/profile" },
+      { labelKey: "sidebar.menu.user", to: "/user" },
     ],
   },
   {
     key: "outromenu",
     icon: Apple,
-    label: "Outro Menu",
+    labelKey: "sidebar.menu.other",
     submenuKey: "outromenu",
     children: [
-      { label: "Outro 1", to: "/outromenu/submenu1" },
-      { label: "Outro 2", to: "/outromenu/submenu2" },
-      { label: "Outro 3", to: "/outromenu/submenu3" },
+      { labelKey: "sidebar.menu.other1", to: "/outromenu/submenu1" },
+      { labelKey: "sidebar.menu.other2", to: "/outromenu/submenu2" },
+      { labelKey: "sidebar.menu.other3", to: "/outromenu/submenu3" },
     ],
   },
 ];
 
-const Sidebar: React.FC = () => {
+export function Sidebar() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(true);
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const location = useLocation();
@@ -87,18 +90,22 @@ const Sidebar: React.FC = () => {
     }));
   };
 
-  function getGreeting() {
+  const getGreetingKey = () => {
     const now = new Date();
     const hours = now.getHours();
 
     if (hours < 12) {
-      return "Bom Dia";
+      return "sidebar.greeting.morning";
     }
     if (hours < 18) {
-      return "Boa Tarde";
+      return "sidebar.greeting.afternoon";
     }
-    return "Boa Noite";
-  }
+    return "sidebar.greeting.evening";
+  };
+
+  const toggleSidebarLabel = isOpen
+    ? t("sidebar.toggleClose")
+    : t("sidebar.toggleOpen");
 
   const activeKeys = useMemo(() => {
     const path = location.pathname;
@@ -128,7 +135,7 @@ const Sidebar: React.FC = () => {
           className="focus:outline-none"
           onClick={toggleSidebar}
           aria-expanded={isOpen}
-          aria-label={isOpen ? "Recolher menu" : "Expandir menu"}
+          aria-label={toggleSidebarLabel}
         >
           {isOpen ? <ArrowLeft size={24} /> : <Menu size={24} />}
         </button>
@@ -151,23 +158,25 @@ const Sidebar: React.FC = () => {
         aria-hidden={!isOpen && isMobile}
       >
         <button
-          className="focus:outline-none mb-4"
+          className={cn(
+            "focus:outline-none mb-4 transition-all duration-300",
+            !isOpen && "mx-auto"
+          )}
           onClick={toggleSidebar}
           aria-expanded={isOpen}
-          aria-label={isOpen ? "Recolher menu" : "Expandir menu"}
+          aria-label={toggleSidebarLabel}
         >
           {isOpen ? <ArrowLeft size={24} /> : <Menu size={24} />}
         </button>
-        <h2
-          className={cn(
-            "text-2xl mb-6 transition-opacity duration-300",
-            isOpen ? "opacity-100" : "opacity-0"
-          )}
-        >
-          <div>{getGreeting()}</div>
-          <div>{dataUser?.nome}</div>
-        </h2>
-        <nav>
+        {isOpen ? (
+          <div className="text-2xl mb-6 transition-opacity duration-300">
+            <div>{t(getGreetingKey())}</div>
+            <div>{dataUser?.nome}</div>
+          </div>
+        ) : (
+          <span className="sr-only">{dataUser?.nome}</span>
+        )}
+        <nav className={cn(!isOpen && "mt-6")}>
           <ul className="space-y-4">
             {menuConfig.map((item) => {
               const Icon = item.icon;
@@ -176,7 +185,10 @@ const Sidebar: React.FC = () => {
               const isSubmenuOpen = hasChildren && openSubmenus[item.key];
 
               return (
-                <li key={item.key}>
+                <li
+                  key={item.key}
+                  className={cn(!isOpen && "flex flex-col items-center")}
+                >
                   {item.to ? (
                     <Link
                       to={item.to}
@@ -185,10 +197,10 @@ const Sidebar: React.FC = () => {
                         isActive && "text-white font-semibold",
                         !isOpen && "justify-center"
                       )}
-                      title={!isOpen ? item.label : undefined}
+                      title={!isOpen ? t(item.labelKey) : undefined}
                     >
                       <Icon size={20} />
-                      {isOpen && <span>{item.label}</span>}
+                      {isOpen && <span>{t(item.labelKey)}</span>}
                     </Link>
                   ) : (
                     <button
@@ -201,12 +213,12 @@ const Sidebar: React.FC = () => {
                       )}
                       aria-expanded={Boolean(isSubmenuOpen)}
                       aria-controls={`${item.key}-submenu`}
-                      title={!isOpen ? item.label : undefined}
+                      title={!isOpen ? t(item.labelKey) : undefined}
                     >
                       <Icon size={20} />
                       {isOpen && (
                         <span className="flex-1 flex items-center justify-between">
-                          {item.label}
+                          {t(item.labelKey)}
                           <span className="ml-2">
                             {isSubmenuOpen ? (
                               <ArrowUp size={16} />
@@ -237,7 +249,7 @@ const Sidebar: React.FC = () => {
                                 childActive && "text-white font-semibold"
                               )}
                             >
-                              {child.label}
+                              {t(child.labelKey)}
                             </Link>
                           </li>
                         );
@@ -247,16 +259,23 @@ const Sidebar: React.FC = () => {
 
                   <Separator
                     orientation="horizontal"
-                    className="mt-4 bg-indigo-400"
+                    className={cn(
+                      "mt-4 bg-indigo-400",
+                      !isOpen && "mx-auto w-10"
+                    )}
                   />
                 </li>
               );
             })}
           </ul>
         </nav>
+
+        {isOpen && (
+          <div className="mt-4">
+            <LanguageSwitcher isLabelVisible={false} />
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default Sidebar;
+}

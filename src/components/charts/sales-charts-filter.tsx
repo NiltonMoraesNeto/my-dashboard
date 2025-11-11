@@ -17,6 +17,7 @@ import {
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
 import { SalesList } from "../../model/sales-model";
+import { useTranslation } from "react-i18next";
 
 interface SalesChartsFilterProps {
   salesData: SalesList[];
@@ -29,10 +30,14 @@ export function SalesChartsFilter({
   yearSales,
   onYearChange,
 }: SalesChartsFilterProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between p-4 pb-2">
-        <CardTitle className="text-base font-medium">Vendas por mês</CardTitle>
+        <CardTitle className="text-base font-medium">
+          {t("dashboard.charts.salesByMonth.title")}
+        </CardTitle>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 text-xs">
@@ -61,7 +66,11 @@ export function SalesChartsFilter({
                   if (active && payload && payload.length) {
                     return (
                       <div className="bg-white p-2 border rounded shadow-sm">
-                        <p className="text-xs">{`${payload[0].value} K`}</p>
+                        <p className="text-xs">
+                          {t("dashboard.charts.salesByMonth.tooltip", {
+                            value: payload[0].value,
+                          })}
+                        </p>
                       </div>
                     );
                   }

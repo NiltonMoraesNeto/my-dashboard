@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Facebook, Instagram, Linkedin, Wifi } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -10,39 +10,54 @@ import { ThemeToggle } from "./theme-toogle";
 import { ModalResetPassword } from "./modal-reset-password";
 import { ModalInputToken } from "./modal-input-token";
 import { ModalSignUp } from "./modal-sign-up";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./language-switcher";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createLoginSchema, type LoginSchema } from "../schemas/login-schema";
+import { FormErrorMessage } from "./form-error-message";
+import { cn } from "../lib/utils";
 
 export function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [openModalResetPassword, setOpenModalResetPassword] = useState(false);
   const [openModalInputToken, setOpenModalInputToken] = useState(false);
   const [openModalSignUp, setOpenModalSignUp] = useState(false);
-
   const [tokenIsValid, setTokenIsValid] = useState(false);
+
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useTranslation();
 
-  const handleSubmitLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+  const loginSchema = useMemo(() => createLoginSchema(t), [t]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: LoginSchema) => {
+    setSubmitError("");
 
     try {
-      const result = await login(email, password);
+      const result = await login(data.email, data.password);
 
       if (result.success) {
         navigate("/dashboard");
       } else {
-        setError(result.message || "Email ou senha inválidos");
+        setSubmitError(result.message || t("auth.errors.invalidCredentials"));
       }
     } catch (err) {
       console.error("Erro no login:", err);
-      setError("Erro inesperado. Tente novamente.");
-    } finally {
-      setIsLoading(false);
+      setSubmitError(t("auth.errors.unexpected"));
     }
   };
 
@@ -53,59 +68,69 @@ export function LoginPage() {
         <div>
           <div className="flex items-center gap-2 text-xl font-semibold">
             <Wifi />
-            Nilton Moraes Neto
+            {t("auth.brand")}
             <ThemeToggle />
           </div>
         </div>
         <div className="space-y-6">
-          <h1 className="text-4xl font-bold">Hey There!</h1>
+          <h1 className="text-4xl font-bold">{t("auth.hero.title")}</h1>
           <div className="space-y-2">
-            <p className="text-xl">Welcome Back.</p>
+            <p className="text-xl">{t("auth.hero.subtitle")}</p>
           </div>
-          <div>
-            <p className="mb-4">Don't have an account?</p>
-            <Button
-              type="button"
-              variant="default"
-              className="border-white text-white hover:bg-white/10 hover:text-white"
-              onClick={() => setOpenModalSignUp(true)}
-            >
-              Sign Up
-            </Button>
+          <div className="space-y-4">
+            <div>
+              <p className="mb-4">{t("auth.hero.callToAction")}</p>
+              <Button
+                type="button"
+                variant="default"
+                className="border-white text-white hover:bg-white/10 hover:text-white"
+                onClick={() => setOpenModalSignUp(true)}
+              >
+                {t("auth.hero.signUp")}
+              </Button>
+            </div>
+            <LanguageSwitcher isLabelVisible={false} />
           </div>
         </div>
         <div></div>
       </div>
 
+      {/* Coluna direita - Branco  */}
       <div className="flex w-full flex-col items-center justify-center bg-white dark:bg-indigo-950 p-6 md:w-1/2 md:p-12 h-full">
         <div className="w-full max-w-md">
           <div className="text-center">
-            <h2 className="text-2xl font-semibold text-indigo-600">SIGN IN</h2>
+            <h2 className="text-2xl font-semibold text-indigo-600 uppercase">
+              {t("auth.form.title")}
+            </h2>
           </div>
-          {error && (
+          {submitError && (
             <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
-              {error}
+              {submitError}
             </div>
           )}
 
-          <form onSubmit={handleSubmitLogin} className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label
                   htmlFor="email"
                   className="text-indigo-400 dark:text-white"
                 >
-                  Email
+                  {t("auth.form.emailLabel")}
                 </Label>
                 <Input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="exemplo@gmail.com"
-                  className="border-indigo-200 focus-visible:ring-indigo-500 dark:text-white"
-                  required
+                  placeholder={t("auth.form.emailPlaceholder")}
+                  className={cn(
+                    "border-indigo-200 focus-visible:ring-indigo-500 dark:text-white",
+                    errors.email &&
+                      "border-red-500 focus-visible:ring-red-500 focus-visible:ring-offset-0"
+                  )}
+                  aria-invalid={errors.email ? "true" : "false"}
+                  {...register("email")}
                 />
+                <FormErrorMessage message={errors.email?.message} />
               </div>
 
               <div className="space-y-2">
@@ -113,17 +138,21 @@ export function LoginPage() {
                   htmlFor="password"
                   className="text-indigo-400 dark:text-white"
                 >
-                  Password
+                  {t("auth.form.passwordLabel")}
                 </Label>
                 <Input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  className="border-indigo-200 focus-visible:ring-indigo-500 dark:text-white"
-                  required
+                  placeholder={t("auth.form.passwordPlaceholder")}
+                  className={cn(
+                    "border-indigo-200 focus-visible:ring-indigo-500 dark:text-white",
+                    errors.password &&
+                      "border-red-500 focus-visible:ring-red-500 focus-visible:ring-offset-0"
+                  )}
+                  aria-invalid={errors.password ? "true" : "false"}
+                  {...register("password")}
                 />
+                <FormErrorMessage message={errors.password?.message} />
               </div>
 
               <div className="flex items-center justify-between">
@@ -133,14 +162,14 @@ export function LoginPage() {
                     className="dark:border-white"
                     checked={rememberMe}
                     onCheckedChange={(checked) =>
-                      setRememberMe(checked as boolean)
+                      setRememberMe(Boolean(checked))
                     }
                   />
                   <Label
                     htmlFor="remember"
                     className="text-sm text-gray-500 dark:text-white"
                   >
-                    Keep me logged in
+                    {t("auth.form.rememberMe")}
                   </Label>
                 </div>
                 <ModalResetPassword
@@ -159,10 +188,10 @@ export function LoginPage() {
 
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isSubmitting}
               className="w-full bg-indigo-500 text-white hover:bg-indigo-600 disabled:opacity-50"
             >
-              {isLoading ? "Entrando..." : "Sign In"}
+              {isSubmitting ? t("auth.form.submitting") : t("auth.form.submit")}
             </Button>
 
             <div className="flex justify-center space-x-4">
@@ -173,7 +202,9 @@ export function LoginPage() {
                 className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
               >
                 <Facebook className="h-5 w-5" />
-                <span className="sr-only">Facebook</span>
+                <span className="sr-only">
+                  {t("auth.form.social.facebook")}
+                </span>
               </Button>
               <Button
                 type="button"
@@ -182,7 +213,9 @@ export function LoginPage() {
                 className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
               >
                 <Instagram className="h-5 w-5" />
-                <span className="sr-only">Instagram</span>
+                <span className="sr-only">
+                  {t("auth.form.social.instagram")}
+                </span>
               </Button>
               <Button
                 type="button"
@@ -191,14 +224,15 @@ export function LoginPage() {
                 className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
               >
                 <Linkedin className="h-5 w-5" />
-                <span className="sr-only">LinkedIn</span>
+                <span className="sr-only">
+                  {t("auth.form.social.linkedin")}
+                </span>
               </Button>
             </div>
           </form>
         </div>
       </div>
 
-      {/* Modals - FORA da estrutura principal */}
       <ModalSignUp open={openModalSignUp} setOpen={setOpenModalSignUp} />
     </div>
   );

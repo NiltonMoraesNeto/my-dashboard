@@ -1,0 +1,105 @@
+{
+  "language": {
+    "switcherLabel": "Language",
+    "br": "Portuguese (Brazil)",
+    "en": "English",
+    "es": "Spanish"
+  },
+  "sidebar": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "toggleOpen": "Expand menu",
+    "toggleClose": "Collapse menu",
+    "menu": {
+      "home": "Home",
+      "dashboard": "Dashboard",
+      "registers": "Records",
+      "profile": "Profile",
+      "user": "User",
+      "other": "Other Menu",
+      "other1": "Other 1",
+      "other2": "Other 2",
+      "other3": "Other 3"
+    }
+  },
+  "auth": {
+    "brand": "Nilton Moraes Neto",
+    "hero": {
+      "title": "Hey there!",
+      "subtitle": "Welcome back.",
+      "callToAction": "Don't have an account?",
+      "signUp": "Sign Up"
+    },
+    "form": {
+      "title": "Sign In",
+      "emailLabel": "Email",
+      "emailPlaceholder": "example@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Password",
+      "rememberMe": "Keep me logged in",
+      "submit": "Sign In",
+      "submitting": "Signing in...",
+      "social": {
+        "facebook": "Facebook",
+        "instagram": "Instagram",
+        "linkedin": "LinkedIn"
+      },
+      "validation": {
+        "emailRequired": "Enter your email",
+        "emailInvalid": "Invalid email address",
+        "passwordRequired": "Enter your password",
+        "passwordMin": "Password must be at least 6 characters"
+      }
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password.",
+      "unexpected": "Unexpected error. Try again."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "date": {
+      "shortDayFormat": "eee",
+      "dayMonthYearFormat": "MMM dd, yyyy",
+      "separator": "//"
+    },
+    "summary": {
+      "weekLabel": "(This week)",
+      "completed": {
+        "title": "Completed Sales",
+        "footer": "Last week: {{value}}"
+      },
+      "pending": {
+        "title": "Unfinished Sales",
+        "footer": "Last week: {{value}}"
+      },
+      "reserved": {
+        "title": "Reservations made",
+        "footer": "Last week: {{value}}"
+      }
+    },
+    "topSales": {
+      "title": "Top Sales",
+      "buildings": {
+        "A": "Building A",
+        "B": "Building B",
+        "C": "Building C"
+      },
+      "totalLabel": "Total Sales",
+      "totalValue": "$35,000,000.00"
+    },
+    "charts": {
+      "salesByMonth": {
+        "title": "Sales per month",
+        "tooltip": "{{value}} K"
+      },
+      "salesByBuilding": {
+        "title": "Sales by building (current year)",
+        "tooltip": "{{value}}"
+      }
+    }
+  }
+}

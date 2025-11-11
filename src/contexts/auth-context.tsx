@@ -5,6 +5,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import { isAxiosError } from "axios";
 import api from "../services/api";
 import { TokenPayload } from "../model/profile-model";
 import { AuthContextType } from "../model/auth-context-model";
@@ -24,10 +25,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAuth = async () => {
     try {
       const response = await api.get("/auth/check");
-      
+
       if (response.data.isAuthenticated && response.data.user) {
         setIsAuthenticated(true);
-        
+
         const userData: TokenPayload = {
           sub: response.data.user.id,
           email: response.data.user.email,
@@ -36,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           nome: response.data.user.nome,
           avatar: response.data.user.avatar,
         };
-        
+
         setDataUser(userData);
         setProfileUser(response.data.user.perfil?.descricao || "");
       } else {
@@ -57,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      
+
       if (response.data.user) {
         const userData: TokenPayload = {
           sub: response.data.user.id,
@@ -67,20 +68,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           nome: response.data.user.nome,
           avatar: response.data.user.avatar,
         };
-        
+
         setDataUser(userData);
         setIsAuthenticated(true);
         setProfileUser(response.data.user.perfil?.descricao || "");
-        
+
         return { success: true };
       }
-      
+
       return { success: false, message: "Erro ao fazer login" };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao fazer login:", error);
-      return { 
-        success: false, 
-        message: error.response?.data?.message || "Erro ao fazer login" 
+      const message =
+        isAxiosError(error) && typeof error.response?.data?.message === "string"
+          ? error.response.data.message
+          : "Erro ao fazer login";
+      return {
+        success: false,
+        message,
       };
     }
   };
