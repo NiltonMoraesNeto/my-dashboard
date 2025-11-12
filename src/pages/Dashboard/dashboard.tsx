@@ -1,14 +1,14 @@
+import type { Locale } from "date-fns";
 import { format } from "date-fns";
 import { enUS, es as esLocale, ptBR } from "date-fns/locale";
-import { Card, CardContent } from "../../components/ui/card";
 import { ArrowLeft, ArrowRight, CalendarClock } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { SalesChartsFilter } from "../../components/charts/sales-charts-filter";
 import { SalesChartsFilterByBuilding } from "../../components/charts/sales-charts-filter-by-building";
-import { useEffect, useMemo, useState } from "react";
-import { SalesBuildingList, SalesList } from "../../model/sales-model";
+import { Card, CardContent } from "../../components/ui/card";
+import type { SalesBuildingList, SalesList } from "../../model/sales-model";
 import { fetchSalesByBuilding, fetchSalesByYear } from "../../services/sales";
-import { useTranslation } from "react-i18next";
-import type { Locale } from "date-fns";
 
 const localeMap: Record<string, Locale> = {
   br: ptBR,
@@ -22,7 +22,11 @@ const localeMap: Record<string, Locale> = {
 
 export function Dashboard() {
   const { t, i18n } = useTranslation();
-  const resolvedLanguage = (i18n.resolvedLanguage || i18n.language || "br").toLowerCase();
+  const resolvedLanguage = (
+    i18n.resolvedLanguage ||
+    i18n.language ||
+    "br"
+  ).toLowerCase();
   const baseLang = resolvedLanguage.split("-")[0];
   const currentLocale =
     localeMap[resolvedLanguage] ?? localeMap[baseLang] ?? ptBR;
@@ -33,7 +37,9 @@ export function Dashboard() {
 
   const [salesData, setSalesData] = useState<SalesList[]>([]);
   const [yearSales, setYearSales] = useState(new Date().getFullYear());
-  const [salesDataByBuilding, setSalesDataByBuilding] = useState<SalesBuildingList[]>([]);
+  const [salesDataByBuilding, setSalesDataByBuilding] = useState<
+    SalesBuildingList[]
+  >([]);
   const [buildingSelect, setBuildingSelect] = useState("Edifício A");
 
   useEffect(() => {
@@ -46,7 +52,9 @@ export function Dashboard() {
 
   useEffect(() => {
     const loadSalesBuildingData = async () => {
-      const salesBuildingDataResponse = await fetchSalesByBuilding(buildingSelect);
+      const salesBuildingDataResponse = await fetchSalesByBuilding(
+        buildingSelect
+      );
       setSalesDataByBuilding(salesBuildingDataResponse);
     };
     loadSalesBuildingData();
@@ -54,8 +62,12 @@ export function Dashboard() {
 
   const formattedCurrentDate = useMemo(() => {
     const currentDate = new Date();
-    const shortDay = format(currentDate, shortDayFormat, { locale: currentLocale });
-    const dayMonthYear = format(currentDate, dayMonthYearFormat, { locale: currentLocale });
+    const shortDay = format(currentDate, shortDayFormat, {
+      locale: currentLocale,
+    });
+    const dayMonthYear = format(currentDate, dayMonthYearFormat, {
+      locale: currentLocale,
+    });
     return `${shortDay} ${dateSeparator} ${dayMonthYear}`;
   }, [currentLocale, shortDayFormat, dayMonthYearFormat, dateSeparator]);
 
@@ -79,7 +91,10 @@ export function Dashboard() {
               <div>
                 <p className="text-sm text-gray-500">
                   {t("dashboard.summary.completed.title")}
-                  <span className="text-xs"> {t("dashboard.summary.weekLabel")}</span>
+                  <span className="text-xs">
+                    {" "}
+                    {t("dashboard.summary.weekLabel")}
+                  </span>
                 </p>
                 <div className="flex items-center">
                   <h3 className="text-2xl font-bold mr-2">73</h3>
@@ -101,7 +116,10 @@ export function Dashboard() {
               <div>
                 <p className="text-sm text-gray-500">
                   {t("dashboard.summary.pending.title")}
-                  <span className="text-xs"> {t("dashboard.summary.weekLabel")}</span>
+                  <span className="text-xs">
+                    {" "}
+                    {t("dashboard.summary.weekLabel")}
+                  </span>
                 </p>
                 <div className="flex items-center">
                   <h3 className="text-2xl font-bold mr-2">35</h3>
@@ -123,7 +141,10 @@ export function Dashboard() {
               <div>
                 <p className="text-sm text-gray-500">
                   {t("dashboard.summary.reserved.title")}
-                  <span className="text-xs"> {t("dashboard.summary.weekLabel")}</span>
+                  <span className="text-xs">
+                    {" "}
+                    {t("dashboard.summary.weekLabel")}
+                  </span>
                 </p>
                 <div className="flex items-center">
                   <h3 className="text-2xl font-bold mr-2">237</h3>
@@ -139,30 +160,42 @@ export function Dashboard() {
           </Card>
           <Card>
             <CardContent className="p-4">
-              <p className="text-sm text-gray-500 mb-2">{t("dashboard.topSales.title")}</p>
+              <p className="text-sm text-gray-500 mb-2">
+                {t("dashboard.topSales.title")}
+              </p>
               <div className="flex justify-between mb-2">
                 <div className="text-center">
                   <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-1">
                     <span>25</span>
                   </div>
-                  <p className="text-xs">{t("dashboard.topSales.buildings.A")}</p>
+                  <p className="text-xs">
+                    {t("dashboard.topSales.buildings.A")}
+                  </p>
                 </div>
                 <div className="text-center">
                   <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-1">
                     <span>20</span>
                   </div>
-                  <p className="text-xs">{t("dashboard.topSales.buildings.B")}</p>
+                  <p className="text-xs">
+                    {t("dashboard.topSales.buildings.B")}
+                  </p>
                 </div>
                 <div className="text-center">
                   <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-1">
                     <span>15</span>
                   </div>
-                  <p className="text-xs">{t("dashboard.topSales.buildings.C")}</p>
+                  <p className="text-xs">
+                    {t("dashboard.topSales.buildings.C")}
+                  </p>
                 </div>
               </div>
               <div className="mt-4">
-                <p className="text-xs text-gray-500">{t("dashboard.topSales.totalLabel")}</p>
-                <p className="text-lg font-bold">{t("dashboard.topSales.totalValue")}</p>
+                <p className="text-xs text-gray-500">
+                  {t("dashboard.topSales.totalLabel")}
+                </p>
+                <p className="text-lg font-bold">
+                  {t("dashboard.topSales.totalValue")}
+                </p>
               </div>
             </CardContent>
           </Card>

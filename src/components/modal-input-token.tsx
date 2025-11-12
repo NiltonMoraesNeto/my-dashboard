@@ -1,4 +1,12 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import type { z } from "zod";
+import { schemaNewPassword } from "../schemas/new-password-schema";
+import { resetCodeDelete, resetPassword } from "../services/usuarios";
+import { useUserStore } from "../stores/use-user";
+import { isSuccessRequest } from "../utils/response-request";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -8,17 +16,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { Input } from "./ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { Label } from "./ui/label";
-import { toast } from "sonner";
-import { schemaNewPassword } from "../schemas/new-password-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Input } from "./ui/input";
-import { resetCodeDelete, resetPassword } from "../services/usuarios";
-import { useUserStore } from "../stores/use-user";
-import { isSuccessRequest } from "../utils/response-request";
 
 interface ModalInputTokenProps {
   openModalInputToken: boolean;
@@ -67,11 +67,9 @@ export function ModalInputToken({
     newPassword: string;
     newPasswordConfirmation: string;
   }> = async (data) => {
-    const response = (await resetPassword(
-      emailUser,
-      valueToken,
-      data.newPassword
-    )) as { status?: number };
+    const response = (await resetPassword(emailUser, valueToken, data.newPassword)) as {
+      status?: number;
+    };
     if (isSuccessRequest(response?.status)) {
       await resetCodeDelete(emailUser, valueToken);
       localStorage.removeItem("resetCode");
@@ -112,15 +110,11 @@ export function ModalInputToken({
                       {...field}
                       type="password"
                       placeholder="Digite a nova senha"
-                      className={`w-full ${
-                        errors.newPassword ? "border-red-500" : ""
-                      }`}
+                      className={`w-full ${errors.newPassword ? "border-red-500" : ""}`}
                     />
                   )}
                 />
-                <Label className="text-red-500">
-                  {errors.newPassword?.message}
-                </Label>
+                <Label className="text-red-500">{errors.newPassword?.message}</Label>
               </div>
               <div className="flex flex-col gap-4">
                 <Label htmlFor="newPasswordConfirmation" className="text-right">
@@ -134,15 +128,11 @@ export function ModalInputToken({
                       {...field}
                       type="password"
                       placeholder="Digite a confirmação da nova senha"
-                      className={`w-full ${
-                        errors.newPasswordConfirmation ? "border-red-500" : ""
-                      }`}
+                      className={`w-full ${errors.newPasswordConfirmation ? "border-red-500" : ""}`}
                     />
                   )}
                 />
-                <Label className="text-red-500">
-                  {errors.newPasswordConfirmation?.message}
-                </Label>
+                <Label className="text-red-500">{errors.newPasswordConfirmation?.message}</Label>
               </div>
             </>
           ) : (
@@ -168,10 +158,7 @@ export function ModalInputToken({
         </div>
         <div className="flex justify-start mt-4">
           {tokenIsValid ? (
-            <Button
-              type="button"
-              onClick={handleSubmit(handleSubmitNewPassword)}
-            >
+            <Button type="button" onClick={handleSubmit(handleSubmitNewPassword)}>
               Alterar Senha
             </Button>
           ) : (

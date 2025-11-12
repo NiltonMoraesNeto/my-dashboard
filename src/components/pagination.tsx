@@ -13,6 +13,7 @@ export function Pagination({ page, totalPages, setPage }: PaginationProps) {
         {page} de {totalPages}
       </span>
       <button
+        type="button"
         disabled={page === 1}
         onClick={() => setPage(page - 1)}
         className="px-4 py-2 bg-gray-100 rounded-lg disabled:opacity-50 text-gray-700 font-medium mr-4"
@@ -20,6 +21,7 @@ export function Pagination({ page, totalPages, setPage }: PaginationProps) {
         <ChevronLeft />
       </button>
       <button
+        type="button"
         disabled={page === totalPages}
         onClick={() => setPage(page + 1)}
         className="px-4 py-2 bg-gray-100 rounded-lg disabled:opacity-50 text-gray-700 font-medium"

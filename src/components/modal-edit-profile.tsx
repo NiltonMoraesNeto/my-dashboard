@@ -1,20 +1,14 @@
-import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { schemaAddProfile } from "../schemas/profile-schema";
-import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
-import { z } from "zod";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Input } from "./ui/input";
+import { toast } from "sonner";
+import type { z } from "zod";
+import { schemaAddProfile } from "../schemas/profile-schema";
 import { updateProfile } from "../services/profile";
 import { isSuccessRequest } from "../utils/response-request";
-import { toast } from "sonner";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Input } from "./ui/input";
 
 interface ModalEditProfileProps {
   profileToEdit: { id: number; descricao: string } | null;
@@ -71,10 +65,7 @@ export function ModalEditProfile({
   }
 
   return (
-    <Dialog
-      open={profileToEdit !== null}
-      onOpenChange={(open) => !open && closeEditDialog()}
-    >
+    <Dialog open={profileToEdit !== null} onOpenChange={(open) => !open && closeEditDialog()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Editar Perfil</DialogTitle>
@@ -83,9 +74,7 @@ export function ModalEditProfile({
               <div className="w-full mx-auto">
                 <div className="relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800">
                   <div className="relative px-6 pt-12 pb-6">
-                    <div className="relative shrink-0 mb-2">
-                      Nome do Perfil *
-                    </div>
+                    <div className="relative shrink-0 mb-2">Nome do Perfil *</div>
                     <div className="relative shrink-0">
                       <Controller
                         name="descricao"
@@ -94,18 +83,14 @@ export function ModalEditProfile({
                           <Input
                             {...field}
                             placeholder="Digite o nome do perfil"
-                            className={`${
-                              errors.descricao ? "border-red-500" : ""
-                            }`}
+                            className={`${errors.descricao ? "border-red-500" : ""}`}
                           />
                         )}
                       />
                     </div>
                     <div className="relative shrink-0 mt-2">
                       {errors.descricao && (
-                        <p className="text-red-500">
-                          {errors.descricao.message}
-                        </p>
+                        <p className="text-red-500">{errors.descricao.message}</p>
                       )}
                     </div>
 

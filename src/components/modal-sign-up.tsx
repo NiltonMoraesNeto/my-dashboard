@@ -1,11 +1,13 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { schemaSignUp } from "../schemas/sign-up-schema";
-import { fetchProfileList } from "../services/profile";
-import { ProfileList } from "../model/profile-model";
 import { toast } from "sonner";
+import type { z } from "zod";
+import type { ProfileList } from "../model/profile-model";
+import { schemaSignUp } from "../schemas/sign-up-schema";
+import api from "../services/api";
+import { fetchProfileList } from "../services/profile";
+import { Button } from "./ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,10 +16,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import api from "../services/api";
 
 interface ModalSignUpProps {
   open: boolean;
@@ -49,7 +49,7 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
     const loadProfiles = async () => {
       try {
         const response = await fetchProfileList(1, 100, "");
-        if (response && response.data) {
+        if (response?.data) {
           setProfiles(response.data);
         } else if (Array.isArray(response)) {
           setProfiles(response);
@@ -86,9 +86,7 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Erro ao criar usuário. Tente novamente.";
+        error instanceof Error ? error.message : "Erro ao criar usuário. Tente novamente.";
       toast.error("Erro", {
         description: errorMessage,
       });
@@ -112,9 +110,7 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
           <DialogTitle className="text-indigo-600 dark:text-indigo-300">
             Criar Nova Conta
           </DialogTitle>
-          <DialogDescription>
-            Preencha os dados abaixo para criar sua conta
-          </DialogDescription>
+          <DialogDescription>Preencha os dados abaixo para criar sua conta</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -128,9 +124,7 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
               placeholder="Digite seu nome completo"
               className="border-indigo-200 focus-visible:ring-indigo-500"
             />
-            {errors.nome && (
-              <p className="text-sm text-red-500">{errors.nome.message}</p>
-            )}
+            {errors.nome && <p className="text-sm text-red-500">{errors.nome.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -144,16 +138,11 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
               placeholder="seu@email.com"
               className="border-indigo-200 focus-visible:ring-indigo-500"
             />
-            {errors.email && (
-              <p className="text-sm text-red-500">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label
-              htmlFor="password"
-              className="text-indigo-600 dark:text-white"
-            >
+            <Label htmlFor="password" className="text-indigo-600 dark:text-white">
               Senha *
             </Label>
             <Input
@@ -163,16 +152,11 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
               placeholder="Mínimo 6 caracteres"
               className="border-indigo-200 focus-visible:ring-indigo-500"
             />
-            {errors.password && (
-              <p className="text-sm text-red-500">{errors.password.message}</p>
-            )}
+            {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label
-              htmlFor="confirmPassword"
-              className="text-indigo-600 dark:text-white"
-            >
+            <Label htmlFor="confirmPassword" className="text-indigo-600 dark:text-white">
               Confirmar Senha *
             </Label>
             <Input
@@ -183,17 +167,12 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
               className="border-indigo-200 focus-visible:ring-indigo-500"
             />
             {errors.confirmPassword && (
-              <p className="text-sm text-red-500">
-                {errors.confirmPassword.message}
-              </p>
+              <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label
-              htmlFor="perfilId"
-              className="text-indigo-600 dark:text-white"
-            >
+            <Label htmlFor="perfilId" className="text-indigo-600 dark:text-white">
               Perfil *
             </Label>
             <select
@@ -208,9 +187,7 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
                 </option>
               ))}
             </select>
-            {errors.perfilId && (
-              <p className="text-sm text-red-500">{errors.perfilId.message}</p>
-            )}
+            {errors.perfilId && <p className="text-sm text-red-500">{errors.perfilId.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -224,9 +201,7 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
               maxLength={8}
               className="border-indigo-200 focus-visible:ring-indigo-500"
             />
-            {errors.cep && (
-              <p className="text-sm text-red-500">{errors.cep.message}</p>
-            )}
+            {errors.cep && <p className="text-sm text-red-500">{errors.cep.message}</p>}
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">

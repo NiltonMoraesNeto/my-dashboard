@@ -1,4 +1,13 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import type { z } from "zod";
+import { useAuth } from "../contexts/auth-context";
+import { schemaChangePassword } from "../schemas/change-password-schema";
+import { changePassword } from "../services/usuarios";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -8,17 +17,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useAuth } from "../contexts/auth-context";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { schemaChangePassword } from "../schemas/change-password-schema";
-import { z } from "zod";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { changePassword } from "../services/usuarios";
-import { toast } from "sonner";
-import { useState } from "react";
 
 export function ModalProfileUser() {
   const { dataUser, profileUser } = useAuth();
@@ -61,13 +61,16 @@ export function ModalProfileUser() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      if (!open) {
-        handleClose();
-      } else {
-        setIsOpen(true);
-      }
-    }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          handleClose();
+        } else {
+          setIsOpen(true);
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <Button className="focus:outline-none hover:text-gray-300 dark:bg-indigo-900 dark:text-white">
           <User size={24} />
@@ -147,16 +150,12 @@ export function ModalProfileUser() {
                           {...register("newPassword")}
                         />
                         {errors.newPassword && (
-                          <span className="text-sm text-red-500">
-                            {errors.newPassword.message}
-                          </span>
+                          <span className="text-sm text-red-500">{errors.newPassword.message}</span>
                         )}
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="confirmNewPassword">
-                          Confirmar nova senha *
-                        </Label>
+                        <Label htmlFor="confirmNewPassword">Confirmar nova senha *</Label>
                         <Input
                           id="confirmNewPassword"
                           type="password"

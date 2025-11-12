@@ -13,8 +13,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expirado ou inválido - redireciona para login
-      if (!error.config?.url?.includes("/auth/login") && 
-          !error.config?.url?.includes("/auth/check")) {
+      if (
+        !error.config?.url?.includes("/auth/login") &&
+        !error.config?.url?.includes("/auth/check")
+      ) {
         window.location.href = "/login";
       }
     }

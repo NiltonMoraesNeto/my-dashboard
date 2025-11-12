@@ -1,11 +1,7 @@
 import { isSuccessRequest } from "../utils/response-request";
 import api from "./api";
 
-export const fetchProfileList = async (
-  page: number,
-  totalItemsByPage: number,
-  search: string
-) => {
+export const fetchProfileList = async (page: number, totalItemsByPage: number, search: string) => {
   try {
     const response = await api.get("/profiles", {
       params: { page, totalItemsByPage, search },

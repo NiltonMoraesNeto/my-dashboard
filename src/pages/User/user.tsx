@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { UserList } from "../../model/user-model";
-import { fetchUserList } from "../../services/usuarios";
 import { TableUser } from "../../components/table-user";
+import type { UserList } from "../../model/user-model";
+import { fetchUserList } from "../../services/usuarios";
 
 export function User() {
   const [userList, setUserList] = useState<UserList[]>([]);

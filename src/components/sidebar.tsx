@@ -8,13 +8,14 @@ import {
   Menu,
   NotebookPen,
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
-import { Separator } from "./ui/separator";
 import { useAuth } from "../contexts/auth-context";
 import { cn } from "../lib/utils";
 import { LanguageSwitcher } from "./language-switcher";
+import { Separator } from "./ui/separator";
 
 type SidebarMenuItem = {
   key: string;
@@ -67,8 +68,7 @@ export function Sidebar() {
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const location = useLocation();
   const { dataUser } = useAuth();
-  const isMobile =
-    typeof window !== "undefined" ? window.innerWidth < 768 : false;
+  const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
 
   useEffect(() => {
     if (isMobile) {
@@ -103,9 +103,7 @@ export function Sidebar() {
     return "sidebar.greeting.evening";
   };
 
-  const toggleSidebarLabel = isOpen
-    ? t("sidebar.toggleClose")
-    : t("sidebar.toggleOpen");
+  const toggleSidebarLabel = isOpen ? t("sidebar.toggleClose") : t("sidebar.toggleOpen");
 
   const activeKeys = useMemo(() => {
     const path = location.pathname;
@@ -132,6 +130,7 @@ export function Sidebar() {
     <div className="flex h-auto">
       <div className="fixed top-13 left-0 p-4 md:hidden text-indigo-600">
         <button
+          type="button"
           className="focus:outline-none"
           onClick={toggleSidebar}
           aria-expanded={isOpen}
@@ -158,6 +157,7 @@ export function Sidebar() {
         aria-hidden={!isOpen && isMobile}
       >
         <button
+          type="button"
           className={cn(
             "focus:outline-none mb-4 transition-all duration-300",
             !isOpen && "mx-auto"
@@ -185,10 +185,7 @@ export function Sidebar() {
               const isSubmenuOpen = hasChildren && openSubmenus[item.key];
 
               return (
-                <li
-                  key={item.key}
-                  className={cn(!isOpen && "flex flex-col items-center")}
-                >
+                <li key={item.key} className={cn(!isOpen && "flex flex-col items-center")}>
                   {item.to ? (
                     <Link
                       to={item.to}
@@ -220,11 +217,7 @@ export function Sidebar() {
                         <span className="flex-1 flex items-center justify-between">
                           {t(item.labelKey)}
                           <span className="ml-2">
-                            {isSubmenuOpen ? (
-                              <ArrowUp size={16} />
-                            ) : (
-                              <ArrowDown size={16} />
-                            )}
+                            {isSubmenuOpen ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
                           </span>
                         </span>
                       )}
@@ -237,9 +230,7 @@ export function Sidebar() {
                       className="ml-6 mt-2 space-y-2 border-l border-indigo-400/40 pl-4"
                     >
                       {item.children?.map((child) => {
-                        const childActive = location.pathname.startsWith(
-                          child.to
-                        );
+                        const childActive = location.pathname.startsWith(child.to);
                         return (
                           <li key={child.to}>
                             <Link
@@ -259,10 +250,7 @@ export function Sidebar() {
 
                   <Separator
                     orientation="horizontal"
-                    className={cn(
-                      "mt-4 bg-indigo-400",
-                      !isOpen && "mx-auto w-10"
-                    )}
+                    className={cn("mt-4 bg-indigo-400", !isOpen && "mx-auto w-10")}
                   />
                 </li>
               );

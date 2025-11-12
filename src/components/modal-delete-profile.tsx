@@ -1,11 +1,5 @@
 import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 
 interface ModalDeleteProfileProps {
   profileToDelete: number | null;
@@ -19,10 +13,7 @@ export function ModalDeleteProfile({
   onDelete,
 }: ModalDeleteProfileProps) {
   return (
-    <Dialog
-      open={profileToDelete !== null}
-      onOpenChange={(open) => !open && closeDeleteDialog()}
-    >
+    <Dialog open={profileToDelete !== null} onOpenChange={(open) => !open && closeDeleteDialog()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Deletar Perfil</DialogTitle>

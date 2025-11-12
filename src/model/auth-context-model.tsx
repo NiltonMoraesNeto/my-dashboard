@@ -1,4 +1,4 @@
-import { TokenPayload } from "./profile-model";
+import type { TokenPayload } from "./profile-model";
 
 export interface AuthContextType {
   isAuthenticated: boolean;

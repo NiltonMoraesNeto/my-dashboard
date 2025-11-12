@@ -1,25 +1,20 @@
-import { useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Label } from "../../components/ui/label";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import type { z } from "zod";
+import { FormErrorMessage } from "../../components/form-error-message";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { useProfiles } from "../../hooks/useProfiles";
 import { schemaUserNew } from "../../schemas/user-new-schema";
 import { createUser } from "../../services/usuarios";
-import { FormErrorMessage } from "../../components/form-error-message";
-import { useProfiles } from "../../hooks/useProfiles";
 
 export function UserNew() {
   const navigate = useNavigate();
-  const {
-    profiles,
-    isLoading: isLoadingProfiles,
-    error: profilesError,
-    refresh,
-  } = useProfiles();
+  const { profiles, isLoading: isLoadingProfiles, error: profilesError, refresh } = useProfiles();
   const {
     register,
     handleSubmit,
@@ -74,10 +69,7 @@ export function UserNew() {
           </Button>
         </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="nome">Nome completo *</Label>
             <Input id="nome" placeholder="Digite o nome" {...register("nome")} />
@@ -86,12 +78,7 @@ export function UserNew() {
 
           <div className="space-y-2">
             <Label htmlFor="email">Email *</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Digite o email"
-              {...register("email")}
-            />
+            <Input id="email" type="email" placeholder="Digite o email" {...register("email")} />
             <FormErrorMessage message={errors.email?.message} />
           </div>
 
@@ -129,12 +116,7 @@ export function UserNew() {
             {profilesError && (
               <div className="text-sm text-red-500 flex items-center gap-2">
                 <span>{profilesError}</span>
-                <Button
-                  type="button"
-                  variant="link"
-                  className="p-0 h-auto"
-                  onClick={refresh}
-                >
+                <Button type="button" variant="link" className="p-0 h-auto" onClick={refresh}>
                   Tentar novamente
                 </Button>
               </div>
@@ -143,12 +125,7 @@ export function UserNew() {
 
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="cep">CEP (opcional)</Label>
-            <Input
-              id="cep"
-              placeholder="00000000"
-              maxLength={8}
-              {...register("cep")}
-            />
+            <Input id="cep" placeholder="00000000" maxLength={8} {...register("cep")} />
             <FormErrorMessage message={errors.cep?.message} />
           </div>
 

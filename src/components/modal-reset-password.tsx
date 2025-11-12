@@ -1,4 +1,10 @@
-import { Controller, useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import type { z } from "zod";
+import { schemaResetPassword } from "../schemas/reset-password-schema";
+import { resetPasswordSendToken } from "../services/usuarios";
+import { useUserStore } from "../stores/use-user";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -11,12 +17,6 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { schemaResetPassword } from "../schemas/reset-password-schema";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { resetPasswordSendToken } from "../services/usuarios";
-import { toast } from "sonner";
-import { useUserStore } from "../stores/use-user";
 
 interface ModalResetPasswordProps {
   openModalResetPassword: boolean;
@@ -47,9 +47,7 @@ export function ModalResetPassword({
     },
   });
 
-  const handleSubmitResetPassword: SubmitHandler<{ email: string }> = async (
-    data
-  ) => {
+  const handleSubmitResetPassword: SubmitHandler<{ email: string }> = async (data) => {
     try {
       updateEmailUser(data.email);
       const response = await resetPasswordSendToken(data.email);
@@ -74,10 +72,7 @@ export function ModalResetPassword({
     }
   };
   return (
-    <Dialog
-      open={openModalResetPassword}
-      onOpenChange={setOpenModalResetPassword}
-    >
+    <Dialog open={openModalResetPassword} onOpenChange={setOpenModalResetPassword}>
       <DialogTrigger asChild>
         <Button
           variant="link"
@@ -116,10 +111,7 @@ export function ModalResetPassword({
           <Button type="button" variant="link" onClick={handleOpenModalToken}>
             Já tem o token? Clique aqui para validar e trocar a senha
           </Button>
-          <Button
-            type="button"
-            onClick={handleSubmit(handleSubmitResetPassword)}
-          >
+          <Button type="button" onClick={handleSubmit(handleSubmitResetPassword)}>
             Enviar
           </Button>
         </DialogFooter>

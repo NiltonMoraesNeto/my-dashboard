@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Config files (processed by build tools, not linted)
+postcss.config.js
+tailwind.config.js
+vite.config.ts

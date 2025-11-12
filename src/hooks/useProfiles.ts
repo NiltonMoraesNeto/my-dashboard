@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { ProfileList } from "../model/profile-model";
+import { useCallback, useEffect, useState } from "react";
+import type { ProfileList } from "../model/profile-model";
 import { fetchProfileList } from "../services/profile";
 
 interface UseProfilesOptions {
@@ -21,7 +21,7 @@ export function useProfiles({ enabled = true }: UseProfilesOptions = {}) {
 
     try {
       const response = await fetchProfileList(1, 200, "");
-      if (response && response.data) {
+      if (response?.data) {
         setProfiles(response.data);
       } else if (Array.isArray(response)) {
         setProfiles(response);

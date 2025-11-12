@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ProfileList } from "../../model/profile-model";
-import { fetchProfileList, newProfile } from "../../services/profile";
-import { schemaAddProfile } from "../../schemas/profile-schema";
-import { z } from "zod";
-import { isSuccessRequest } from "../../utils/response-request";
 import { toast } from "sonner";
+import type { z } from "zod";
 import { TableProfile } from "../../components/table-profile";
+import type { ProfileList } from "../../model/profile-model";
+import { schemaAddProfile } from "../../schemas/profile-schema";
+import { fetchProfileList, newProfile } from "../../services/profile";
+import { isSuccessRequest } from "../../utils/response-request";
 
 export function Profile() {
   const [profileList, setProfileList] = useState<ProfileList[]>([]);

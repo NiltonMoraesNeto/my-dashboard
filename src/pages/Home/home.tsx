@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { SalesCharts } from "../../components/charts/sales-charts";
 import { SalesComparisonCharts } from "../../components/charts/sales-comparison-charts";
 import {
+  type ComparisonData,
   dashboardService,
-  MonthlySalesData,
-  ComparisonData,
+  type MonthlySalesData,
 } from "../../services/dashboard";
 
 export function HomePage() {

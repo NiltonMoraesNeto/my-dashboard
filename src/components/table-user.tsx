@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Input } from "./ui/input";
+import { useNavigate } from "react-router-dom";
+import type { UserList } from "../model/user-model";
 import { Pagination } from "./pagination";
 import { TableUsersList } from "./table-list-user";
-import { UserList } from "../model/user-model";
 import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
 
 interface TableUserProps {
   search: string;

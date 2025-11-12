@@ -1,23 +1,23 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   CartesianGrid,
+  Line,
+  LineChart as RechartsLineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  Line,
-  LineChart as RechartsLineChart,
 } from "recharts";
+import type { SalesBuildingList } from "../../model/sales-model";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { ChevronDown } from "lucide-react";
-import { SalesBuildingList } from "../../model/sales-model";
-import { useTranslation } from "react-i18next";
 
 interface SalesChartsFilterByBuildingProps {
   salesDataByBuilding: SalesBuildingList[];
@@ -39,8 +39,7 @@ export function SalesChartsFilterByBuilding({
   ];
 
   const selectedBuildingLabel =
-    buildingOptions.find((option) => option.value === buildingSelect)?.label ||
-    buildingSelect;
+    buildingOptions.find((option) => option.value === buildingSelect)?.label || buildingSelect;
 
   return (
     <Card>
@@ -56,10 +55,7 @@ export function SalesChartsFilterByBuilding({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {buildingOptions.map((option) => (
-              <DropdownMenuItem
-                key={option.value}
-                onSelect={() => onBuildingChange(option.value)}
-              >
+              <DropdownMenuItem key={option.value} onSelect={() => onBuildingChange(option.value)}>
                 {option.label}
               </DropdownMenuItem>
             ))}

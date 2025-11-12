@@ -1,13 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Bar,
   CartesianGrid,
+  BarChart as RechartsBarChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  BarChart as RechartsBarChart,
 } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 interface ComparativoVendasChartsProps {
   comparisonsData: {
@@ -18,9 +18,7 @@ interface ComparativoVendasChartsProps {
   }[];
 }
 
-export function SalesComparisonCharts({
-  comparisonsData,
-}: ComparativoVendasChartsProps) {
+export function SalesComparisonCharts({ comparisonsData }: ComparativoVendasChartsProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between p-4 pb-2">

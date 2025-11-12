@@ -1,10 +1,12 @@
 import {
-  Control,
+  type Control,
   Controller,
-  FieldErrors,
-  UseFormHandleSubmit,
+  type FieldErrors,
+  type UseFormHandleSubmit,
 } from "react-hook-form";
+import type { z } from "zod";
 import { useAuth } from "../contexts/auth-context";
+import type { schemaAddProfile } from "../schemas/profile-schema";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -15,8 +17,6 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Input } from "./ui/input";
-import { schemaAddProfile } from "../schemas/profile-schema";
-import { z } from "zod";
 
 interface ModalAddNewProfileProps {
   openModal: boolean;
@@ -53,10 +53,7 @@ export function ModalAddNewProfile({
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
-        <Button
-          disabled={profileUser === "Adminstrador" ? false : true}
-          className="max-sm:mb-4"
-        >
+        <Button disabled={profileUser !== "Adminstrador"} className="max-sm:mb-4">
           Adicionar Novo
         </Button>
       </DialogTrigger>
@@ -68,9 +65,7 @@ export function ModalAddNewProfile({
               <div className="w-full mx-auto">
                 <div className="relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800">
                   <div className="relative px-6 pt-12 pb-6">
-                    <div className="relative shrink-0 mb-2">
-                      Nome do Perfil *
-                    </div>
+                    <div className="relative shrink-0 mb-2">Nome do Perfil *</div>
                     <div className="relative shrink-0">
                       <Controller
                         name="descricao"
@@ -79,18 +74,14 @@ export function ModalAddNewProfile({
                           <Input
                             {...field}
                             placeholder="Digite o nome do perfil"
-                            className={`${
-                              errors.descricao ? "border-red-500" : ""
-                            }`}
+                            className={`${errors.descricao ? "border-red-500" : ""}`}
                           />
                         )}
                       />
                     </div>
                     <div className="relative shrink-0 mt-2">
                       {errors.descricao && (
-                        <p className="text-red-500">
-                          {errors.descricao.message}
-                        </p>
+                        <p className="text-red-500">{errors.descricao.message}</p>
                       )}
                     </div>
 

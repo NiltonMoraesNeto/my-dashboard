@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Label } from "../../components/ui/label";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import type { z } from "zod";
+import { FormErrorMessage } from "../../components/form-error-message";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { useProfiles } from "../../hooks/useProfiles";
 import { schemaUserEdit } from "../../schemas/user-edit-schema";
 import { fetchUserById, updateUser } from "../../services/usuarios";
-import { FormErrorMessage } from "../../components/form-error-message";
-import { useProfiles } from "../../hooks/useProfiles";
 
 interface UserResponse {
   id: string;
@@ -28,12 +28,7 @@ interface UserResponse {
 export function UserEdit() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const {
-    profiles,
-    isLoading: isLoadingProfiles,
-    error: profilesError,
-    refresh,
-  } = useProfiles();
+  const { profiles, isLoading: isLoadingProfiles, error: profilesError, refresh } = useProfiles();
   const {
     register,
     handleSubmit,
@@ -121,10 +116,7 @@ export function UserEdit() {
             Carregando dados do usuário...
           </div>
         ) : (
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
+          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="nome">Nome completo *</Label>
               <Input id="nome" placeholder="Digite o nome" {...register("nome")} />
@@ -133,12 +125,7 @@ export function UserEdit() {
 
             <div className="space-y-2">
               <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Digite o email"
-                {...register("email")}
-              />
+              <Input id="email" type="email" placeholder="Digite o email" {...register("email")} />
               <FormErrorMessage message={errors.email?.message} />
             </div>
 
@@ -165,12 +152,7 @@ export function UserEdit() {
               {profilesError && (
                 <div className="text-sm text-red-500 flex items-center gap-2">
                   <span>{profilesError}</span>
-                  <Button
-                    type="button"
-                    variant="link"
-                    className="p-0 h-auto"
-                    onClick={refresh}
-                  >
+                  <Button type="button" variant="link" className="p-0 h-auto" onClick={refresh}>
                     Tentar novamente
                   </Button>
                 </div>
@@ -179,12 +161,7 @@ export function UserEdit() {
 
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="cep">CEP (opcional)</Label>
-              <Input
-                id="cep"
-                placeholder="00000000"
-                maxLength={8}
-                {...register("cep")}
-              />
+              <Input id="cep" placeholder="00000000" maxLength={8} {...register("cep")} />
               <FormErrorMessage message={errors.cep?.message} />
             </div>
 
@@ -197,10 +174,7 @@ export function UserEdit() {
               >
                 Cancelar
               </Button>
-              <Button
-                type="submit"
-                disabled={isSubmitting || isLoadingProfiles}
-              >
+              <Button type="submit" disabled={isSubmitting || isLoadingProfiles}>
                 {isSubmitting ? "Salvando..." : "Salvar Alterações"}
               </Button>
             </div>

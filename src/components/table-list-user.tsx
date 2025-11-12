@@ -1,28 +1,25 @@
+import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserList } from "../model/user-model";
+import { toast } from "sonner";
+import type { UserList } from "../model/user-model";
+import { deleteUser } from "../services/usuarios";
+import { isSuccessRequest } from "../utils/response-request";
+import { ModalDeleteUser } from "./modal-delete-user";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import { EllipsisVertical } from "lucide-react";
-import { deleteUser } from "../services/usuarios";
-import { isSuccessRequest } from "../utils/response-request";
-import { toast } from "sonner";
-import { ModalDeleteUser } from "./modal-delete-user";
 
 interface TableUsersListProps {
   userList: UserList[];
   handleListData: () => void;
 }
 
-export function TableUsersList({
-  userList,
-  handleListData,
-}: TableUsersListProps) {
+export function TableUsersList({ userList, handleListData }: TableUsersListProps) {
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -82,10 +79,7 @@ export function TableUsersList({
         </thead>
         <tbody>
           {userList?.map((user) => (
-            <tr
-              key={user.id}
-              className="hover:bg-gray-100 dark:hover:bg-indigo-700"
-            >
+            <tr key={user.id} className="hover:bg-gray-100 dark:hover:bg-indigo-700">
               <td className="w-2/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
                 {user.nome}
               </td>

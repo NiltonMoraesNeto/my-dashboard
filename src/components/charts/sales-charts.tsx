@@ -1,13 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Bar,
   CartesianGrid,
+  BarChart as RechartsBarChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  BarChart as RechartsBarChart,
 } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 interface SalesChartsProps {
   salesData: {

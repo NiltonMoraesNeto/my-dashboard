@@ -87,11 +87,7 @@ export const resetPasswordSendToken = async (email: string) => {
   }
 };
 
-export const resetPassword = async (
-  email: string,
-  resetCode: string,
-  newPassword: string
-) => {
+export const resetPassword = async (email: string, resetCode: string, newPassword: string) => {
   try {
     const response = await api.put("/users/reset-password", {
       email,
@@ -118,11 +114,7 @@ export const resetCodeDelete = async (email: string, resetCode: string) => {
   }
 };
 
-export const fetchUserList = async (
-  page: number,
-  totalItemsByPage: number,
-  search: string
-) => {
+export const fetchUserList = async (page: number, totalItemsByPage: number, search: string) => {
   try {
     const response = await api.get("/users", {
       params: { page, totalItemsByPage, search },

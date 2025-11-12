@@ -1,22 +1,22 @@
-import { useMemo, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Facebook, Instagram, Linkedin, Wifi } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Checkbox } from "./ui/checkbox";
-import { Label } from "./ui/label";
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/auth-context";
-import { ThemeToggle } from "./theme-toogle";
-import { ModalResetPassword } from "./modal-reset-password";
-import { ModalInputToken } from "./modal-input-token";
-import { ModalSignUp } from "./modal-sign-up";
-import { useTranslation } from "react-i18next";
-import { LanguageSwitcher } from "./language-switcher";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "../lib/utils";
 import { createLoginSchema, type LoginSchema } from "../schemas/login-schema";
 import { FormErrorMessage } from "./form-error-message";
-import { cn } from "../lib/utils";
+import { LanguageSwitcher } from "./language-switcher";
+import { ModalInputToken } from "./modal-input-token";
+import { ModalResetPassword } from "./modal-reset-password";
+import { ModalSignUp } from "./modal-sign-up";
+import { ThemeToggle } from "./theme-toogle";
+import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 export function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -104,18 +104,13 @@ export function LoginPage() {
             </h2>
           </div>
           {submitError && (
-            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
-              {submitError}
-            </div>
+            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">{submitError}</div>
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-indigo-400 dark:text-white"
-                >
+                <Label htmlFor="email" className="text-indigo-400 dark:text-white">
                   {t("auth.form.emailLabel")}
                 </Label>
                 <Input
@@ -134,10 +129,7 @@ export function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="text-indigo-400 dark:text-white"
-                >
+                <Label htmlFor="password" className="text-indigo-400 dark:text-white">
                   {t("auth.form.passwordLabel")}
                 </Label>
                 <Input
@@ -161,14 +153,9 @@ export function LoginPage() {
                     id="remember"
                     className="dark:border-white"
                     checked={rememberMe}
-                    onCheckedChange={(checked) =>
-                      setRememberMe(Boolean(checked))
-                    }
+                    onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
                   />
-                  <Label
-                    htmlFor="remember"
-                    className="text-sm text-gray-500 dark:text-white"
-                  >
+                  <Label htmlFor="remember" className="text-sm text-gray-500 dark:text-white">
                     {t("auth.form.rememberMe")}
                   </Label>
                 </div>
@@ -202,9 +189,7 @@ export function LoginPage() {
                 className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
               >
                 <Facebook className="h-5 w-5" />
-                <span className="sr-only">
-                  {t("auth.form.social.facebook")}
-                </span>
+                <span className="sr-only">{t("auth.form.social.facebook")}</span>
               </Button>
               <Button
                 type="button"
@@ -213,9 +198,7 @@ export function LoginPage() {
                 className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
               >
                 <Instagram className="h-5 w-5" />
-                <span className="sr-only">
-                  {t("auth.form.social.instagram")}
-                </span>
+                <span className="sr-only">{t("auth.form.social.instagram")}</span>
               </Button>
               <Button
                 type="button"
@@ -224,9 +207,7 @@ export function LoginPage() {
                 className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
               >
                 <Linkedin className="h-5 w-5" />
-                <span className="sr-only">
-                  {t("auth.form.social.linkedin")}
-                </span>
+                <span className="sr-only">{t("auth.form.social.linkedin")}</span>
               </Button>
             </div>
           </form>

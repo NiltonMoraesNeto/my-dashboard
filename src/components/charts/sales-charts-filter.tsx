@@ -1,23 +1,23 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   Bar,
   CartesianGrid,
+  BarChart as RechartsBarChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  BarChart as RechartsBarChart,
 } from "recharts";
+import type { SalesList } from "../../model/sales-model";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { ChevronDown } from "lucide-react";
-import { SalesList } from "../../model/sales-model";
-import { useTranslation } from "react-i18next";
 
 interface SalesChartsFilterProps {
   salesData: SalesList[];
@@ -25,11 +25,7 @@ interface SalesChartsFilterProps {
   onYearChange: (year: number) => void;
 }
 
-export function SalesChartsFilter({
-  salesData,
-  yearSales,
-  onYearChange,
-}: SalesChartsFilterProps) {
+export function SalesChartsFilter({ salesData, yearSales, onYearChange }: SalesChartsFilterProps) {
   const { t } = useTranslation();
 
   return (
@@ -45,12 +41,8 @@ export function SalesChartsFilter({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onSelect={() => onYearChange(2025)}>
-              2025
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onYearChange(2024)}>
-              2024
-            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onYearChange(2025)}>2025</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => onYearChange(2024)}>2024</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>

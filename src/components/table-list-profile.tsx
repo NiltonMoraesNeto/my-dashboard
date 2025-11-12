@@ -1,28 +1,25 @@
-import { useState } from "react";
 import { EllipsisVertical } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import type { ProfileList } from "../model/profile-model";
+import { deleteProfile } from "../services/profile";
+import { isSuccessRequest } from "../utils/response-request";
+import { ModalDeleteProfile } from "./modal-delete-profile";
+import { ModalEditProfile } from "./modal-edit-profile";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import { deleteProfile } from "../services/profile";
-import { toast } from "sonner";
-import { isSuccessRequest } from "../utils/response-request";
-import { ModalDeleteProfile } from "./modal-delete-profile";
-import { ModalEditProfile } from "./modal-edit-profile";
 
 interface TableListProfileProps {
   profileList: ProfileList[];
   handleListData: () => void;
 }
 
-export function TableListProfile({
-  profileList,
-  handleListData,
-}: TableListProfileProps) {
+export function TableListProfile({ profileList, handleListData }: TableListProfileProps) {
   const [profileToDelete, setProfileToDelete] = useState<number | null>(null);
   const [profileToEdit, setProfileToEdit] = useState<ProfileList | null>(null);
 
@@ -85,10 +82,7 @@ export function TableListProfile({
         </thead>
         <tbody>
           {profileList?.map((profile) => (
-            <tr
-              key={profile.id}
-              className="hover:bg-gray-100 dark:hover:bg-indigo-700"
-            >
+            <tr key={profile.id} className="hover:bg-gray-100 dark:hover:bg-indigo-700">
               <td className="w-1/6 py-2 px-4 border-b border-gray-200 dark:border-indigo-800 text-left text-sm text-gray-900 dark:text-indigo-300">
                 {profile.id}
               </td>

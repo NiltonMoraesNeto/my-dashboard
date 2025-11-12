@@ -39,9 +39,7 @@ export function LanguageSwitcher({ isLabelVisible }: LanguageSwitcherProps) {
                 className="h-5 w-5 rounded-sm object-cover"
                 loading="lazy"
               />
-              {isLabelVisible && (
-                <span className="sr-only md:not-sr-only">{label}</span>
-              )}
+              {isLabelVisible && <span className="sr-only md:not-sr-only">{label}</span>}
             </button>
           );
         })}

@@ -1,15 +1,15 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AuthenticatedLayout } from "./components/authenticated-layout";
 import { LoginPage } from "./components/login-page";
 import { ProtectedRoute } from "./components/protected-route";
-import { AuthenticatedLayout } from "./components/authenticated-layout";
 import { useAuth } from "./contexts/auth-context";
-import { HomePage } from "./pages/Home/home";
-import { Profile } from "./pages/Profile/profile";
-import { NotFoundPage } from "./pages/NotFound/not-found";
 import { Dashboard } from "./pages/Dashboard/dashboard";
+import { HomePage } from "./pages/Home/home";
+import { NotFoundPage } from "./pages/NotFound/not-found";
+import { Profile } from "./pages/Profile/profile";
 import { User } from "./pages/User/user";
-import { UserNew } from "./pages/User/user-new";
 import { UserEdit } from "./pages/User/user-edit";
+import { UserNew } from "./pages/User/user-new";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -20,20 +20,14 @@ export function AppRoutes() {
       <Route
         path="/"
         element={
-          isAuthenticated ? (
-            <Navigate to="/dashboard" replace />
-          ) : (
-            <Navigate to="/login" replace />
-          )
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
         }
       />
 
       {/* Rota pública - Login */}
       <Route
         path="/login"
-        element={
-          isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
-        }
+        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
       />
 
       {/* Rotas protegidas com layout autenticado */}

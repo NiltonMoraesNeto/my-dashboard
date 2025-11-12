@@ -1,11 +1,5 @@
 import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 
 interface ModalDeleteUserProps {
   userToDelete: string | null;
@@ -19,10 +13,7 @@ export function ModalDeleteUser({
   onDelete,
 }: ModalDeleteUserProps) {
   return (
-    <Dialog
-      open={userToDelete !== null}
-      onOpenChange={(open) => !open && closeDeleteDialog()}
-    >
+    <Dialog open={userToDelete !== null} onOpenChange={(open) => !open && closeDeleteDialog()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Deletar Usuário</DialogTitle>

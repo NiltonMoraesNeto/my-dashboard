@@ -1,14 +1,8 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
 import { isAxiosError } from "axios";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import type { AuthContextType } from "../model/auth-context-model";
+import type { TokenPayload } from "../model/profile-model";
 import api from "../services/api";
-import { TokenPayload } from "../model/profile-model";
-import { AuthContextType } from "../model/auth-context-model";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -18,11 +12,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profileUser, setProfileUser] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await api.get("/auth/check");
 
@@ -53,7 +43,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -107,9 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, dataUser, profileUser, login, logout }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, dataUser, profileUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
