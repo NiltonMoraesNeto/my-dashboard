@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../components/form-error-message";
@@ -43,7 +43,7 @@ export function UserNew() {
 
       toast.success("Usuário criado com sucesso!");
       reset();
-      navigate("/user");
+      navigate({ to: "/user" });
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       toast.error("Erro ao criar usuário", {
@@ -63,7 +63,7 @@ export function UserNew() {
             type="button"
             variant="ghost"
             className="text-lg text-indigo-600 dark:text-indigo-300 flex items-center gap-2"
-            onClick={() => navigate("/user")}
+            onClick={() => navigate({ to: "/user" })}
           >
             <ArrowLeft /> Voltar
           </Button>
@@ -133,7 +133,7 @@ export function UserNew() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate("/user")}
+              onClick={() => navigate({ to: "/user" })}
               disabled={isSubmitting}
             >
               Cancelar

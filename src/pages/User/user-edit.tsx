@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../components/form-error-message";
@@ -27,7 +27,9 @@ interface UserResponse {
 
 export function UserEdit() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams({
+    from: "/authenticated/user/$id/edit",
+  });
   const { profiles, isLoading: isLoadingProfiles, error: profilesError, refresh } = useProfiles();
   const {
     register,
@@ -50,7 +52,7 @@ export function UserEdit() {
     const loadUser = async () => {
       if (!id) {
         toast.error("Usuário não encontrado");
-        navigate("/user");
+        navigate({ to: "/user" });
         return;
       }
 
@@ -63,7 +65,7 @@ export function UserEdit() {
       } catch (error) {
         console.error("Erro ao carregar usuário:", error);
         toast.error("Erro ao carregar dados do usuário");
-        navigate("/user");
+        navigate({ to: "/user" });
       } finally {
         setIsLoadingUser(false);
       }
@@ -85,7 +87,7 @@ export function UserEdit() {
 
       toast.success("Usuário atualizado com sucesso!");
       reset(data);
-      navigate("/user");
+      navigate({ to: "/user" });
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error);
       toast.error("Erro ao atualizar usuário", {
@@ -105,7 +107,7 @@ export function UserEdit() {
             type="button"
             variant="ghost"
             className="text-lg text-indigo-600 dark:text-indigo-300 flex items-center gap-2"
-            onClick={() => navigate("/user")}
+            onClick={() => navigate({ to: "/user" })}
           >
             <ArrowLeft /> Voltar
           </Button>
@@ -169,7 +171,7 @@ export function UserEdit() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => navigate("/user")}
+                onClick={() => navigate({ to: "/user" })}
                 disabled={isSubmitting}
               >
                 Cancelar

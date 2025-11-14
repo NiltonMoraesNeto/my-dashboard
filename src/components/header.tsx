@@ -1,6 +1,6 @@
 import { Bell, LogOut } from "lucide-react";
 import type React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../contexts/auth-context";
 import { ModalProfileUser } from "./modal-profile-user";
 import { ThemeToggle } from "./theme-toogle";
@@ -12,7 +12,7 @@ const Header: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate({ to: "/login" });
   };
 
   return (

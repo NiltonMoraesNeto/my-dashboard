@@ -1,6 +1,6 @@
 import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { UserList } from "../model/user-model";
 import { deleteUser } from "../services/usuarios";
@@ -110,7 +110,10 @@ export function TableUsersList({ userList, handleListData }: TableUsersListProps
                     <DropdownMenuItem
                       onSelect={(e) => {
                         e.preventDefault();
-                        navigate(`/user/${user.id}/edit`);
+                        navigate({
+                          to: "/user/$id/edit",
+                          params: { id: user.id },
+                        });
                       }}
                     >
                       Editar

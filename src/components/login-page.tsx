@@ -3,7 +3,7 @@ import { Facebook, Instagram, Linkedin, Wifi } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../contexts/auth-context";
 import { cn } from "../lib/utils";
 import { createLoginSchema, type LoginSchema } from "../schemas/login-schema";
@@ -51,7 +51,7 @@ export function LoginPage() {
       const result = await login(data.email, data.password);
 
       if (result.success) {
-        navigate("/dashboard");
+        navigate({ to: "/dashboard" });
       } else {
         setSubmitError(result.message || t("auth.errors.invalidCredentials"));
       }

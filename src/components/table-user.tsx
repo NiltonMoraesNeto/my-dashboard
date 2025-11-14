@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import type { UserList } from "../model/user-model";
 import { Pagination } from "./pagination";
 import { TableUsersList } from "./table-list-user";
@@ -33,7 +33,7 @@ export function TableUser({
         <CardTitle className="text-xl font-sans tracking-[0.6px]">
           <div className="flex justify-between items-center mb-6 max-sm:block">
             <div className="flex items-center gap-2">
-              <Button variant="default" onClick={() => navigate("/user/new")}>
+              <Button variant="default" onClick={() => navigate({ to: "/user/new" })}>
                 Adicionar Usuário
               </Button>
             </div>
