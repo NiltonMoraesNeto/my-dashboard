@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Facebook, Instagram, Linkedin, Wifi } from "lucide-react";
+import { Wifi } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -104,13 +104,18 @@ export function LoginPage() {
             </h2>
           </div>
           {submitError && (
-            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">{submitError}</div>
+            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+              {submitError}
+            </div>
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-indigo-400 dark:text-white">
+                <Label
+                  htmlFor="email"
+                  className="text-indigo-400 dark:text-white"
+                >
                   {t("auth.form.emailLabel")}
                 </Label>
                 <Input
@@ -129,7 +134,10 @@ export function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-indigo-400 dark:text-white">
+                <Label
+                  htmlFor="password"
+                  className="text-indigo-400 dark:text-white"
+                >
                   {t("auth.form.passwordLabel")}
                 </Label>
                 <Input
@@ -153,9 +161,14 @@ export function LoginPage() {
                     id="remember"
                     className="dark:border-white"
                     checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
+                    onCheckedChange={(checked) =>
+                      setRememberMe(Boolean(checked))
+                    }
                   />
-                  <Label htmlFor="remember" className="text-sm text-gray-500 dark:text-white">
+                  <Label
+                    htmlFor="remember"
+                    className="text-sm text-gray-500 dark:text-white"
+                  >
                     {t("auth.form.rememberMe")}
                   </Label>
                 </div>
@@ -180,36 +193,6 @@ export function LoginPage() {
             >
               {isSubmitting ? t("auth.form.submitting") : t("auth.form.submit")}
             </Button>
-
-            <div className="flex justify-center space-x-4">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
-              >
-                <Facebook className="h-5 w-5" />
-                <span className="sr-only">{t("auth.form.social.facebook")}</span>
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
-              >
-                <Instagram className="h-5 w-5" />
-                <span className="sr-only">{t("auth.form.social.instagram")}</span>
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="rounded-full border-indigo-200 text-indigo-600 hover:bg-indigo-50"
-              >
-                <Linkedin className="h-5 w-5" />
-                <span className="sr-only">{t("auth.form.social.linkedin")}</span>
-              </Button>
-            </div>
           </form>
         </div>
       </div>
