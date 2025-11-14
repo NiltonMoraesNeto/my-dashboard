@@ -52,9 +52,8 @@ export function Dashboard() {
 
   useEffect(() => {
     const loadSalesBuildingData = async () => {
-      const salesBuildingDataResponse = await fetchSalesByBuilding(
-        buildingSelect
-      );
+      const salesBuildingDataResponse =
+        await fetchSalesByBuilding(buildingSelect);
       setSalesDataByBuilding(salesBuildingDataResponse);
     };
     loadSalesBuildingData();

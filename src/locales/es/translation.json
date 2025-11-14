@@ -101,5 +101,38 @@
         "tooltip": "{{value}}"
       }
     }
+  },
+  "home": {
+    "title": "Bienvenido - Inicio",
+    "loading": "Cargando datos del panel...",
+    "error": "Error al cargar los datos del panel"
+  },
+  "months": {
+    "january": "Enero",
+    "february": "Febrero",
+    "march": "Marzo",
+    "april": "Abril",
+    "may": "Mayo",
+    "june": "Junio",
+    "july": "Julio",
+    "august": "Agosto",
+    "september": "Septiembre",
+    "october": "Octubre",
+    "november": "Noviembre",
+    "december": "Diciembre"
+  },
+  "monthsShort": {
+    "jan": "ENE",
+    "feb": "FEB",
+    "mar": "MAR",
+    "apr": "ABR",
+    "may": "MAY",
+    "jun": "JUN",
+    "jul": "JUL",
+    "aug": "AGO",
+    "sep": "SEP",
+    "oct": "OCT",
+    "nov": "NOV",
+    "dec": "DIC"
   }
 }
