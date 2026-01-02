@@ -1,0 +1,70 @@
+import { useEffect, useState } from "react";
+import { TableUnidade } from "../../../components/table-unidade";
+import type { UnidadeList } from "../../../model/unidade-model";
+import { fetchUnidadesList } from "../../../services/unidades";
+
+export function Unidades() {
+  const [unidadeList, setUnidadeList] = useState<UnidadeList[]>([]);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [search, setSearch] = useState("");
+  const [totalPages, setTotalPages] = useState(1);
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  useEffect(() => {
+    const loadUnidadeData = async () => {
+      const response = await fetchUnidadesList(page, limit, debouncedSearch);
+      if (response) {
+        if (response.data && response.total !== undefined) {
+          setUnidadeList(response.data);
+          setTotalPages(response.totalPages || Math.ceil(response.total / limit));
+        } else if (Array.isArray(response)) {
+          setUnidadeList(response);
+          setTotalPages(Math.ceil(response.length / limit));
+        }
+      }
+    };
+    loadUnidadeData();
+  }, [page, limit, debouncedSearch]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
+
+  const handleListData = () => {
+    const loadUnidadeData = async () => {
+      const response = await fetchUnidadesList(page, limit, debouncedSearch);
+      if (response) {
+        if (response.data && response.total !== undefined) {
+          setUnidadeList(response.data);
+          setTotalPages(response.totalPages || Math.ceil(response.total / limit));
+        } else if (Array.isArray(response)) {
+          setUnidadeList(response);
+          setTotalPages(Math.ceil(response.length / limit));
+        }
+      }
+    };
+    loadUnidadeData();
+  };
+
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">Unidades</h1>
+      <TableUnidade
+        search={search}
+        setSearch={setSearch}
+        unidadeList={unidadeList}
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
+        handleListData={handleListData}
+      />
+    </div>
+  );
+}

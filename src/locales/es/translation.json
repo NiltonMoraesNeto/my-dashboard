@@ -23,6 +23,19 @@
       "other1": "Otro 1",
       "other2": "Otro 2",
       "other3": "Otro 3"
+    },
+    "condominio": {
+      "menu": {
+        "home": "Inicio",
+        "unidades": "Unidades",
+        "moradores": "Residentes",
+        "financeiro": "Financiero",
+        "contasPagar": "Cuentas por Pagar",
+        "balancete": "Balance",
+        "boletos": "Boletos",
+        "reunioes": "Reuniones",
+        "avisos": "Avisos"
+      }
     }
   },
   "auth": {
@@ -106,6 +119,54 @@
     "title": "Bienvenido - Inicio",
     "loading": "Cargando datos del panel...",
     "error": "Error al cargar los datos del panel"
+  },
+  "condominio": {
+    "home": {
+      "title": "Gestión de Condominio",
+      "cards": {
+        "unidades": {
+          "title": "Unidades",
+          "description": "Gestiona los apartamentos y unidades del condominio"
+        },
+        "financeiro": {
+          "title": "Financiero",
+          "description": "Sigue cuentas, balance y boletos"
+        },
+        "reunioes": {
+          "title": "Reuniones",
+          "description": "Gestiona las reuniones del condominio"
+        }
+      }
+    },
+    "unidades": {
+      "title": "Unidades",
+      "addButton": "Nueva Unidad",
+      "emptyMessage": "No hay unidades registradas. Haz clic en 'Nueva Unidad' para comenzar."
+    },
+    "contasPagar": {
+      "title": "Cuentas por Pagar",
+      "addButton": "Nueva Cuenta",
+      "emptyMessage": "No hay cuentas por pagar registradas. Haz clic en 'Nueva Cuenta' para comenzar."
+    },
+    "balancete": {
+      "title": "Balance",
+      "emptyMessage": "No hay balance disponible en este momento."
+    },
+    "boletos": {
+      "title": "Boletos",
+      "generateButton": "Generar Boletos",
+      "emptyMessage": "No se han generado boletos. Haz clic en 'Generar Boletos' para crear boletos para las unidades."
+    },
+    "reunioes": {
+      "title": "Reuniones",
+      "addButton": "Nueva Reunión",
+      "emptyMessage": "No hay reuniones programadas. Haz clic en 'Nueva Reunión' para programar."
+    },
+    "avisos": {
+      "title": "Avisos",
+      "addButton": "Nuevo Aviso",
+      "emptyMessage": "No hay avisos registrados. Haz clic en 'Nuevo Aviso' para comenzar."
+    }
   },
   "months": {
     "january": "Enero",

@@ -19,10 +19,24 @@
       "registers": "Cadastros",
       "profile": "Perfil",
       "user": "Usuário",
+      "boletos": "Boletos",
       "other": "Outro Menu",
       "other1": "Outro 1",
       "other2": "Outro 2",
       "other3": "Outro 3"
+    },
+    "condominio": {
+      "menu": {
+        "home": "Início",
+        "unidades": "Unidades",
+        "moradores": "Moradores",
+        "financeiro": "Financeiro",
+        "contasPagar": "Contas a Pagar",
+        "balancete": "Balancete",
+        "boletos": "Boletos",
+        "reunioes": "Reuniões",
+        "avisos": "Avisos"
+      }
     }
   },
   "auth": {
@@ -106,6 +120,54 @@
     "title": "Bem-vindo - Home",
     "loading": "Carregando dados do dashboard...",
     "error": "Erro ao carregar dados do dashboard"
+  },
+  "condominio": {
+    "home": {
+      "title": "Gestão de Condomínio",
+      "cards": {
+        "unidades": {
+          "title": "Unidades",
+          "description": "Gerencie os apartamentos e unidades do condomínio"
+        },
+        "financeiro": {
+          "title": "Financeiro",
+          "description": "Acompanhe contas, balancete e boletos"
+        },
+        "reunioes": {
+          "title": "Reuniões",
+          "description": "Gerencie as reuniões do condomínio"
+        }
+      }
+    },
+    "unidades": {
+      "title": "Unidades",
+      "addButton": "Nova Unidade",
+      "emptyMessage": "Nenhuma unidade cadastrada. Clique em 'Nova Unidade' para começar."
+    },
+    "contasPagar": {
+      "title": "Contas a Pagar",
+      "addButton": "Nova Conta",
+      "emptyMessage": "Nenhuma conta a pagar cadastrada. Clique em 'Nova Conta' para começar."
+    },
+    "balancete": {
+      "title": "Balancete",
+      "emptyMessage": "Nenhum balancete disponível no momento."
+    },
+    "boletos": {
+      "title": "Boletos",
+      "generateButton": "Gerar Boletos",
+      "emptyMessage": "Nenhum boleto gerado. Clique em 'Gerar Boletos' para criar boletos para as unidades."
+    },
+    "reunioes": {
+      "title": "Reuniões",
+      "addButton": "Nova Reunião",
+      "emptyMessage": "Nenhuma reunião agendada. Clique em 'Nova Reunião' para agendar."
+    },
+    "avisos": {
+      "title": "Avisos",
+      "addButton": "Novo Aviso",
+      "emptyMessage": "Nenhum aviso cadastrado. Clique em 'Novo Aviso' para começar."
+    }
   },
   "months": {
     "january": "Janeiro",

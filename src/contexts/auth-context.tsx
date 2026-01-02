@@ -63,11 +63,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           avatar: response.data.user.avatar,
         };
 
+        const perfil = response.data.user.perfil?.descricao || "";
         setDataUser(userData);
         setIsAuthenticated(true);
-        setProfileUser(response.data.user.perfil?.descricao || "");
+        setProfileUser(perfil);
 
-        return { success: true };
+        return { success: true, profileUser: perfil };
       }
 
       return { success: false, message: "Erro ao fazer login" };

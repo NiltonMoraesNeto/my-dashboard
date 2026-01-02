@@ -27,7 +27,7 @@ export function LoginPage() {
   const [tokenIsValid, setTokenIsValid] = useState(false);
 
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, profileUser } = useAuth();
   const { t } = useTranslation();
 
   const loginSchema = useMemo(() => createLoginSchema(t), [t]);
@@ -51,7 +51,10 @@ export function LoginPage() {
       const result = await login(data.email, data.password);
 
       if (result.success) {
-        navigate({ to: "/dashboard" });
+        // Redireciona baseado no perfil
+        const perfil = result.profileUser || profileUser;
+        const isCondominioProfile = perfil?.toLowerCase() === "condomínio" || perfil?.toLowerCase() === "condominio";
+        navigate({ to: isCondominioProfile ? "/condominio/home" : "/dashboard" });
       } else {
         setSubmitError(result.message || t("auth.errors.invalidCredentials"));
       }

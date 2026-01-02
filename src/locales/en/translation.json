@@ -23,6 +23,19 @@
       "other1": "Other 1",
       "other2": "Other 2",
       "other3": "Other 3"
+    },
+    "condominio": {
+      "menu": {
+        "home": "Home",
+        "unidades": "Units",
+        "moradores": "Residents",
+        "financeiro": "Financial",
+        "contasPagar": "Accounts Payable",
+        "balancete": "Balance Sheet",
+        "boletos": "Invoices",
+        "reunioes": "Meetings",
+        "avisos": "Notices"
+      }
     }
   },
   "auth": {
@@ -106,6 +119,54 @@
     "title": "Welcome - Home",
     "loading": "Loading dashboard data...",
     "error": "Error loading dashboard data"
+  },
+  "condominio": {
+    "home": {
+      "title": "Condominium Management",
+      "cards": {
+        "unidades": {
+          "title": "Units",
+          "description": "Manage apartments and condominium units"
+        },
+        "financeiro": {
+          "title": "Financial",
+          "description": "Track accounts, balance sheet and invoices"
+        },
+        "reunioes": {
+          "title": "Meetings",
+          "description": "Manage condominium meetings"
+        }
+      }
+    },
+    "unidades": {
+      "title": "Units",
+      "addButton": "New Unit",
+      "emptyMessage": "No units registered. Click 'New Unit' to get started."
+    },
+    "contasPagar": {
+      "title": "Accounts Payable",
+      "addButton": "New Account",
+      "emptyMessage": "No accounts payable registered. Click 'New Account' to get started."
+    },
+    "balancete": {
+      "title": "Balance Sheet",
+      "emptyMessage": "No balance sheet available at the moment."
+    },
+    "boletos": {
+      "title": "Invoices",
+      "generateButton": "Generate Invoices",
+      "emptyMessage": "No invoices generated. Click 'Generate Invoices' to create invoices for units."
+    },
+    "reunioes": {
+      "title": "Meetings",
+      "addButton": "New Meeting",
+      "emptyMessage": "No meetings scheduled. Click 'New Meeting' to schedule."
+    },
+    "avisos": {
+      "title": "Notices",
+      "addButton": "New Notice",
+      "emptyMessage": "No notices registered. Click 'New Notice' to get started."
+    }
   },
   "months": {
     "january": "January",
