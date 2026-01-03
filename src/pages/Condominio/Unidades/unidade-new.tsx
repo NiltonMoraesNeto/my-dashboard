@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -9,6 +9,13 @@ import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
 import { schemaUnidadeNew } from "../../../schemas/unidade-schema";
 import { createUnidade } from "../../../services/unidades";
 import { fetchMoradoresList } from "../../../services/moradores";
@@ -22,6 +29,7 @@ export function UnidadeNew() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<z.infer<typeof schemaUnidadeNew>>({
@@ -44,7 +52,7 @@ export function UnidadeNew() {
       setIsLoadingMoradores(true);
       try {
         const response = await fetchMoradoresList(1, 100, "");
-        if (response && response.data) {
+        if (response?.data) {
           setMoradores(response.data);
         }
       } catch (error) {
@@ -73,9 +81,11 @@ export function UnidadeNew() {
       toast.success("Unidade criada com sucesso!");
       reset();
       navigate({ to: "/condominio/unidades" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao criar unidade:", error);
-      const message = error?.response?.data?.message || "Erro ao criar unidade";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao criar unidade";
       toast.error("Erro ao criar unidade", {
         description: message,
       });
@@ -99,7 +109,10 @@ export function UnidadeNew() {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <div className="space-y-2">
             <Label htmlFor="numero">Número *</Label>
             <Input id="numero" placeholder="Ex: 101" {...register("numero")} />
@@ -108,87 +121,144 @@ export function UnidadeNew() {
 
           <div className="space-y-2">
             <Label htmlFor="bloco">Bloco (opcional)</Label>
-            <Input id="bloco" placeholder="Ex: A, B, 1" {...register("bloco")} />
+            <Input
+              id="bloco"
+              placeholder="Ex: A, B, 1"
+              {...register("bloco")}
+            />
             <FormErrorMessage message={errors.bloco?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="apartamento">Apartamento (opcional)</Label>
-            <Input id="apartamento" placeholder="Ex: 101" {...register("apartamento")} />
+            <Input
+              id="apartamento"
+              placeholder="Ex: 101"
+              {...register("apartamento")}
+            />
             <FormErrorMessage message={errors.apartamento?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="tipo">Tipo (opcional)</Label>
-            <select
-              id="tipo"
-              className="w-full px-3 py-2 border border-emerald-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-emerald-900 dark:text-white"
-              {...register("tipo")}
-            >
-              <option value="">Selecione o tipo</option>
-              <option value="Apartamento">Apartamento</option>
-              <option value="Cobertura">Cobertura</option>
-              <option value="Loja">Loja</option>
-              <option value="Garagem">Garagem</option>
-            </select>
+            <Controller
+              name="tipo"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value || ""}
+                  onValueChange={(value) => field.onChange(value || undefined)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Apartamento">Apartamento</SelectItem>
+                    <SelectItem value="Cobertura">Cobertura</SelectItem>
+                    <SelectItem value="Loja">Loja</SelectItem>
+                    <SelectItem value="Garagem">Garagem</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             <FormErrorMessage message={errors.tipo?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
-            <select
-              id="status"
-              className="w-full px-3 py-2 border border-emerald-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-emerald-900 dark:text-white"
-              {...register("status")}
-            >
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
-              <option value="Alugado">Alugado</option>
-            </select>
+            <Controller
+              name="status"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ativo">Ativo</SelectItem>
+                    <SelectItem value="Inativo">Inativo</SelectItem>
+                    <SelectItem value="Alugado">Alugado</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             <FormErrorMessage message={errors.status?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="moradorId">Morador (opcional)</Label>
-            <select
-              id="moradorId"
-              className="w-full px-3 py-2 border border-emerald-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-emerald-900 dark:text-white"
-              {...register("moradorId")}
-              disabled={isLoadingMoradores}
-            >
-              <option value="">Selecione um morador</option>
-              {moradores.map((morador) => (
-                <option key={morador.id} value={morador.id}>
-                  {morador.nome} - {morador.email}
-                </option>
-              ))}
-            </select>
-            {isLoadingMoradores && (
-              <span className="text-sm text-emerald-500">Carregando moradores...</span>
+            {isLoadingMoradores ? (
+              <span className="text-sm text-emerald-500">
+                Carregando moradores...
+              </span>
+            ) : (
+              <>
+                <Controller
+                  name="moradorId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value || ""}
+                      onValueChange={(value) =>
+                        field.onChange(value || undefined)
+                      }
+                      disabled={isLoadingMoradores}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um morador" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {moradores.map((morador) => (
+                          <SelectItem key={morador.id} value={morador.id}>
+                            {morador.nome} - {morador.email}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <FormErrorMessage message={errors.moradorId?.message} />
+              </>
             )}
-            <FormErrorMessage message={errors.moradorId?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="proprietario">Proprietário (opcional)</Label>
-            <Input id="proprietario" placeholder="Nome do proprietário" {...register("proprietario")} />
+            <Input
+              id="proprietario"
+              placeholder="Nome do proprietário"
+              {...register("proprietario")}
+            />
             <FormErrorMessage message={errors.proprietario?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="telefone">Telefone (opcional)</Label>
-            <Input id="telefone" placeholder="(00) 00000-0000" {...register("telefone")} />
+            <Input
+              id="telefone"
+              placeholder="(00) 00000-0000"
+              {...register("telefone")}
+            />
             <FormErrorMessage message={errors.telefone?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="email">Email (opcional)</Label>
-            <Input id="email" type="email" placeholder="email@exemplo.com" {...register("email")} />
+            <Input
+              id="email"
+              type="email"
+              placeholder="email@exemplo.com"
+              {...register("email")}
+            />
             <FormErrorMessage message={errors.email?.message} />
           </div>
 
           <div className="md:col-span-2 flex gap-4">
-            <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-emerald-500 text-white"
+            >
               {isSubmitting ? "Salvando..." : "Salvar"}
             </Button>
             <Button
@@ -204,4 +274,3 @@ export function UnidadeNew() {
     </div>
   );
 }
-

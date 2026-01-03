@@ -19,7 +19,10 @@ interface TableUnidadesListProps {
   handleListData: () => void;
 }
 
-export function TableUnidadesList({ unidadeList, handleListData }: TableUnidadesListProps) {
+export function TableUnidadesList({
+  unidadeList,
+  handleListData,
+}: TableUnidadesListProps) {
   const [unidadeToDelete, setUnidadeToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -45,9 +48,11 @@ export function TableUnidadesList({ unidadeList, handleListData }: TableUnidades
           description: "Erro ao deletar a unidade",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao deletar unidade:", error);
-      const message = error?.response?.data?.message || "Erro ao deletar a unidade";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao deletar a unidade";
       toast.error("Error", {
         description: message,
       });
@@ -86,7 +91,10 @@ export function TableUnidadesList({ unidadeList, handleListData }: TableUnidades
         </thead>
         <tbody>
           {unidadeList?.map((unidade) => (
-            <tr key={unidade.id} className="hover:bg-gray-100 dark:hover:bg-emerald-700">
+            <tr
+              key={unidade.id}
+              className="hover:bg-gray-100 dark:hover:bg-emerald-700"
+            >
               <td className="w-1/12 py-2 px-4 border-b border-gray-200 dark:border-emerald-800 text-left text-sm text-gray-900 dark:text-emerald-300">
                 {unidade.numero}
               </td>
@@ -150,4 +158,3 @@ export function TableUnidadesList({ unidadeList, handleListData }: TableUnidades
     </div>
   );
 }
-

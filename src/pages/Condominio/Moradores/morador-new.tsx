@@ -40,9 +40,11 @@ export function MoradorNew() {
       toast.success("Morador criado com sucesso!");
       reset();
       navigate({ to: "/condominio/moradores" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao criar morador:", error);
-      const message = error?.response?.data?.message || "Erro ao criar morador";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao criar morador";
       toast.error("Erro ao criar morador", {
         description: message,
       });
@@ -66,16 +68,28 @@ export function MoradorNew() {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <div className="space-y-2">
             <Label htmlFor="nome">Nome completo *</Label>
-            <Input id="nome" placeholder="Digite o nome" {...register("nome")} />
+            <Input
+              id="nome"
+              placeholder="Digite o nome"
+              {...register("nome")}
+            />
             <FormErrorMessage message={errors.nome?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="email">Email *</Label>
-            <Input id="email" type="email" placeholder="Digite o email" {...register("email")} />
+            <Input
+              id="email"
+              type="email"
+              placeholder="Digite o email"
+              {...register("email")}
+            />
             <FormErrorMessage message={errors.email?.message} />
           </div>
 
@@ -88,7 +102,9 @@ export function MoradorNew() {
               {...register("password")}
             />
             <FormErrorMessage message={errors.password?.message} />
-            <p className="text-sm text-gray-500">Se não informada, a senha padrão será 123456</p>
+            <p className="text-sm text-gray-500">
+              Se não informada, a senha padrão será 123456
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -98,7 +114,11 @@ export function MoradorNew() {
           </div>
 
           <div className="md:col-span-2 flex gap-4">
-            <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-emerald-500 text-white"
+            >
               {isSubmitting ? "Salvando..." : "Salvar"}
             </Button>
             <Button
@@ -114,4 +134,3 @@ export function MoradorNew() {
     </div>
   );
 }
-

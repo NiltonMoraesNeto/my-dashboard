@@ -1,14 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { InputDate } from "../../../components/ui/input-date";
 import { Label } from "../../../components/ui/label";
+import { formatDateToInput } from "../../../lib/utils";
 import { Checkbox } from "../../../components/ui/checkbox";
 import { schemaAvisoEdit } from "../../../schemas/aviso-schema";
 import { fetchAvisoById, updateAviso } from "../../../services/avisos";
@@ -31,6 +33,7 @@ export function AvisoEdit() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     reset,
     watch,
@@ -87,21 +90,31 @@ export function AvisoEdit() {
     if (!id) return;
 
     try {
-      const payload: any = {};
+      const payload: {
+        titulo?: string;
+        descricao?: string;
+        tipo?: string;
+        dataInicio?: string;
+        dataFim?: string;
+        destaque?: boolean;
+      } = {};
       if (data.titulo !== undefined) payload.titulo = data.titulo;
       if (data.descricao !== undefined) payload.descricao = data.descricao;
       if (data.tipo !== undefined) payload.tipo = data.tipo || undefined;
       if (data.dataInicio !== undefined) payload.dataInicio = data.dataInicio;
-      if (data.dataFim !== undefined) payload.dataFim = data.dataFim || undefined;
+      if (data.dataFim !== undefined)
+        payload.dataFim = data.dataFim || undefined;
       if (data.destaque !== undefined) payload.destaque = data.destaque;
 
       await updateAviso(id, payload);
 
       toast.success("Aviso atualizado com sucesso!");
       navigate({ to: "/condominio/avisos" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao atualizar aviso:", error);
-      const message = error?.response?.data?.message || "Erro ao atualizar aviso";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao atualizar aviso";
       toast.error("Erro ao atualizar aviso", {
         description: message,
       });
@@ -125,10 +138,17 @@ export function AvisoEdit() {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <div className="md:col-span-2 space-y-2">
             <Label htmlFor="titulo">Título *</Label>
-            <Input id="titulo" placeholder="Digite o título do aviso" {...register("titulo")} />
+            <Input
+              id="titulo"
+              placeholder="Digite o título do aviso"
+              {...register("titulo")}
+            />
             <FormErrorMessage message={errors.titulo?.message} />
           </div>
 
@@ -146,19 +166,48 @@ export function AvisoEdit() {
 
           <div className="space-y-2">
             <Label htmlFor="tipo">Tipo (opcional)</Label>
-            <Input id="tipo" placeholder="Ex: Informativo, Urgente" {...register("tipo")} />
+            <Input
+              id="tipo"
+              placeholder="Ex: Informativo, Urgente"
+              {...register("tipo")}
+            />
             <FormErrorMessage message={errors.tipo?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="dataInicio">Data de Início *</Label>
-            <Input id="dataInicio" type="date" {...register("dataInicio")} />
+            <Controller
+              name="dataInicio"
+              control={control}
+              render={({ field }) => (
+                <InputDate
+                  id="dataInicio"
+                  value={field.value || undefined}
+                  onChange={(date) => {
+                    field.onChange(date ? formatDateToInput(date) : "");
+                  }}
+                />
+              )}
+            />
             <FormErrorMessage message={errors.dataInicio?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="dataFim">Data de Fim (opcional)</Label>
-            <Input id="dataFim" type="date" {...register("dataFim")} />
+            <Controller
+              name="dataFim"
+              control={control}
+              render={({ field }) => (
+                <InputDate
+                  id="dataFim"
+                  value={field.value || undefined}
+                  onChange={(date) => {
+                    field.onChange(date ? formatDateToInput(date) : "");
+                  }}
+                  placeholder="Selecione a data de fim"
+                />
+              )}
+            />
             <FormErrorMessage message={errors.dataFim?.message} />
           </div>
 
@@ -175,7 +224,11 @@ export function AvisoEdit() {
           </div>
 
           <div className="md:col-span-2 flex gap-4">
-            <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-emerald-500 text-white"
+            >
               {isSubmitting ? "Salvando..." : "Salvar"}
             </Button>
             <Button
@@ -191,4 +244,3 @@ export function AvisoEdit() {
     </div>
   );
 }
-

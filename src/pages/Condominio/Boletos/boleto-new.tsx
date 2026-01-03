@@ -8,7 +8,17 @@ import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { InputDate } from "../../../components/ui/input-date";
+import { InputMoney } from "../../../components/ui/input-money";
 import { Label } from "../../../components/ui/label";
+import { formatDateToInput } from "../../../lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
 import { schemaBoletoNew } from "../../../schemas/boleto-schema";
 import { createBoleto } from "../../../services/boletos";
 import { fetchUnidadesList } from "../../../services/unidades";
@@ -50,7 +60,7 @@ export function BoletoNew() {
     const loadUnidades = async () => {
       try {
         const response = await fetchUnidadesList(1, 1000, "");
-        if (response && response.data) {
+        if (response?.data) {
           setUnidades(response.data);
         }
       } catch (error) {
@@ -81,9 +91,9 @@ export function BoletoNew() {
       toast.success("Boleto criado com sucesso!");
       reset();
       navigate({ to: "/condominio/boletos" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao criar boleto:", error);
-      const message = error?.response?.data?.message || "Erro ao criar boleto";
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Erro ao criar boleto";
       toast.error("Erro ao criar boleto", {
         description: message,
       });
@@ -117,20 +127,20 @@ export function BoletoNew() {
                 name="unidadeId"
                 control={control}
                 render={({ field }) => (
-                  <select
-                    {...field}
-                    id="unidadeId"
-                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <option value="">Selecione uma unidade</option>
-                    {unidades.map((unidade) => (
-                      <option key={unidade.id} value={unidade.id}>
-                        {unidade.numero}
-                        {unidade.bloco && ` - Bloco ${unidade.bloco}`}
-                        {unidade.apartamento && ` - Apt ${unidade.apartamento}`}
-                      </option>
-                    ))}
-                  </select>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma unidade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {unidades.map((unidade) => (
+                        <SelectItem key={unidade.id} value={unidade.id}>
+                          {unidade.numero}
+                          {unidade.bloco && ` - Bloco ${unidade.bloco}`}
+                          {unidade.apartamento && ` - Apt ${unidade.apartamento}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
               />
             )}
@@ -162,40 +172,57 @@ export function BoletoNew() {
 
           <div className="space-y-2">
             <Label htmlFor="valor">Valor *</Label>
-            <Input
-              id="valor"
-              type="number"
-              step="0.01"
-              min="0"
-              {...register("valor", { valueAsNumber: true })}
+            <Controller
+              name="valor"
+              control={control}
+              render={({ field }) => (
+                <InputMoney
+                  id="valor"
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
+                />
+              )}
             />
             <FormErrorMessage message={errors.valor?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="vencimento">Data de Vencimento *</Label>
-            <Input id="vencimento" type="date" {...register("vencimento")} />
+                    <Controller
+                      name="vencimento"
+                      control={control}
+                      render={({ field }) => (
+                        <InputDate
+                          id="vencimento"
+                          value={field.value || undefined}
+                          onChange={(date) => {
+                            field.onChange(date ? formatDateToInput(date) : "");
+                          }}
+                        />
+                      )}
+                    />
             <FormErrorMessage message={errors.vencimento?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
-            <Controller
-              name="status"
-              control={control}
-              render={({ field }) => (
-                <select
-                  {...field}
-                  id="status"
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <option value="Pendente">Pendente</option>
-                  <option value="Pago">Pago</option>
-                  <option value="Vencido">Vencido</option>
-                  <option value="Cancelado">Cancelado</option>
-                </select>
-              )}
-            />
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Pendente">Pendente</SelectItem>
+                      <SelectItem value="Pago">Pago</SelectItem>
+                      <SelectItem value="Vencido">Vencido</SelectItem>
+                      <SelectItem value="Cancelado">Cancelado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             <FormErrorMessage message={errors.status?.message} />
           </div>
 
@@ -213,7 +240,20 @@ export function BoletoNew() {
 
           <div className="space-y-2">
             <Label htmlFor="dataPagamento">Data de Pagamento (opcional)</Label>
-            <Input id="dataPagamento" type="date" {...register("dataPagamento")} />
+            <Controller
+              name="dataPagamento"
+              control={control}
+              render={({ field }) => (
+                <InputDate
+                  id="dataPagamento"
+                  value={field.value || undefined}
+                  onChange={(date) => {
+                    field.onChange(date ? formatDateToInput(date) : "");
+                  }}
+                  placeholder="Selecione a data de pagamento"
+                />
+              )}
+            />
             <FormErrorMessage message={errors.dataPagamento?.message} />
           </div>
 

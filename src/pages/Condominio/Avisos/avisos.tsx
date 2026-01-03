@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TableAviso } from "../../../components/table-aviso";
 import type { AvisoList } from "../../../model/aviso-model";
 import { fetchAvisosList } from "../../../services/avisos";
@@ -11,7 +11,7 @@ export function Avisos() {
   const [totalPages, setTotalPages] = useState(1);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
-  const loadAvisoData = async () => {
+  const loadAvisoData = useCallback(async () => {
     const response = await fetchAvisosList(page, limit);
     if (response) {
       if (response.data && response.total !== undefined) {
@@ -22,11 +22,11 @@ export function Avisos() {
         setTotalPages(Math.ceil(response.length / limit));
       }
     }
-  };
+  }, [page, limit]);
 
   useEffect(() => {
     loadAvisoData();
-  }, [page, limit]);
+  }, [loadAvisoData]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -72,4 +72,3 @@ export function Avisos() {
     </div>
   );
 }
-

@@ -1,13 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { InputDate } from "../../../components/ui/input-date";
 import { Label } from "../../../components/ui/label";
+import { formatDateToInput } from "../../../lib/utils";
 import { schemaReuniaoNew } from "../../../schemas/reuniao-schema";
 import { createReuniao } from "../../../services/reunioes";
 
@@ -16,6 +18,7 @@ export function ReuniaoNew() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<z.infer<typeof schemaReuniaoNew>>({
@@ -46,9 +49,11 @@ export function ReuniaoNew() {
       toast.success("Reunião criada com sucesso!");
       reset();
       navigate({ to: "/condominio/reunioes" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao criar reunião:", error);
-      const message = error?.response?.data?.message || "Erro ao criar reunião";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao criar reunião";
       toast.error("Erro ao criar reunião", {
         description: message,
       });
@@ -72,16 +77,35 @@ export function ReuniaoNew() {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <div className="space-y-2">
             <Label htmlFor="titulo">Título *</Label>
-            <Input id="titulo" placeholder="Digite o título da reunião" {...register("titulo")} />
+            <Input
+              id="titulo"
+              placeholder="Digite o título da reunião"
+              {...register("titulo")}
+            />
             <FormErrorMessage message={errors.titulo?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="data">Data *</Label>
-            <Input id="data" type="date" {...register("data")} />
+            <Controller
+              name="data"
+              control={control}
+              render={({ field }) => (
+                <InputDate
+                  id="data"
+                  value={field.value || undefined}
+                  onChange={(date) => {
+                    field.onChange(date ? formatDateToInput(date) : "");
+                  }}
+                />
+              )}
+            />
             <FormErrorMessage message={errors.data?.message} />
           </div>
 
@@ -93,19 +117,31 @@ export function ReuniaoNew() {
 
           <div className="space-y-2">
             <Label htmlFor="local">Local (opcional)</Label>
-            <Input id="local" placeholder="Digite o local da reunião" {...register("local")} />
+            <Input
+              id="local"
+              placeholder="Digite o local da reunião"
+              {...register("local")}
+            />
             <FormErrorMessage message={errors.local?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="tipo">Tipo (opcional)</Label>
-            <Input id="tipo" placeholder="Ex: Assembleia, Ordinária" {...register("tipo")} />
+            <Input
+              id="tipo"
+              placeholder="Ex: Assembleia, Ordinária"
+              {...register("tipo")}
+            />
             <FormErrorMessage message={errors.tipo?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="status">Status (opcional)</Label>
-            <Input id="status" placeholder="Ex: Agendada, Realizada" {...register("status")} />
+            <Input
+              id="status"
+              placeholder="Ex: Agendada, Realizada"
+              {...register("status")}
+            />
             <FormErrorMessage message={errors.status?.message} />
           </div>
 
@@ -122,7 +158,11 @@ export function ReuniaoNew() {
           </div>
 
           <div className="md:col-span-2 flex gap-4">
-            <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-emerald-500 text-white"
+            >
               {isSubmitting ? "Salvando..." : "Salvar"}
             </Button>
             <Button
@@ -138,4 +178,3 @@ export function ReuniaoNew() {
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import type { AvisoList } from "../model/aviso-model";
 import { fetchAvisosList, marcarAvisoComoLido } from "../services/avisos";
@@ -9,15 +9,19 @@ interface ModalAvisosProps {
   onMarkAsRead?: () => void;
 }
 
-export function ModalAvisos({ open, onOpenChange, onMarkAsRead }: ModalAvisosProps) {
+export function ModalAvisos({
+  open,
+  onOpenChange,
+  onMarkAsRead,
+}: ModalAvisosProps) {
   const [avisos, setAvisos] = useState<AvisoList[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const loadAvisos = async () => {
+  const loadAvisos = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await fetchAvisosList(1, 100);
-      if (response && response.data) {
+      if (response?.data) {
         setAvisos(response.data);
       }
     } catch (error) {
@@ -25,13 +29,13 @@ export function ModalAvisos({ open, onOpenChange, onMarkAsRead }: ModalAvisosPro
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (open) {
       loadAvisos();
     }
-  }, [open]);
+  }, [open, loadAvisos]);
 
   const handleMarkAsRead = async (id: string) => {
     try {
@@ -67,9 +71,10 @@ export function ModalAvisos({ open, onOpenChange, onMarkAsRead }: ModalAvisosPro
           ) : (
             <div className="space-y-4">
               {avisos.map((aviso) => (
-                <div
+                <button
                   key={aviso.id}
-                  className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                  type="button"
+                  className={`w-full text-left border rounded-lg p-4 cursor-pointer transition-colors ${
                     !aviso.lido
                       ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800"
                       : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
@@ -83,7 +88,9 @@ export function ModalAvisos({ open, onOpenChange, onMarkAsRead }: ModalAvisosPro
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-lg">{aviso.titulo}</h3>
+                        <h3 className="font-semibold text-lg">
+                          {aviso.titulo}
+                        </h3>
                         {aviso.destaque && (
                           <span className="bg-yellow-500 text-white text-xs px-2 py-0.5 rounded">
                             Destaque
@@ -95,22 +102,28 @@ export function ModalAvisos({ open, onOpenChange, onMarkAsRead }: ModalAvisosPro
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300 mb-2">{aviso.descricao}</p>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        {aviso.descricao}
+                      </p>
                       <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                         {aviso.tipo && <span>Tipo: {aviso.tipo}</span>}
                         <span>Data: {formatDate(aviso.dataInicio)}</span>
-                        {aviso.dataFim && <span>Até: {formatDate(aviso.dataFim)}</span>}
+                        {aviso.dataFim && (
+                          <span>Até: {formatDate(aviso.dataFim)}</span>
+                        )}
                       </div>
                     </div>
                     <div className="flex-shrink-0">
                       {aviso.lido ? (
                         <span className="text-green-500 text-sm">✓ Lido</span>
                       ) : (
-                        <span className="text-blue-500 text-sm font-bold">● Não lido</span>
+                        <span className="text-blue-500 text-sm font-bold">
+                          ● Não lido
+                        </span>
                       )}
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           )}
@@ -119,4 +132,3 @@ export function ModalAvisos({ open, onOpenChange, onMarkAsRead }: ModalAvisosPro
     </Dialog>
   );
 }
-

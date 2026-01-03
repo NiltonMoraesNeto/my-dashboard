@@ -13,7 +13,7 @@ interface TableMoradorProps {
   moradorList: MoradorList[];
   page: number;
   totalPages: number;
-  setPage: (page: number) => void;
+  setPage: (value: React.SetStateAction<number>) => void;
   handleListData: () => void;
 }
 

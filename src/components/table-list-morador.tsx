@@ -19,7 +19,10 @@ interface TableMoradoresListProps {
   handleListData: () => void;
 }
 
-export function TableMoradoresList({ moradorList, handleListData }: TableMoradoresListProps) {
+export function TableMoradoresList({
+  moradorList,
+  handleListData,
+}: TableMoradoresListProps) {
   const [moradorToDelete, setMoradorToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -45,9 +48,11 @@ export function TableMoradoresList({ moradorList, handleListData }: TableMorador
           description: "Erro ao deletar o morador",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao deletar morador:", error);
-      const message = error?.response?.data?.message || "Erro ao deletar o morador";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao deletar o morador";
       toast.error("Error", {
         description: message,
       });
@@ -77,7 +82,10 @@ export function TableMoradoresList({ moradorList, handleListData }: TableMorador
         </thead>
         <tbody>
           {moradorList?.map((morador) => (
-            <tr key={morador.id} className="hover:bg-gray-100 dark:hover:bg-emerald-700">
+            <tr
+              key={morador.id}
+              className="hover:bg-gray-100 dark:hover:bg-emerald-700"
+            >
               <td className="w-2/6 py-2 px-4 border-b border-gray-200 dark:border-emerald-800 text-left text-sm text-gray-900 dark:text-emerald-300">
                 {morador.nome}
               </td>
@@ -136,4 +144,3 @@ export function TableMoradoresList({ moradorList, handleListData }: TableMorador
     </div>
   );
 }
-

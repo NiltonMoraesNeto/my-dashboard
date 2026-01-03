@@ -23,6 +23,8 @@ import { UnidadeNew } from "./pages/Condominio/Unidades/unidade-new";
 import { UnidadeEdit } from "./pages/Condominio/Unidades/unidade-edit";
 import { ContasPagar } from "./pages/Condominio/ContasPagar/contas-pagar";
 import { Balancete } from "./pages/Condominio/Balancete/balancete";
+import { MovimentacaoNew } from "./pages/Condominio/Balancete/movimentacao-new";
+import { MovimentacaoEdit } from "./pages/Condominio/Balancete/movimentacao-edit";
 import { Boletos } from "./pages/Condominio/Boletos/boletos";
 import { Reunioes } from "./pages/Condominio/Reunioes/reunioes";
 import { ReuniaoNew } from "./pages/Condominio/Reunioes/reuniao-new";
@@ -46,8 +48,29 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
 });
 
 const getRedirectPath = (profileUser?: string) => {
-  const isCondominioProfile = profileUser?.toLowerCase() === "condomínio" || profileUser?.toLowerCase() === "condominio";
-  return isCondominioProfile ? "/condominio/home" : "/dashboard";
+  const isCondominioProfile =
+    profileUser?.toLowerCase() === "condomínio" ||
+    profileUser?.toLowerCase() === "condominio";
+  const isMoradorProfile = profileUser?.toLowerCase() === "morador";
+
+  if (isCondominioProfile) {
+    return "/condominio/home";
+  }
+  if (isMoradorProfile) {
+    return "/home";
+  }
+  return "/dashboard";
+};
+
+const isCondominioProfile = (profileUser?: string) => {
+  return (
+    profileUser?.toLowerCase() === "condomínio" ||
+    profileUser?.toLowerCase() === "condominio"
+  );
+};
+
+const isMoradorProfile = (profileUser?: string) => {
+  return profileUser?.toLowerCase() === "morador";
 };
 
 const indexRoute = createRoute({
@@ -93,30 +116,60 @@ const profileRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "profile",
   component: Profile,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (isMoradorProfile(profile) || isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const dashboardRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "dashboard",
   component: Dashboard,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (isMoradorProfile(profile) || isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const userRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "user",
   component: User,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (isMoradorProfile(profile) || isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const userNewRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "user/new",
   component: UserNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (isMoradorProfile(profile) || isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const userEditRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "user/$id/edit",
   component: UserEdit,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (isMoradorProfile(profile) || isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 // Rotas do Condomínio
@@ -124,114 +177,252 @@ const condominioHomeRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/home",
   component: HomeCondominio,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const unidadesRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/unidades",
   component: Unidades,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const unidadeNewRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/unidades/new",
   component: UnidadeNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const unidadeEditRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/unidades/$id/edit",
   component: UnidadeEdit,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const contasPagarRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/contas-pagar",
   component: ContasPagar,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const balanceteRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/balancete",
   component: Balancete,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
+const movimentacaoNewRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "condominio/balancete/movimentacoes/new",
+  component: MovimentacaoNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
+const movimentacaoEditRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "condominio/balancete/movimentacoes/$id/edit",
+  component: MovimentacaoEdit,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const boletosRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/boletos",
   component: Boletos,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const boletoNewRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/boletos/new",
   component: BoletoNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const boletoEditRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/boletos/$id/edit",
   component: BoletoEdit,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const boletosMoradorRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "boletos",
   component: BoletosMorador,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isMoradorProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const reunioesRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/reunioes",
   component: Reunioes,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const reuniaoNewRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/reunioes/new",
   component: ReuniaoNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const reuniaoEditRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/reunioes/$id/edit",
   component: ReuniaoEdit,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const avisosRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/avisos",
   component: Avisos,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const avisoNewRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/avisos/new",
   component: AvisoNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const avisoEditRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/avisos/$id/edit",
   component: AvisoEdit,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const moradoresRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/moradores",
   component: Moradores,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const moradorNewRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/moradores/new",
   component: MoradorNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const moradorEditRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/moradores/$id/edit",
   component: MoradorEdit,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
 });
 
 const authenticatedNotFoundRoute = createRoute({
@@ -263,6 +454,8 @@ const routeTree = rootRoute.addChildren([
     unidadeEditRoute,
     contasPagarRoute,
     balanceteRoute,
+    movimentacaoNewRoute,
+    movimentacaoEditRoute,
     boletosRoute,
     boletoNewRoute,
     boletoEditRoute,
@@ -284,7 +477,13 @@ const router = createRouter({
   routeTree,
   defaultPreload: "intent",
   context: {
-    auth: undefined!,
+    auth: {
+      isAuthenticated: false,
+      profileUser: "",
+      dataUser: undefined,
+      login: async () => ({ success: false, message: "" }),
+      logout: async () => {},
+    },
   },
   defaultNotFoundComponent: NotFoundPage,
 });

@@ -6,6 +6,7 @@ import type { BoletoList } from "../model/boleto-model";
 import { deleteBoleto } from "../services/boletos";
 import { isSuccessRequest } from "../utils/response-request";
 import { ModalDeleteBoleto } from "./modal-delete-boleto";
+import { ModalBoleto } from "./modal-boleto";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -20,8 +21,14 @@ interface TableBoletosListProps {
   isMorador?: boolean;
 }
 
-export function TableBoletosList({ boletoList, handleListData, isMorador = false }: TableBoletosListProps) {
+export function TableBoletosList({
+  boletoList,
+  handleListData,
+  isMorador = false,
+}: TableBoletosListProps) {
   const [boletoToDelete, setBoletoToDelete] = useState<string | null>(null);
+  const [boletoToView, setBoletoToView] = useState<BoletoList | null>(null);
+  const [modalBoletoOpen, setModalBoletoOpen] = useState(false);
   const navigate = useNavigate();
 
   const openDeleteDialog = (id: string) => {
@@ -30,6 +37,11 @@ export function TableBoletosList({ boletoList, handleListData, isMorador = false
 
   const closeDeleteDialog = () => {
     setBoletoToDelete(null);
+  };
+
+  const openBoletoModal = (boleto: BoletoList) => {
+    setBoletoToView(boleto);
+    setModalBoletoOpen(true);
   };
 
   async function onDelete(id: string) {
@@ -46,9 +58,11 @@ export function TableBoletosList({ boletoList, handleListData, isMorador = false
           description: "Erro ao deletar o boleto",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao deletar boleto:", error);
-      const message = error?.response?.data?.message || "Erro ao deletar o boleto";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao deletar o boleto";
       toast.error("Error", {
         description: message,
       });
@@ -82,8 +96,18 @@ export function TableBoletosList({ boletoList, handleListData, isMorador = false
 
   const getMonthName = (mes: number) => {
     const months = [
-      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
     ];
     return months[mes - 1] || "";
   };
@@ -120,12 +144,20 @@ export function TableBoletosList({ boletoList, handleListData, isMorador = false
             {boletoList?.map((boleto) => (
               <tr
                 key={boleto.id}
-                className="hover:bg-gray-50 dark:hover:bg-emerald-700 transition-colors"
+                className={`hover:bg-gray-50 dark:hover:bg-emerald-700 transition-colors ${
+                  isMorador ? "cursor-pointer" : ""
+                }`}
+                onClick={() => {
+                  if (isMorador) {
+                    openBoletoModal(boleto);
+                  }
+                }}
               >
                 <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm">
                   {boleto.unidade?.numero || boleto.unidadeId}
                   {boleto.unidade?.bloco && ` - Bloco ${boleto.unidade.bloco}`}
-                  {boleto.unidade?.apartamento && ` - Apt ${boleto.unidade.apartamento}`}
+                  {boleto.unidade?.apartamento &&
+                    ` - Apt ${boleto.unidade.apartamento}`}
                 </td>
                 <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm">
                   {getMonthName(boleto.mes)}/{boleto.ano}
@@ -137,7 +169,9 @@ export function TableBoletosList({ boletoList, handleListData, isMorador = false
                   {formatDate(boleto.vencimento)}
                 </td>
                 <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(boleto.status)}`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(boleto.status)}`}
+                  >
                     {boleto.status}
                   </span>
                 </td>
@@ -151,7 +185,11 @@ export function TableBoletosList({ boletoList, handleListData, isMorador = false
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
-                          onClick={() => navigate({ to: `/condominio/boletos/${boleto.id}/edit` })}
+                          onClick={() =>
+                            navigate({
+                              to: `/condominio/boletos/${boleto.id}/edit`,
+                            })
+                          }
                         >
                           Editar
                         </DropdownMenuItem>
@@ -182,7 +220,13 @@ export function TableBoletosList({ boletoList, handleListData, isMorador = false
           onDelete={onDelete}
         />
       )}
+      {isMorador && (
+        <ModalBoleto
+          open={modalBoletoOpen}
+          onOpenChange={setModalBoletoOpen}
+          boleto={boletoToView}
+        />
+      )}
     </>
   );
 }
-

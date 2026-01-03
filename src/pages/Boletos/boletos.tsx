@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TableBoleto } from "../../components/table-boleto";
 import type { BoletoList } from "../../model/boleto-model";
 import { fetchBoletosList } from "../../services/boletos";
@@ -11,7 +11,7 @@ export function BoletosMorador() {
   const [totalPages, setTotalPages] = useState(1);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
-  const loadBoletoData = async () => {
+  const loadBoletoData = useCallback(async () => {
     const response = await fetchBoletosList(page, limit);
     if (response) {
       if (response.data && response.total !== undefined) {
@@ -22,11 +22,11 @@ export function BoletosMorador() {
         setTotalPages(Math.ceil(response.length / limit));
       }
     }
-  };
+  }, [page, limit]);
 
   useEffect(() => {
     loadBoletoData();
-  }, [page, limit]);
+  }, [loadBoletoData]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -67,4 +67,3 @@ export function BoletosMorador() {
     </div>
   );
 }
-

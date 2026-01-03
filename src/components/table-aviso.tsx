@@ -13,7 +13,7 @@ interface TableAvisoProps {
   avisoList: AvisoList[];
   page: number;
   totalPages: number;
-  setPage: (page: number) => void;
+  setPage: (value: React.SetStateAction<number>) => void;
   handleListData: () => void;
   onMarkAsRead?: () => void;
 }

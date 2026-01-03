@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 import type { ProfileList } from "../model/profile-model";
@@ -18,6 +18,13 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface ModalSignUpProps {
   open: boolean;
@@ -31,6 +38,7 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
   } = useForm<z.infer<typeof schemaSignUp>>({
@@ -175,18 +183,27 @@ export function ModalSignUp({ open, setOpen }: ModalSignUpProps) {
             <Label htmlFor="perfilId" className="text-indigo-600 dark:text-white">
               Perfil *
             </Label>
-            <select
-              id="perfilId"
-              {...register("perfilId", { valueAsNumber: true })}
-              className="w-full px-3 py-2 border border-indigo-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-indigo-900 dark:text-white"
-            >
-              <option value="">Selecione um perfil</option>
-              {profiles.map((profile) => (
-                <option key={profile.id} value={profile.id}>
-                  {profile.descricao}
-                </option>
-              ))}
-            </select>
+            <Controller
+              name="perfilId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value?.toString()}
+                  onValueChange={(value) => field.onChange(parseInt(value, 10))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um perfil" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {profiles.map((profile) => (
+                      <SelectItem key={profile.id} value={profile.id.toString()}>
+                        {profile.descricao}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.perfilId && <p className="text-sm text-red-500">{errors.perfilId.message}</p>}
           </div>
 

@@ -14,7 +14,7 @@ interface CreateBoletoPayload {
   observacoes?: string;
 }
 
-interface UpdateBoletoPayload {
+export interface UpdateBoletoPayload {
   unidadeId?: string;
   mes?: number;
   ano?: number;
@@ -47,7 +47,10 @@ export const fetchBoletoById = async (id: string) => {
   }
 };
 
-export const updateBoleto = async (id: string, payload: UpdateBoletoPayload) => {
+export const updateBoleto = async (
+  id: string,
+  payload: UpdateBoletoPayload
+) => {
   try {
     const response = await api.patch(`/condominio/boletos/${id}`, payload);
     return response;
@@ -65,7 +68,13 @@ export const fetchBoletosList = async (
   unidadeId?: string
 ) => {
   try {
-    const params: any = { page, totalItemsByPage };
+    const params: {
+      page: number;
+      totalItemsByPage: number;
+      mes?: number;
+      ano?: number;
+      unidadeId?: string;
+    } = { page, totalItemsByPage };
     if (mes !== undefined) params.mes = mes;
     if (ano !== undefined) params.ano = ano;
     if (unidadeId) params.unidadeId = unidadeId;
@@ -95,4 +104,3 @@ export const deleteBoleto = async (id: string) => {
     throw error;
   }
 };
-

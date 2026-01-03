@@ -8,9 +8,23 @@ import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { InputDate } from "../../../components/ui/input-date";
+import { InputMoney } from "../../../components/ui/input-money";
 import { Label } from "../../../components/ui/label";
+import { formatDateToInput } from "../../../lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
 import { schemaBoletoEdit } from "../../../schemas/boleto-schema";
-import { fetchBoletoById, updateBoleto } from "../../../services/boletos";
+import {
+  fetchBoletoById,
+  updateBoleto,
+  type UpdateBoletoPayload,
+} from "../../../services/boletos";
 import { fetchUnidadesList } from "../../../services/unidades";
 
 interface BoletoResponse {
@@ -67,7 +81,7 @@ export function BoletoEdit() {
     const loadUnidades = async () => {
       try {
         const response = await fetchUnidadesList(1, 1000, "");
-        if (response && response.data) {
+        if (response?.data) {
           setUnidades(response.data);
         }
       } catch (error) {
@@ -121,25 +135,31 @@ export function BoletoEdit() {
     if (!id) return;
 
     try {
-      const payload: any = {};
+      const payload: UpdateBoletoPayload = {};
       if (data.unidadeId !== undefined) payload.unidadeId = data.unidadeId;
       if (data.mes !== undefined) payload.mes = data.mes;
       if (data.ano !== undefined) payload.ano = data.ano;
       if (data.valor !== undefined) payload.valor = data.valor;
       if (data.vencimento !== undefined) payload.vencimento = data.vencimento;
-      if (data.codigoBarras !== undefined) payload.codigoBarras = data.codigoBarras || undefined;
-      if (data.nossoNumero !== undefined) payload.nossoNumero = data.nossoNumero || undefined;
+      if (data.codigoBarras !== undefined)
+        payload.codigoBarras = data.codigoBarras || undefined;
+      if (data.nossoNumero !== undefined)
+        payload.nossoNumero = data.nossoNumero || undefined;
       if (data.status !== undefined) payload.status = data.status || undefined;
-      if (data.dataPagamento !== undefined) payload.dataPagamento = data.dataPagamento || undefined;
-      if (data.observacoes !== undefined) payload.observacoes = data.observacoes || undefined;
+      if (data.dataPagamento !== undefined)
+        payload.dataPagamento = data.dataPagamento || undefined;
+      if (data.observacoes !== undefined)
+        payload.observacoes = data.observacoes || undefined;
 
       await updateBoleto(id, payload);
 
       toast.success("Boleto atualizado com sucesso!");
       navigate({ to: "/condominio/boletos" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao atualizar boleto:", error);
-      const message = error?.response?.data?.message || "Erro ao atualizar boleto";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao atualizar boleto";
       toast.error("Erro ao atualizar boleto", {
         description: message,
       });
@@ -163,7 +183,10 @@ export function BoletoEdit() {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <div className="space-y-2">
             <Label htmlFor="unidadeId">Unidade *</Label>
             {loadingUnidades ? (
@@ -173,20 +196,21 @@ export function BoletoEdit() {
                 name="unidadeId"
                 control={control}
                 render={({ field }) => (
-                  <select
-                    {...field}
-                    id="unidadeId"
-                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <option value="">Selecione uma unidade</option>
-                    {unidades.map((unidade) => (
-                      <option key={unidade.id} value={unidade.id}>
-                        {unidade.numero}
-                        {unidade.bloco && ` - Bloco ${unidade.bloco}`}
-                        {unidade.apartamento && ` - Apt ${unidade.apartamento}`}
-                      </option>
-                    ))}
-                  </select>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma unidade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {unidades.map((unidade) => (
+                        <SelectItem key={unidade.id} value={unidade.id}>
+                          {unidade.numero}
+                          {unidade.bloco && ` - Bloco ${unidade.bloco}`}
+                          {unidade.apartamento &&
+                            ` - Apt ${unidade.apartamento}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
               />
             )}
@@ -218,19 +242,35 @@ export function BoletoEdit() {
 
           <div className="space-y-2">
             <Label htmlFor="valor">Valor *</Label>
-            <Input
-              id="valor"
-              type="number"
-              step="0.01"
-              min="0"
-              {...register("valor", { valueAsNumber: true })}
+            <Controller
+              name="valor"
+              control={control}
+              render={({ field }) => (
+                <InputMoney
+                  id="valor"
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
+                />
+              )}
             />
             <FormErrorMessage message={errors.valor?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="vencimento">Data de Vencimento *</Label>
-            <Input id="vencimento" type="date" {...register("vencimento")} />
+            <Controller
+              name="vencimento"
+              control={control}
+              render={({ field }) => (
+                <InputDate
+                  id="vencimento"
+                  value={field.value || undefined}
+                  onChange={(date) => {
+                    field.onChange(date ? formatDateToInput(date) : "");
+                  }}
+                />
+              )}
+            />
             <FormErrorMessage message={errors.vencimento?.message} />
           </div>
 
@@ -240,16 +280,17 @@ export function BoletoEdit() {
               name="status"
               control={control}
               render={({ field }) => (
-                <select
-                  {...field}
-                  id="status"
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <option value="Pendente">Pendente</option>
-                  <option value="Pago">Pago</option>
-                  <option value="Vencido">Vencido</option>
-                  <option value="Cancelado">Cancelado</option>
-                </select>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Pendente">Pendente</SelectItem>
+                    <SelectItem value="Pago">Pago</SelectItem>
+                    <SelectItem value="Vencido">Vencido</SelectItem>
+                    <SelectItem value="Cancelado">Cancelado</SelectItem>
+                  </SelectContent>
+                </Select>
               )}
             />
             <FormErrorMessage message={errors.status?.message} />
@@ -269,7 +310,20 @@ export function BoletoEdit() {
 
           <div className="space-y-2">
             <Label htmlFor="dataPagamento">Data de Pagamento (opcional)</Label>
-            <Input id="dataPagamento" type="date" {...register("dataPagamento")} />
+            <Controller
+              name="dataPagamento"
+              control={control}
+              render={({ field }) => (
+                <InputDate
+                  id="dataPagamento"
+                  value={field.value || undefined}
+                  onChange={(date) => {
+                    field.onChange(date ? formatDateToInput(date) : "");
+                  }}
+                  placeholder="Selecione a data de pagamento"
+                />
+              )}
+            />
             <FormErrorMessage message={errors.dataPagamento?.message} />
           </div>
 
@@ -285,7 +339,11 @@ export function BoletoEdit() {
           </div>
 
           <div className="md:col-span-2 flex gap-4">
-            <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-emerald-500 text-white"
+            >
               {isSubmitting ? "Salvando..." : "Salvar"}
             </Button>
             <Button
@@ -301,4 +359,3 @@ export function BoletoEdit() {
     </div>
   );
 }
-

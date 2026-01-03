@@ -54,7 +54,16 @@ export function LoginPage() {
         // Redireciona baseado no perfil
         const perfil = result.profileUser || profileUser;
         const isCondominioProfile = perfil?.toLowerCase() === "condomínio" || perfil?.toLowerCase() === "condominio";
-        navigate({ to: isCondominioProfile ? "/condominio/home" : "/dashboard" });
+        const isMoradorProfile = perfil?.toLowerCase() === "morador";
+        
+        let redirectPath = "/dashboard";
+        if (isCondominioProfile) {
+          redirectPath = "/condominio/home";
+        } else if (isMoradorProfile) {
+          redirectPath = "/home";
+        }
+        
+        navigate({ to: redirectPath });
       } else {
         setSubmitError(result.message || t("auth.errors.invalidCredentials"));
       }

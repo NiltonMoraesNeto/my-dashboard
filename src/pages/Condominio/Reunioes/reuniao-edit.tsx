@@ -1,14 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
+import { InputDate } from "../../../components/ui/input-date";
 import { Label } from "../../../components/ui/label";
+import { formatDateToInput } from "../../../lib/utils";
 import { schemaReuniaoEdit } from "../../../schemas/reuniao-schema";
 import { fetchReuniaoById, updateReuniao } from "../../../services/reunioes";
 
@@ -31,6 +33,7 @@ export function ReuniaoEdit() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<z.infer<typeof schemaReuniaoEdit>>({
@@ -57,7 +60,9 @@ export function ReuniaoEdit() {
       try {
         const reuniao: ReuniaoResponse = await fetchReuniaoById(id);
         // Formatar data para o formato YYYY-MM-DD do input date
-        const dataFormatada = reuniao.data ? new Date(reuniao.data).toISOString().split("T")[0] : "";
+        const dataFormatada = reuniao.data
+          ? new Date(reuniao.data).toISOString().split("T")[0]
+          : "";
         reset({
           titulo: reuniao.titulo || "",
           data: dataFormatada,
@@ -80,7 +85,15 @@ export function ReuniaoEdit() {
     if (!id) return;
 
     try {
-      const payload: any = {};
+      const payload: {
+        titulo?: string;
+        data?: string;
+        hora?: string;
+        local?: string;
+        tipo?: string;
+        pauta?: string;
+        status?: string;
+      } = {};
       if (data.titulo !== undefined) payload.titulo = data.titulo;
       if (data.data !== undefined) payload.data = data.data;
       if (data.hora !== undefined) payload.hora = data.hora;
@@ -93,9 +106,11 @@ export function ReuniaoEdit() {
 
       toast.success("Reunião atualizada com sucesso!");
       navigate({ to: "/condominio/reunioes" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao atualizar reunião:", error);
-      const message = error?.response?.data?.message || "Erro ao atualizar reunião";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao atualizar reunião";
       toast.error("Erro ao atualizar reunião", {
         description: message,
       });
@@ -119,16 +134,35 @@ export function ReuniaoEdit() {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <div className="space-y-2">
             <Label htmlFor="titulo">Título *</Label>
-            <Input id="titulo" placeholder="Digite o título da reunião" {...register("titulo")} />
+            <Input
+              id="titulo"
+              placeholder="Digite o título da reunião"
+              {...register("titulo")}
+            />
             <FormErrorMessage message={errors.titulo?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="data">Data *</Label>
-            <Input id="data" type="date" {...register("data")} />
+            <Controller
+              name="data"
+              control={control}
+              render={({ field }) => (
+                <InputDate
+                  id="data"
+                  value={field.value || undefined}
+                  onChange={(date) => {
+                    field.onChange(date ? formatDateToInput(date) : "");
+                  }}
+                />
+              )}
+            />
             <FormErrorMessage message={errors.data?.message} />
           </div>
 
@@ -140,19 +174,31 @@ export function ReuniaoEdit() {
 
           <div className="space-y-2">
             <Label htmlFor="local">Local (opcional)</Label>
-            <Input id="local" placeholder="Digite o local da reunião" {...register("local")} />
+            <Input
+              id="local"
+              placeholder="Digite o local da reunião"
+              {...register("local")}
+            />
             <FormErrorMessage message={errors.local?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="tipo">Tipo (opcional)</Label>
-            <Input id="tipo" placeholder="Ex: Assembleia, Ordinária" {...register("tipo")} />
+            <Input
+              id="tipo"
+              placeholder="Ex: Assembleia, Ordinária"
+              {...register("tipo")}
+            />
             <FormErrorMessage message={errors.tipo?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="status">Status (opcional)</Label>
-            <Input id="status" placeholder="Ex: Agendada, Realizada" {...register("status")} />
+            <Input
+              id="status"
+              placeholder="Ex: Agendada, Realizada"
+              {...register("status")}
+            />
             <FormErrorMessage message={errors.status?.message} />
           </div>
 
@@ -169,7 +215,11 @@ export function ReuniaoEdit() {
           </div>
 
           <div className="md:col-span-2 flex gap-4">
-            <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-emerald-500 text-white"
+            >
               {isSubmitting ? "Salvando..." : "Salvar"}
             </Button>
             <Button
@@ -185,4 +235,3 @@ export function ReuniaoEdit() {
     </div>
   );
 }
-

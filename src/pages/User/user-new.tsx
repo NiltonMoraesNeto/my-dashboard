@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -8,6 +8,13 @@ import { FormErrorMessage } from "../../components/form-error-message";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import { useProfiles } from "../../hooks/useProfiles";
 import { schemaUserNew } from "../../schemas/user-new-schema";
 import { createUser } from "../../services/usuarios";
@@ -18,6 +25,7 @@ export function UserNew() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<z.infer<typeof schemaUserNew>>({
@@ -95,31 +103,42 @@ export function UserNew() {
 
           <div className="space-y-2">
             <Label htmlFor="perfilId">Perfil *</Label>
-            <select
-              id="perfilId"
-              className="w-full px-3 py-2 border border-indigo-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-indigo-900 dark:text-white"
-              {...register("perfilId", { valueAsNumber: true })}
-              disabled={isLoadingProfiles}
-            >
-              <option value="0">Selecione um perfil</option>
-              {profiles.map((profile) => (
-                <option key={profile.id} value={profile.id}>
-                  {profile.descricao}
-                </option>
-              ))}
-            </select>
             {isLoadingProfiles ? (
               <span className="text-sm text-indigo-500">Carregando perfis...</span>
             ) : (
-              <FormErrorMessage message={errors.perfilId?.message} />
-            )}
-            {profilesError && (
-              <div className="text-sm text-red-500 flex items-center gap-2">
-                <span>{profilesError}</span>
-                <Button type="button" variant="link" className="p-0 h-auto" onClick={refresh}>
-                  Tentar novamente
-                </Button>
-              </div>
+              <>
+                <Controller
+                  name="perfilId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value?.toString()}
+                      onValueChange={(value) => field.onChange(parseInt(value, 10))}
+                      disabled={isLoadingProfiles}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um perfil" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {profiles.map((profile) => (
+                          <SelectItem key={profile.id} value={profile.id.toString()}>
+                            {profile.descricao}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <FormErrorMessage message={errors.perfilId?.message} />
+                {profilesError && (
+                  <div className="text-sm text-red-500 flex items-center gap-2">
+                    <span>{profilesError}</span>
+                    <Button type="button" variant="link" className="p-0 h-auto" onClick={refresh}>
+                      Tentar novamente
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
 

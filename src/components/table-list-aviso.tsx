@@ -20,7 +20,11 @@ interface TableAvisosListProps {
   onMarkAsRead?: () => void;
 }
 
-export function TableAvisosList({ avisoList, handleListData, onMarkAsRead }: TableAvisosListProps) {
+export function TableAvisosList({
+  avisoList,
+  handleListData,
+  onMarkAsRead,
+}: TableAvisosListProps) {
   const [avisoToDelete, setAvisoToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -46,9 +50,11 @@ export function TableAvisosList({ avisoList, handleListData, onMarkAsRead }: Tab
           description: "Erro ao deletar o aviso",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao deletar aviso:", error);
-      const message = error?.response?.data?.message || "Erro ao deletar o aviso";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Erro ao deletar o aviso";
       toast.error("Error", {
         description: message,
       });
@@ -62,7 +68,7 @@ export function TableAvisosList({ avisoList, handleListData, onMarkAsRead }: Tab
       if (onMarkAsRead) {
         onMarkAsRead();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erro ao marcar aviso como lido:", error);
       toast.error("Erro ao marcar aviso como lido");
     }
@@ -142,7 +148,10 @@ export function TableAvisosList({ avisoList, handleListData, onMarkAsRead }: Tab
                 </td>
                 <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm">
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenuTrigger
+                      asChild
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <Button variant="ghost" className="h-8 w-8 p-0">
                         <EllipsisVertical className="h-4 w-4" />
                       </Button>
@@ -151,7 +160,9 @@ export function TableAvisosList({ avisoList, handleListData, onMarkAsRead }: Tab
                       <DropdownMenuItem
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate({ to: `/condominio/avisos/${aviso.id}/edit` });
+                          navigate({
+                            to: `/condominio/avisos/${aviso.id}/edit`,
+                          });
                         }}
                       >
                         Editar
@@ -196,4 +207,3 @@ export function TableAvisosList({ avisoList, handleListData, onMarkAsRead }: Tab
     </>
   );
 }
-
