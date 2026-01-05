@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { downloadBoletoPdf } from "../services/boletos";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface ModalBoletoProps {
   open: boolean;
@@ -13,6 +14,7 @@ interface ModalBoletoProps {
 }
 
 export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
+  const { t } = useTranslation();
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("pt-BR");
@@ -40,7 +42,7 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
 
   const handleDownloadPdf = async () => {
     if (!boleto?.arquivoPdf) {
-      toast.error("Arquivo PDF não disponível");
+      toast.error(t("condominio.boletos.modal.errorPdf"));
       return;
     }
     try {
@@ -53,10 +55,10 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-      toast.success("PDF baixado com sucesso!");
+      toast.success(t("condominio.boletos.modal.successDownload"));
     } catch (error) {
       console.error("Erro ao baixar PDF:", error);
-      toast.error("Erro ao baixar PDF");
+      toast.error(t("condominio.boletos.modal.errorDownload"));
     }
   };
 
@@ -69,7 +71,7 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            <span>Detalhes do Boleto</span>
+            <span>{t("condominio.boletos.modal.title")}</span>
             <Button
               variant="ghost"
               size="icon"
@@ -85,19 +87,19 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Unidade
+                {t("condominio.boletos.modal.unidade")}
               </Label>
               <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
                 {boleto.unidade?.numero || boleto.unidadeId}
-                {boleto.unidade?.bloco && ` - Bloco ${boleto.unidade.bloco}`}
+                {boleto.unidade?.bloco && ` - ${t("condominio.boletos.table.bloco")} ${boleto.unidade.bloco}`}
                 {boleto.unidade?.apartamento &&
-                  ` - Apt ${boleto.unidade.apartamento}`}
+                  ` - ${t("condominio.boletos.table.apt")} ${boleto.unidade.apartamento}`}
               </p>
             </div>
 
             <div>
               <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Descrição
+                {t("condominio.boletos.modal.descricao")}
               </Label>
               <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
                 {boleto.descricao}
@@ -106,7 +108,7 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
 
             <div>
               <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Valor
+                {t("condominio.boletos.modal.valor")}
               </Label>
               <p className="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
                 {formatCurrency(boleto.valor)}
@@ -115,7 +117,7 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
 
             <div>
               <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Vencimento
+                {t("condominio.boletos.modal.vencimento")}
               </Label>
               <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
                 {formatDate(boleto.vencimento)}
@@ -124,7 +126,7 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
 
             <div>
               <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Status
+                {t("condominio.boletos.modal.status")}
               </Label>
               <p className="mt-1">
                 <span
@@ -138,7 +140,7 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
             {boleto.dataPagamento && (
               <div>
                 <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Data de Pagamento
+                  {t("condominio.boletos.modal.dataPagamento")}
                 </Label>
                 <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
                   {formatDate(boleto.dataPagamento)}
@@ -150,7 +152,7 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
           {boleto.observacoes && (
             <div>
               <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Observações
+                {t("condominio.boletos.modal.observacoes")}
               </Label>
               <p className="mt-1 text-sm text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 p-2 rounded">
                 {boleto.observacoes}
@@ -165,7 +167,7 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
                 className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white hover:bg-emerald-600"
               >
                 <Download className="h-4 w-4" />
-                Baixar PDF do Boleto
+                {t("condominio.boletos.modal.baixarPdf")}
               </Button>
             </div>
           )}

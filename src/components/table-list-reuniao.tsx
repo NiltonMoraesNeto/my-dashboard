@@ -2,6 +2,7 @@ import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { ReuniaoList } from "../model/reuniao-model";
 import { deleteReuniao } from "../services/reunioes";
 import { isSuccessRequest } from "../utils/response-request";
@@ -23,6 +24,7 @@ export function TableReunioesList({
   reuniaoList,
   handleListData,
 }: TableReunioesListProps) {
+  const { t } = useTranslation();
   const [reuniaoToDelete, setReuniaoToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -38,22 +40,22 @@ export function TableReunioesList({
     try {
       const response = await deleteReuniao(id);
       if (response && isSuccessRequest(response.status)) {
-        toast.success("Sucesso", {
-          description: "Reunião deletada com sucesso",
+        toast.success(t("common.success"), {
+          description: t("condominio.reunioes.table.successDelete"),
         });
         closeDeleteDialog();
         handleListData();
       } else {
-        toast.error("Error", {
-          description: "Erro ao deletar a reunião",
+        toast.error(t("common.error"), {
+          description: t("condominio.reunioes.table.errorDelete"),
         });
       }
     } catch (error: unknown) {
       console.error("Erro ao deletar reunião:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao deletar a reunião";
-      toast.error("Error", {
+          ?.data?.message || t("condominio.reunioes.table.errorDelete");
+      toast.error(t("common.error"), {
         description: message,
       });
     }
@@ -71,22 +73,22 @@ export function TableReunioesList({
           <thead>
             <tr>
               <th className="w-2/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Título
+                {t("condominio.reunioes.table.titulo")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Data
+                {t("condominio.reunioes.table.data")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Hora
+                {t("condominio.reunioes.table.hora")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Tipo
+                {t("condominio.reunioes.table.tipo")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Status
+                {t("condominio.reunioes.table.status")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Ação
+                {t("condominio.reunioes.table.acao")}
               </th>
             </tr>
           </thead>
@@ -143,7 +145,7 @@ export function TableReunioesList({
         </table>
         {reuniaoList?.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-emerald-200">
-            Nenhuma reunião encontrada.
+            {t("condominio.reunioes.table.emptyMessage")}
           </div>
         )}
       </div>

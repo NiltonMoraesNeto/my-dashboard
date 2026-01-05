@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -22,6 +23,7 @@ import { schemaBalanceteMovimentacaoNew } from "../../../schemas/balancete-movim
 import { createBalanceteMovimentacao } from "../../../services/balancete-movimentacoes";
 
 export function MovimentacaoNew() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     register,
@@ -50,15 +52,15 @@ export function MovimentacaoNew() {
         motivo: data.motivo,
       });
 
-      toast.success("Movimentação criada com sucesso!");
+      toast.success(t("condominio.balancete.movimentacao.new.success"));
       reset();
       navigate({ to: "/condominio/balancete" });
     } catch (error: unknown) {
       console.error("Erro ao criar movimentação:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao criar movimentação";
-      toast.error("Erro ao criar movimentação", {
+          ?.data?.message || t("condominio.balancete.movimentacao.new.error");
+      toast.error(t("condominio.balancete.movimentacao.new.error"), {
         description: message,
       });
     }
@@ -69,7 +71,7 @@ export function MovimentacaoNew() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Adicionar Nova Movimentação
+            {t("condominio.balancete.movimentacao.new.title")}
           </h1>
           <Button
             type="button"
@@ -77,7 +79,7 @@ export function MovimentacaoNew() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/balancete" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.balancete.movimentacao.new.back")}
           </Button>
         </div>
 
@@ -86,18 +88,18 @@ export function MovimentacaoNew() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo *</Label>
+            <Label htmlFor="tipo">{t("condominio.balancete.movimentacao.new.tipo")} *</Label>
             <Controller
               name="tipo"
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o tipo" />
+                    <SelectValue placeholder={t("condominio.balancete.movimentacao.new.tipoPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Entrada">Entrada</SelectItem>
-                    <SelectItem value="Saída">Saída</SelectItem>
+                    <SelectItem value="Entrada">{t("condominio.balancete.movimentacao.new.tipoEntrada")}</SelectItem>
+                    <SelectItem value="Saída">{t("condominio.balancete.movimentacao.new.tipoSaida")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -106,7 +108,7 @@ export function MovimentacaoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="data">Data *</Label>
+            <Label htmlFor="data">{t("condominio.balancete.movimentacao.new.data")} *</Label>
             <Controller
               name="data"
               control={control}
@@ -125,7 +127,7 @@ export function MovimentacaoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor *</Label>
+            <Label htmlFor="valor">{t("condominio.balancete.movimentacao.new.valor")} *</Label>
             <Controller
               name="valor"
               control={control}
@@ -144,13 +146,13 @@ export function MovimentacaoNew() {
           </div>
 
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="motivo">Motivo *</Label>
+            <Label htmlFor="motivo">{t("condominio.balancete.movimentacao.new.motivo")} *</Label>
             <Input
               id="motivo"
               type="text"
               {...register("motivo")}
               className={errors.motivo ? "border-red-500" : ""}
-              placeholder="Descreva o motivo da movimentação"
+              placeholder={t("condominio.balancete.movimentacao.new.motivoPlaceholder")}
             />
             {errors.motivo && (
               <FormErrorMessage message={errors.motivo.message} />
@@ -163,10 +165,10 @@ export function MovimentacaoNew() {
               variant="outline"
               onClick={() => navigate({ to: "/condominio/balancete" })}
             >
-              Cancelar
+              {t("condominio.balancete.movimentacao.new.cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.balancete.movimentacao.new.saving") : t("condominio.balancete.movimentacao.new.save")}
             </Button>
           </div>
         </form>

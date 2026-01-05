@@ -63,7 +63,7 @@ export function Balancete() {
           }
         >
           <Plus className="mr-2 h-4 w-4" />
-          Adicionar Movimentação
+          {t("condominio.balancete.addMovimentacao")}
         </Button>
       </div>
 
@@ -71,7 +71,7 @@ export function Balancete() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div className="bg-green-50 dark:bg-green-900 p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-2 text-green-800 dark:text-green-200">
-            Entradas
+            {t("condominio.balancete.entradas")}
           </h2>
           <p className="text-3xl font-bold text-green-600 dark:text-green-400">
             {formatCurrency(entradas)}
@@ -79,7 +79,7 @@ export function Balancete() {
         </div>
         <div className="bg-red-50 dark:bg-red-900 p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-2 text-red-800 dark:text-red-200">
-            Saídas
+            {t("condominio.balancete.saidas")}
           </h2>
           <p className="text-3xl font-bold text-red-600 dark:text-red-400">
             {formatCurrency(saidas)}
@@ -93,7 +93,7 @@ export function Balancete() {
           }`}
         >
           <h2 className="text-xl font-semibold mb-2 text-blue-800 dark:text-blue-200">
-            Saldo
+            {t("condominio.balancete.saldo")}
           </h2>
           <p
             className={`text-3xl font-bold ${

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TableReuniao } from "../../../components/table-reuniao";
 import type { ReuniaoList } from "../../../model/reuniao-model";
 import { fetchReunioesList } from "../../../services/reunioes";
 
 export function Reunioes() {
+  const { t } = useTranslation();
   const [reuniaoList, setReuniaoList] = useState<ReuniaoList[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
@@ -66,7 +68,7 @@ export function Reunioes() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Reuniões</h1>
+      <h1 className="text-3xl font-bold mb-6">{t("condominio.reunioes.title")}</h1>
       <TableReuniao
         search={search}
         setSearch={setSearch}

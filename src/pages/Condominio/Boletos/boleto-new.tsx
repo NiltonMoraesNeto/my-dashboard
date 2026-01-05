@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -32,6 +33,7 @@ interface UnidadeOption {
 }
 
 export function BoletoNew() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [unidades, setUnidades] = useState<UnidadeOption[]>([]);
   const [loadingUnidades, setLoadingUnidades] = useState(true);
@@ -63,7 +65,7 @@ export function BoletoNew() {
         }
       } catch (error) {
         console.error("Erro ao carregar unidades:", error);
-        toast.error("Erro ao carregar unidades");
+        toast.error(t("condominio.boletos.new.errorLoadUnidades"));
       } finally {
         setLoadingUnidades(false);
       }
@@ -84,13 +86,13 @@ export function BoletoNew() {
         observacoes: data.observacoes || undefined,
       });
 
-      toast.success("Boleto criado com sucesso!");
+      toast.success(t("condominio.boletos.new.success"));
       reset();
       navigate({ to: "/condominio/boletos" });
     } catch (error: unknown) {
       console.error("Erro ao criar boleto:", error);
-      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Erro ao criar boleto";
-      toast.error("Erro ao criar boleto", {
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || t("condominio.boletos.new.error");
+      toast.error(t("condominio.boletos.new.error"), {
         description: message,
       });
     }
@@ -101,7 +103,7 @@ export function BoletoNew() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Adicionar Novo Boleto
+            {t("condominio.boletos.new.title")}
           </h1>
           <Button
             type="button"
@@ -109,15 +111,15 @@ export function BoletoNew() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/boletos" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.boletos.new.back")}
           </Button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="unidadeId">Unidade *</Label>
+            <Label htmlFor="unidadeId">{t("condominio.boletos.new.unidade")} *</Label>
             {loadingUnidades ? (
-              <div>Carregando unidades...</div>
+              <div>{t("condominio.boletos.new.loadingUnidades")}</div>
             ) : (
               <Controller
                 name="unidadeId"
@@ -125,14 +127,14 @@ export function BoletoNew() {
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma unidade" />
+                      <SelectValue placeholder={t("condominio.boletos.new.unidadePlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {unidades.map((unidade) => (
                         <SelectItem key={unidade.id} value={unidade.id}>
                           {unidade.numero}
-                          {unidade.bloco && ` - Bloco ${unidade.bloco}`}
-                          {unidade.apartamento && ` - Apt ${unidade.apartamento}`}
+                          {unidade.bloco && ` - ${t("condominio.boletos.table.bloco")} ${unidade.bloco}`}
+                          {unidade.apartamento && ` - ${t("condominio.boletos.table.apt")} ${unidade.apartamento}`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -144,17 +146,17 @@ export function BoletoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="descricao">Descrição *</Label>
+            <Label htmlFor="descricao">{t("condominio.boletos.new.descricao")} *</Label>
             <Input
               id="descricao"
               {...register("descricao")}
-              placeholder="Ex: Taxa de condomínio - Janeiro 2024"
+              placeholder={t("condominio.boletos.new.descricaoPlaceholder")}
             />
             <FormErrorMessage message={errors.descricao?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor *</Label>
+            <Label htmlFor="valor">{t("condominio.boletos.new.valor")} *</Label>
             <Controller
               name="valor"
               control={control}
@@ -170,7 +172,7 @@ export function BoletoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="vencimento">Data de Vencimento *</Label>
+            <Label htmlFor="vencimento">{t("condominio.boletos.new.vencimento")} *</Label>
                     <Controller
                       name="vencimento"
                       control={control}
@@ -188,7 +190,7 @@ export function BoletoNew() {
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="arquivo">Arquivo PDF *</Label>
+            <Label htmlFor="arquivo">{t("condominio.boletos.new.arquivo")} *</Label>
             <Controller
               name="arquivo"
               control={control}
@@ -205,20 +207,20 @@ export function BoletoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
+            <Label htmlFor="status">{t("condominio.boletos.new.status")}</Label>
               <Controller
                 name="status"
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione o status" />
+                      <SelectValue placeholder={t("condominio.boletos.new.statusPlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Pendente">Pendente</SelectItem>
-                      <SelectItem value="Pago">Pago</SelectItem>
-                      <SelectItem value="Vencido">Vencido</SelectItem>
-                      <SelectItem value="Cancelado">Cancelado</SelectItem>
+                      <SelectItem value="Pendente">{t("condominio.boletos.new.statusPendente")}</SelectItem>
+                      <SelectItem value="Pago">{t("condominio.boletos.new.statusPago")}</SelectItem>
+                      <SelectItem value="Vencido">{t("condominio.boletos.new.statusVencido")}</SelectItem>
+                      <SelectItem value="Cancelado">{t("condominio.boletos.new.statusCancelado")}</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -227,7 +229,7 @@ export function BoletoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="dataPagamento">Data de Pagamento (opcional)</Label>
+            <Label htmlFor="dataPagamento">{t("condominio.boletos.new.dataPagamento")}</Label>
             <Controller
               name="dataPagamento"
               control={control}
@@ -238,7 +240,7 @@ export function BoletoNew() {
                   onChange={(date) => {
                     field.onChange(date ? formatDateToInput(date) : "");
                   }}
-                  placeholder="Selecione a data de pagamento"
+                  placeholder={t("condominio.boletos.new.dataPagamentoPlaceholder")}
                 />
               )}
             />
@@ -246,7 +248,7 @@ export function BoletoNew() {
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="observacoes">Observações (opcional)</Label>
+            <Label htmlFor="observacoes">{t("condominio.boletos.new.observacoes")}</Label>
             <textarea
               id="observacoes"
               {...register("observacoes")}
@@ -258,14 +260,14 @@ export function BoletoNew() {
 
           <div className="md:col-span-2 flex gap-4">
             <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.boletos.new.saving") : t("condominio.boletos.new.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/boletos" })}
             >
-              Cancelar
+              {t("condominio.boletos.new.cancel")}
             </Button>
           </div>
         </form>

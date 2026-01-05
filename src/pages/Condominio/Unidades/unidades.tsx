@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TableUnidade } from "../../../components/table-unidade";
 import type { UnidadeList } from "../../../model/unidade-model";
 import { fetchUnidadesList } from "../../../services/unidades";
 
 export function Unidades() {
+  const { t } = useTranslation();
   const [unidadeList, setUnidadeList] = useState<UnidadeList[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
@@ -55,7 +57,7 @@ export function Unidades() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Unidades</h1>
+      <h1 className="text-3xl font-bold mb-6">{t("condominio.unidades.title")}</h1>
       <TableUnidade
         search={search}
         setSearch={setSearch}

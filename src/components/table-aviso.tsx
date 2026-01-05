@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -28,6 +29,7 @@ export function TableAviso({
   handleListData,
   onMarkAsRead,
 }: TableAvisoProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   return (
     <Card className="flex flex-col mt-5 dark:bg-emerald-800">
@@ -36,13 +38,13 @@ export function TableAviso({
           <div className="flex justify-between items-center mb-6 max-sm:block">
             <div className="flex items-center gap-2">
               <Button variant="default" onClick={() => navigate({ to: "/condominio/avisos/new" })}>
-                Adicionar Aviso
+                {t("condominio.avisos.addButton")}
               </Button>
             </div>
             <div className="relative flex items-center font-sans">
               <Input
                 type="text"
-                placeholder="Pesquisar"
+                placeholder={t("condominio.avisos.searchPlaceholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pr-10"

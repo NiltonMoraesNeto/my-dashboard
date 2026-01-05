@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -26,6 +27,7 @@ import {
 } from "../../../services/balancete-movimentacoes";
 
 export function MovimentacaoEdit() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams({ strict: false });
   const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +44,7 @@ export function MovimentacaoEdit() {
 
   useEffect(() => {
     if (!id) {
-      toast.error("ID da movimentação não encontrado");
+      toast.error(t("condominio.balancete.movimentacao.edit.notFoundId"));
       navigate({ to: "/condominio/balancete" });
       return;
     }
@@ -61,9 +63,9 @@ export function MovimentacaoEdit() {
         }
       } catch (error: unknown) {
         console.error("Erro ao carregar movimentação:", error);
-        toast.error("Erro ao carregar movimentação", {
+        toast.error(t("condominio.balancete.movimentacao.edit.errorLoad"), {
           description:
-            (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Erro ao carregar movimentação",
+            (error as { response?: { data?: { message?: string } } })?.response?.data?.message || t("condominio.balancete.movimentacao.edit.errorLoad"),
         });
         navigate({ to: "/condominio/balancete" });
       } finally {
@@ -90,13 +92,13 @@ export function MovimentacaoEdit() {
         motivo: data.motivo,
       });
 
-      toast.success("Movimentação atualizada com sucesso!");
+      toast.success(t("condominio.balancete.movimentacao.edit.success"));
       navigate({ to: "/condominio/balancete" });
     } catch (error: unknown) {
       console.error("Erro ao atualizar movimentação:", error);
       const message =
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Erro ao atualizar movimentação";
-      toast.error("Erro ao atualizar movimentação", {
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message || t("condominio.balancete.movimentacao.edit.error");
+      toast.error(t("condominio.balancete.movimentacao.edit.error"), {
         description: message,
       });
     }
@@ -105,7 +107,7 @@ export function MovimentacaoEdit() {
   if (isLoading) {
     return (
       <div className="p-6">
-        <div className="text-center">Carregando...</div>
+        <div className="text-center">{t("condominio.balancete.movimentacao.edit.loading")}</div>
       </div>
     );
   }
@@ -115,7 +117,7 @@ export function MovimentacaoEdit() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Editar Movimentação
+            {t("condominio.balancete.movimentacao.edit.title")}
           </h1>
           <Button
             type="button"
@@ -123,7 +125,7 @@ export function MovimentacaoEdit() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/balancete" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.balancete.movimentacao.edit.back")}
           </Button>
         </div>
 
@@ -132,18 +134,18 @@ export function MovimentacaoEdit() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo *</Label>
+            <Label htmlFor="tipo">{t("condominio.balancete.movimentacao.edit.tipo")} *</Label>
             <Controller
               name="tipo"
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o tipo" />
+                    <SelectValue placeholder={t("condominio.balancete.movimentacao.edit.tipoPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Entrada">Entrada</SelectItem>
-                    <SelectItem value="Saída">Saída</SelectItem>
+                    <SelectItem value="Entrada">{t("condominio.balancete.movimentacao.edit.tipoEntrada")}</SelectItem>
+                    <SelectItem value="Saída">{t("condominio.balancete.movimentacao.edit.tipoSaida")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -152,7 +154,7 @@ export function MovimentacaoEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="data">Data *</Label>
+            <Label htmlFor="data">{t("condominio.balancete.movimentacao.edit.data")} *</Label>
             <Controller
               name="data"
               control={control}
@@ -173,7 +175,7 @@ export function MovimentacaoEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor *</Label>
+            <Label htmlFor="valor">{t("condominio.balancete.movimentacao.edit.valor")} *</Label>
             <Controller
               name="valor"
               control={control}
@@ -192,13 +194,13 @@ export function MovimentacaoEdit() {
           </div>
 
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="motivo">Motivo *</Label>
+            <Label htmlFor="motivo">{t("condominio.balancete.movimentacao.edit.motivo")} *</Label>
             <Input
               id="motivo"
               type="text"
               {...register("motivo")}
               className={errors.motivo ? "border-red-500" : ""}
-              placeholder="Descreva o motivo da movimentação"
+              placeholder={t("condominio.balancete.movimentacao.edit.motivoPlaceholder")}
             />
             {errors.motivo && (
               <FormErrorMessage message={errors.motivo.message} />
@@ -211,10 +213,10 @@ export function MovimentacaoEdit() {
               variant="outline"
               onClick={() => navigate({ to: "/condominio/balancete" })}
             >
-              Cancelar
+              {t("condominio.balancete.movimentacao.edit.cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.balancete.movimentacao.edit.saving") : t("condominio.balancete.movimentacao.edit.save")}
             </Button>
           </div>
         </form>

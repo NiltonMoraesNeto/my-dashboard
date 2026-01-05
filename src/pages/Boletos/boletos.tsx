@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TableBoleto } from "../../components/table-boleto";
 import type { BoletoList } from "../../model/boleto-model";
 import { fetchBoletosList } from "../../services/boletos";
 
 export function BoletosMorador() {
+  const { t } = useTranslation();
   const [boletoList, setBoletoList] = useState<BoletoList[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
@@ -53,7 +55,7 @@ export function BoletosMorador() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Meus Boletos</h1>
+      <h1 className="text-3xl font-bold mb-6">{t("condominio.boletos.morador.title")}</h1>
       <TableBoleto
         search={search}
         setSearch={setSearch}

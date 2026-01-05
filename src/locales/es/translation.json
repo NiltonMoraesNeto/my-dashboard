@@ -19,7 +19,7 @@
       "registers": "Registros",
       "profile": "Perfil",
       "user": "Usuario",
-      "other": "Otro menú",
+      "other": "Otro Menú",
       "other1": "Otro 1",
       "other2": "Otro 2",
       "other3": "Otro 3"
@@ -32,7 +32,7 @@
         "financeiro": "Financiero",
         "contasPagar": "Cuentas por Pagar",
         "balancete": "Balance",
-        "boletos": "Boletos",
+        "boletos": "Facturas",
         "reunioes": "Reuniones",
         "avisos": "Avisos"
       }
@@ -43,18 +43,18 @@
     "hero": {
       "title": "¡Hola!",
       "subtitle": "Bienvenido de nuevo.",
-      "callToAction": "¿Aún no tienes una cuenta?",
+      "callToAction": "¿No tienes una cuenta?",
       "signUp": "Regístrate"
     },
     "form": {
-      "title": "Iniciar sesión",
+      "title": "Iniciar Sesión",
       "emailLabel": "Correo electrónico",
-      "emailPlaceholder": "ejemplo@gmail.com",
+      "emailPlaceholder": "ejemplo@email.com",
       "passwordLabel": "Contraseña",
       "passwordPlaceholder": "Contraseña",
-      "rememberMe": "Mantener sesión activa",
-      "submit": "Iniciar sesión",
-      "submitting": "Iniciando...",
+      "rememberMe": "Mantenerme conectado",
+      "submit": "Iniciar Sesión",
+      "submitting": "Iniciando sesión...",
       "social": {
         "facebook": "Facebook",
         "instagram": "Instagram",
@@ -62,13 +62,13 @@
       },
       "validation": {
         "emailRequired": "Ingresa tu correo electrónico",
-        "emailInvalid": "Correo electrónico inválido",
+        "emailInvalid": "Dirección de correo electrónico inválida",
         "passwordRequired": "Ingresa tu contraseña",
         "passwordMin": "La contraseña debe tener al menos 6 caracteres"
       }
     },
     "errors": {
-      "invalidCredentials": "Correo o contraseña inválidos.",
+      "invalidCredentials": "Correo electrónico o contraseña inválidos.",
       "unexpected": "Error inesperado. Inténtalo de nuevo."
     }
   },
@@ -82,7 +82,7 @@
     "summary": {
       "weekLabel": "(Esta semana)",
       "completed": {
-        "title": "Ventas completadas",
+        "title": "Ventas Completadas",
         "footer": "Semana pasada: {{value}}"
       },
       "pending": {
@@ -95,14 +95,14 @@
       }
     },
     "topSales": {
-      "title": "Ventas destacadas",
+      "title": "Top Ventas",
       "buildings": {
         "A": "Edificio A",
         "B": "Edificio B",
         "C": "Edificio C"
       },
-      "totalLabel": "Ventas totales",
-      "totalValue": "R$ 35.000.000,00"
+      "totalLabel": "Total Ventas",
+      "totalValue": "$35.000.000,00"
     },
     "charts": {
       "salesByMonth": {
@@ -110,7 +110,7 @@
         "tooltip": "{{value}} K"
       },
       "salesByBuilding": {
-        "title": "Ventas por edificio (año actual)",
+        "title": "Ventas - por edificio (año actual)",
         "tooltip": "{{value}}"
       }
     }
@@ -118,7 +118,7 @@
   "home": {
     "title": "Bienvenido - Inicio",
     "loading": "Cargando datos del panel...",
-    "error": "Error al cargar los datos del panel"
+    "error": "Error al cargar datos del panel"
   },
   "condominio": {
     "home": {
@@ -130,7 +130,7 @@
         },
         "financeiro": {
           "title": "Financiero",
-          "description": "Sigue cuentas, balance y boletos"
+          "description": "Seguimiento de cuentas, balance y facturas"
         },
         "reunioes": {
           "title": "Reuniones",
@@ -141,7 +141,98 @@
     "unidades": {
       "title": "Unidades",
       "addButton": "Nueva Unidad",
-      "emptyMessage": "No hay unidades registradas. Haz clic en 'Nueva Unidad' para comenzar."
+      "emptyMessage": "No hay unidades registradas. Haz clic en 'Nueva Unidad' para comenzar.",
+      "searchPlaceholder": "Buscar",
+      "new": {
+        "title": "Agregar Nueva Unidad",
+        "back": "Volver",
+        "numero": "Número",
+        "numeroPlaceholder": "Ej: 101",
+        "bloco": "Bloque (opcional)",
+        "blocoPlaceholder": "Ej: A, B, 1",
+        "apartamento": "Apartamento (opcional)",
+        "apartamentoPlaceholder": "Ej: 101",
+        "tipo": "Tipo (opcional)",
+        "tipoPlaceholder": "Selecciona el tipo",
+        "tipoApartamento": "Apartamento",
+        "tipoCobertura": "Ático",
+        "tipoLoja": "Tienda",
+        "tipoGaragem": "Garaje",
+        "status": "Estado",
+        "statusPlaceholder": "Selecciona el estado",
+        "statusAtivo": "Activo",
+        "statusInativo": "Inactivo",
+        "statusAlugado": "Alquilado",
+        "morador": "Residente (opcional)",
+        "moradorPlaceholder": "Selecciona un residente",
+        "loadingMoradores": "Cargando residentes...",
+        "proprietario": "Propietario (opcional)",
+        "proprietarioPlaceholder": "Nombre del propietario",
+        "telefone": "Teléfono (opcional)",
+        "telefonePlaceholder": "Ej: (11) 99999-9999",
+        "email": "Correo electrónico (opcional)",
+        "emailPlaceholder": "ejemplo@email.com",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Unidad creada con éxito!",
+        "error": "Error al crear unidad"
+      },
+      "edit": {
+        "title": "Editar Unidad",
+        "back": "Volver",
+        "numero": "Número",
+        "numeroPlaceholder": "Ej: 101",
+        "bloco": "Bloque (opcional)",
+        "blocoPlaceholder": "Ej: A, B, 1",
+        "apartamento": "Apartamento (opcional)",
+        "apartamentoPlaceholder": "Ej: 101",
+        "tipo": "Tipo (opcional)",
+        "tipoPlaceholder": "Selecciona el tipo",
+        "tipoApartamento": "Apartamento",
+        "tipoCobertura": "Ático",
+        "tipoLoja": "Tienda",
+        "tipoGaragem": "Garaje",
+        "status": "Estado",
+        "statusPlaceholder": "Selecciona el estado",
+        "statusAtivo": "Activo",
+        "statusInativo": "Inactivo",
+        "statusAlugado": "Alquilado",
+        "morador": "Residente (opcional)",
+        "moradorPlaceholder": "Selecciona un residente",
+        "loadingMoradores": "Cargando residentes...",
+        "proprietario": "Propietario (opcional)",
+        "proprietarioPlaceholder": "Nombre del propietario",
+        "telefone": "Teléfono (opcional)",
+        "telefonePlaceholder": "Ej: (11) 99999-9999",
+        "email": "Correo electrónico (opcional)",
+        "emailPlaceholder": "ejemplo@email.com",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Unidad actualizada con éxito!",
+        "error": "Error al actualizar unidad",
+        "errorLoad": "Error al cargar datos de la unidad",
+        "notFound": "Unidad no encontrada"
+      },
+      "table": {
+        "numero": "Número",
+        "bloco": "Bloque",
+        "apt": "Apt",
+        "tipo": "Tipo",
+        "status": "Estado",
+        "proprietario": "Propietario",
+        "telefone": "Teléfono",
+        "email": "Correo electrónico",
+        "morador": "Residente",
+        "acao": "Acción",
+        "editar": "Editar",
+        "excluir": "Eliminar",
+        "deletar": "Eliminar",
+        "successDelete": "Unidad eliminada con éxito",
+        "errorDelete": "Error al eliminar unidad",
+        "emptyMessage": "No se encontraron unidades."
+      }
     },
     "contasPagar": {
       "title": "Cuentas por Pagar",
@@ -150,22 +241,339 @@
     },
     "balancete": {
       "title": "Balance",
-      "emptyMessage": "No hay balance disponible en este momento."
+      "emptyMessage": "No hay balance disponible en este momento.",
+      "addMovimentacao": "Agregar Transacción",
+      "entradas": "Ingresos",
+      "saidas": "Gastos",
+      "saldo": "Saldo",
+      "movimentacao": {
+        "new": {
+          "title": "Agregar Nueva Transacción",
+          "back": "Volver",
+          "tipo": "Tipo",
+          "tipoPlaceholder": "Selecciona el tipo",
+          "tipoEntrada": "Ingreso",
+          "tipoSaida": "Gasto",
+          "data": "Fecha",
+          "valor": "Monto",
+          "motivo": "Motivo",
+          "motivoPlaceholder": "Describe el motivo de la transacción",
+          "save": "Guardar",
+          "saving": "Guardando...",
+          "cancel": "Cancelar",
+          "success": "¡Transacción creada con éxito!",
+          "error": "Error al crear transacción"
+        },
+        "edit": {
+          "title": "Editar Transacción",
+          "back": "Volver",
+          "tipo": "Tipo",
+          "tipoPlaceholder": "Selecciona el tipo",
+          "tipoEntrada": "Ingreso",
+          "tipoSaida": "Gasto",
+          "data": "Fecha",
+          "valor": "Monto",
+          "motivo": "Motivo",
+          "motivoPlaceholder": "Describe el motivo de la transacción",
+          "save": "Guardar",
+          "saving": "Guardando...",
+          "cancel": "Cancelar",
+          "success": "¡Transacción actualizada con éxito!",
+          "error": "Error al actualizar transacción",
+          "errorLoad": "Error al cargar datos de la transacción",
+          "notFound": "Transacción no encontrada",
+          "notFoundId": "ID de transacción no encontrado",
+          "loading": "Cargando..."
+        },
+        "table": {
+          "tipo": "Tipo",
+          "data": "Fecha",
+          "valor": "Monto",
+          "motivo": "Motivo",
+          "acao": "Acción",
+          "editar": "Editar",
+          "excluir": "Eliminar",
+          "successDelete": "Transacción eliminada con éxito",
+          "errorDelete": "Error al eliminar transacción",
+          "emptyMessage": "No se encontraron transacciones."
+        }
+      }
     },
     "boletos": {
-      "title": "Boletos",
-      "generateButton": "Generar Boletos",
-      "emptyMessage": "No se han generado boletos. Haz clic en 'Generar Boletos' para crear boletos para las unidades."
+      "title": "Facturas",
+      "generateButton": "Generar Facturas",
+      "emptyMessage": "No hay facturas generadas. Haz clic en 'Generar Facturas' para crear facturas para las unidades.",
+      "addButton": "Agregar Factura",
+      "searchPlaceholder": "Buscar",
+      "new": {
+        "title": "Agregar Nueva Factura",
+        "back": "Volver",
+        "unidade": "Unidad",
+        "unidadePlaceholder": "Selecciona una unidad",
+        "loadingUnidades": "Cargando unidades...",
+        "descricao": "Descripción",
+        "descricaoPlaceholder": "Ej: Cuota de condominio - Enero 2024",
+        "valor": "Monto",
+        "vencimento": "Fecha de Vencimiento",
+        "arquivo": "Archivo PDF",
+        "status": "Estado",
+        "statusPlaceholder": "Selecciona el estado",
+        "statusPendente": "Pendiente",
+        "statusPago": "Pagado",
+        "statusVencido": "Vencido",
+        "statusCancelado": "Cancelado",
+        "dataPagamento": "Fecha de Pago (opcional)",
+        "dataPagamentoPlaceholder": "Selecciona la fecha de pago",
+        "observacoes": "Observaciones (opcional)",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Factura creada con éxito!",
+        "error": "Error al crear factura",
+        "errorLoadUnidades": "Error al cargar unidades"
+      },
+      "edit": {
+        "title": "Editar Factura",
+        "back": "Volver",
+        "unidade": "Unidad",
+        "unidadePlaceholder": "Selecciona una unidad",
+        "loadingUnidades": "Cargando unidades...",
+        "descricao": "Descripción",
+        "descricaoPlaceholder": "Ej: Cuota de condominio - Enero 2024",
+        "valor": "Monto",
+        "vencimento": "Fecha de Vencimiento",
+        "arquivo": "Archivo PDF (opcional - deja en blanco para mantener el actual)",
+        "status": "Estado",
+        "statusPlaceholder": "Selecciona el estado",
+        "statusPendente": "Pendiente",
+        "statusPago": "Pagado",
+        "statusVencido": "Vencido",
+        "statusCancelado": "Cancelado",
+        "dataPagamento": "Fecha de Pago (opcional)",
+        "dataPagamentoPlaceholder": "Selecciona la fecha de pago",
+        "observacoes": "Observaciones (opcional)",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Factura actualizada con éxito!",
+        "error": "Error al actualizar factura",
+        "errorLoadUnidades": "Error al cargar unidades",
+        "errorLoadBoleto": "Error al cargar datos de la factura",
+        "notFound": "Factura no encontrada"
+      },
+      "table": {
+        "unidade": "Unidad",
+        "descricao": "Descripción",
+        "valor": "Monto",
+        "vencimento": "Fecha de Vencimiento",
+        "status": "Estado",
+        "download": "Descargar",
+        "acao": "Acción",
+        "baixarPdf": "Descargar PDF",
+        "editar": "Editar",
+        "excluir": "Eliminar",
+        "bloco": "Bloque",
+        "apt": "Apt"
+      },
+      "modal": {
+        "title": "Detalles de la Factura",
+        "unidade": "Unidad",
+        "descricao": "Descripción",
+        "valor": "Monto",
+        "vencimento": "Fecha de Vencimiento",
+        "status": "Estado",
+        "dataPagamento": "Fecha de Pago",
+        "observacoes": "Observaciones",
+        "baixarPdf": "Descargar PDF de la Factura",
+        "errorPdf": "Archivo PDF no disponible",
+        "successDownload": "¡PDF descargado con éxito!",
+        "errorDownload": "Error al descargar PDF"
+      },
+      "morador": {
+        "title": "Mis Facturas"
+      }
     },
     "reunioes": {
       "title": "Reuniones",
       "addButton": "Nueva Reunión",
-      "emptyMessage": "No hay reuniones programadas. Haz clic en 'Nueva Reunión' para programar."
+      "emptyMessage": "No hay reuniones programadas. Haz clic en 'Nueva Reunión' para programar.",
+      "searchPlaceholder": "Buscar",
+      "new": {
+        "title": "Agregar Nueva Reunión",
+        "back": "Volver",
+        "titulo": "Título",
+        "tituloPlaceholder": "Ingresa el título de la reunión",
+        "data": "Fecha",
+        "hora": "Hora",
+        "local": "Ubicación (opcional)",
+        "localPlaceholder": "Ingresa la ubicación de la reunión",
+        "tipo": "Tipo (opcional)",
+        "tipoPlaceholder": "Ej: Asamblea, Ordinaria",
+        "status": "Estado (opcional)",
+        "statusPlaceholder": "Ej: Programada, Realizada",
+        "pauta": "Agenda (opcional)",
+        "pautaPlaceholder": "Ingresa la agenda de la reunión",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Reunión creada con éxito!",
+        "error": "Error al crear reunión"
+      },
+      "edit": {
+        "title": "Editar Reunión",
+        "back": "Volver",
+        "titulo": "Título",
+        "tituloPlaceholder": "Ingresa el título de la reunión",
+        "data": "Fecha",
+        "hora": "Hora",
+        "local": "Ubicación (opcional)",
+        "localPlaceholder": "Ingresa la ubicación de la reunión",
+        "tipo": "Tipo (opcional)",
+        "tipoPlaceholder": "Ej: Asamblea, Ordinaria",
+        "status": "Estado (opcional)",
+        "statusPlaceholder": "Ej: Programada, Realizada",
+        "pauta": "Agenda (opcional)",
+        "pautaPlaceholder": "Ingresa la agenda de la reunión",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Reunión actualizada con éxito!",
+        "error": "Error al actualizar reunión",
+        "errorLoad": "Error al cargar datos de la reunión",
+        "notFound": "Reunión no encontrada"
+      },
+      "table": {
+        "titulo": "Título",
+        "data": "Fecha",
+        "hora": "Hora",
+        "local": "Ubicación",
+        "tipo": "Tipo",
+        "status": "Estado",
+        "acao": "Acción",
+        "editar": "Editar",
+        "excluir": "Eliminar",
+        "successDelete": "Reunión eliminada con éxito",
+        "errorDelete": "Error al eliminar reunión",
+        "emptyMessage": "No se encontraron reuniones."
+      }
     },
     "avisos": {
       "title": "Avisos",
       "addButton": "Nuevo Aviso",
-      "emptyMessage": "No hay avisos registrados. Haz clic en 'Nuevo Aviso' para comenzar."
+      "emptyMessage": "No hay avisos registrados. Haz clic en 'Nuevo Aviso' para comenzar.",
+      "searchPlaceholder": "Buscar",
+      "new": {
+        "title": "Agregar Nuevo Aviso",
+        "back": "Volver",
+        "titulo": "Título",
+        "tituloPlaceholder": "Ingresa el título del aviso",
+        "descricao": "Descripción",
+        "descricaoPlaceholder": "Ingresa la descripción del aviso",
+        "tipo": "Tipo (opcional)",
+        "tipoPlaceholder": "Ej: Informativo, Urgente",
+        "dataInicio": "Fecha de Inicio",
+        "dataFim": "Fecha de Fin (opcional)",
+        "dataFimPlaceholder": "Selecciona la fecha de fin",
+        "destaque": "Destacar aviso",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Aviso creado con éxito!",
+        "error": "Error al crear aviso"
+      },
+      "edit": {
+        "title": "Editar Aviso",
+        "back": "Volver",
+        "titulo": "Título",
+        "tituloPlaceholder": "Ingresa el título del aviso",
+        "descricao": "Descripción",
+        "descricaoPlaceholder": "Ingresa la descripción del aviso",
+        "tipo": "Tipo (opcional)",
+        "tipoPlaceholder": "Ej: Informativo, Urgente",
+        "dataInicio": "Fecha de Inicio",
+        "dataFim": "Fecha de Fin (opcional)",
+        "dataFimPlaceholder": "Selecciona la fecha de fin",
+        "destaque": "Destacar aviso",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Aviso actualizado con éxito!",
+        "error": "Error al actualizar aviso",
+        "errorLoad": "Error al cargar datos del aviso",
+        "notFound": "Aviso no encontrado"
+      },
+      "table": {
+        "lido": "Leído",
+        "titulo": "Título",
+        "descricao": "Descripción",
+        "tipo": "Tipo",
+        "dataInicio": "Fecha Inicio",
+        "acao": "Acción",
+        "destaque": "Destacado",
+        "editar": "Editar",
+        "marcarComoLido": "Marcar como Leído",
+        "excluir": "Eliminar",
+        "successDelete": "Aviso eliminado con éxito",
+        "errorDelete": "Error al eliminar aviso",
+        "errorMarkAsRead": "Error al marcar como leído",
+        "emptyMessage": "No se encontraron avisos."
+      }
+    },
+    "moradores": {
+      "title": "Residentes",
+      "addButton": "Nuevo Residente",
+      "emptyMessage": "No hay residentes registrados. Haz clic en 'Nuevo Residente' para comenzar.",
+      "searchPlaceholder": "Buscar",
+      "new": {
+        "title": "Agregar Nuevo Residente",
+        "back": "Volver",
+        "nome": "Nombre completo",
+        "nomePlaceholder": "Ingresa el nombre",
+        "email": "Correo electrónico",
+        "emailPlaceholder": "Ingresa el correo electrónico",
+        "password": "Contraseña provisional (opcional)",
+        "passwordPlaceholder": "Deja en blanco para usar contraseña por defecto (123456)",
+        "passwordHint": "Si no se proporciona, la contraseña por defecto será 123456",
+        "cep": "Código Postal (opcional)",
+        "cepPlaceholder": "Ingresa el código postal",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Residente creado con éxito!",
+        "error": "Error al crear residente"
+      },
+      "edit": {
+        "title": "Editar Residente",
+        "back": "Volver",
+        "nome": "Nombre completo",
+        "nomePlaceholder": "Ingresa el nombre",
+        "email": "Correo electrónico",
+        "emailPlaceholder": "Ingresa el correo electrónico",
+        "password": "Nueva contraseña (opcional)",
+        "passwordPlaceholder": "Deja en blanco para mantener la contraseña actual",
+        "passwordHint": "Deja en blanco para mantener la contraseña actual",
+        "cep": "Código Postal (opcional)",
+        "cepPlaceholder": "Ingresa el código postal",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "¡Residente actualizado con éxito!",
+        "error": "Error al actualizar residente",
+        "errorLoad": "Error al cargar datos del residente",
+        "notFound": "Residente no encontrado"
+      },
+      "table": {
+        "nome": "Nombre",
+        "nomeMorador": "Nombre del Residente",
+        "email": "Correo electrónico",
+        "cep": "Código Postal",
+        "dataCriacao": "Fecha de Creación",
+        "acao": "Acción",
+        "editar": "Editar",
+        "excluir": "Eliminar",
+        "successDelete": "Residente eliminado con éxito",
+        "errorDelete": "Error al eliminar residente"
+      }
     }
   },
   "months": {
@@ -195,5 +603,27 @@
     "oct": "OCT",
     "nov": "NOV",
     "dec": "DIC"
+  },
+  "common": {
+    "back": "Volver",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "action": "Acción",
+    "loading": "Cargando...",
+    "select": "Seleccionar",
+    "optional": "(opcional)",
+    "required": "*",
+    "success": "Éxito",
+    "error": "Error",
+    "notFound": "No encontrado",
+    "searchPlaceholder": "Buscar"
+  },
+  "notFound": {
+    "title": "404 - Página No Encontrada",
+    "message": "La página que buscas no existe.",
+    "backToHome": "Volver al Inicio"
   }
 }

@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -12,6 +13,7 @@ import { schemaMoradorNew } from "../../../schemas/morador-schema";
 import { createMorador } from "../../../services/moradores";
 
 export function MoradorNew() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     register,
@@ -37,15 +39,15 @@ export function MoradorNew() {
         cep: data.cep || undefined,
       });
 
-      toast.success("Morador criado com sucesso!");
+      toast.success(t("condominio.moradores.new.success"));
       reset();
       navigate({ to: "/condominio/moradores" });
     } catch (error: unknown) {
       console.error("Erro ao criar morador:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao criar morador";
-      toast.error("Erro ao criar morador", {
+          ?.data?.message || t("condominio.moradores.new.error");
+      toast.error(t("condominio.moradores.new.error"), {
         description: message,
       });
     }
@@ -56,7 +58,7 @@ export function MoradorNew() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Adicionar Novo Morador
+            {t("condominio.moradores.new.title")}
           </h1>
           <Button
             type="button"
@@ -64,7 +66,7 @@ export function MoradorNew() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/moradores" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.moradores.new.back")}
           </Button>
         </div>
 
@@ -73,43 +75,43 @@ export function MoradorNew() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <div className="space-y-2">
-            <Label htmlFor="nome">Nome completo *</Label>
+            <Label htmlFor="nome">{t("condominio.moradores.new.nome")} *</Label>
             <Input
               id="nome"
-              placeholder="Digite o nome"
+              placeholder={t("condominio.moradores.new.nomePlaceholder")}
               {...register("nome")}
             />
             <FormErrorMessage message={errors.nome?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email *</Label>
+            <Label htmlFor="email">{t("condominio.moradores.new.email")} *</Label>
             <Input
               id="email"
               type="email"
-              placeholder="Digite o email"
+              placeholder={t("condominio.moradores.new.emailPlaceholder")}
               {...register("email")}
             />
             <FormErrorMessage message={errors.email?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Senha provisória (opcional)</Label>
+            <Label htmlFor="password">{t("condominio.moradores.new.password")}</Label>
             <Input
               id="password"
               type="password"
-              placeholder="Deixe em branco para usar senha padrão (123456)"
+              placeholder={t("condominio.moradores.new.passwordPlaceholder")}
               {...register("password")}
             />
             <FormErrorMessage message={errors.password?.message} />
             <p className="text-sm text-gray-500">
-              Se não informada, a senha padrão será 123456
+              {t("condominio.moradores.new.passwordHint")}
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cep">CEP (opcional)</Label>
-            <Input id="cep" placeholder="Digite o CEP" {...register("cep")} />
+            <Label htmlFor="cep">{t("condominio.moradores.new.cep")}</Label>
+            <Input id="cep" placeholder={t("condominio.moradores.new.cepPlaceholder")} {...register("cep")} />
             <FormErrorMessage message={errors.cep?.message} />
           </div>
 
@@ -119,14 +121,14 @@ export function MoradorNew() {
               disabled={isSubmitting}
               className="bg-emerald-500 text-white"
             >
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.moradores.new.saving") : t("condominio.moradores.new.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/moradores" })}
             >
-              Cancelar
+              {t("condominio.moradores.new.cancel")}
             </Button>
           </div>
         </form>

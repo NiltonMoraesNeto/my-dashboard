@@ -2,6 +2,7 @@ import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { BalanceteMovimentacaoList } from "../model/balancete-movimentacao-model";
 import { deleteBalanceteMovimentacao } from "../services/balancete-movimentacoes";
 import { isSuccessRequest } from "../utils/response-request";
@@ -23,6 +24,7 @@ export function TableBalanceteMovimentacoesList({
   movimentacaoList,
   handleListData,
 }: TableBalanceteMovimentacoesListProps) {
+  const { t } = useTranslation();
   const [movimentacaoToDelete, setMovimentacaoToDelete] = useState<
     string | null
   >(null);
@@ -40,22 +42,22 @@ export function TableBalanceteMovimentacoesList({
     try {
       const response = await deleteBalanceteMovimentacao(id);
       if (response && isSuccessRequest(response.status)) {
-        toast.success("Sucesso", {
-          description: "Movimentação deletada com sucesso",
+        toast.success(t("common.success"), {
+          description: t("condominio.balancete.movimentacao.table.successDelete"),
         });
         closeDeleteDialog();
         handleListData();
       } else {
-        toast.error("Error", {
-          description: "Erro ao deletar a movimentação",
+        toast.error(t("common.error"), {
+          description: t("condominio.balancete.movimentacao.table.errorDelete"),
         });
       }
     } catch (error: unknown) {
       console.error("Erro ao deletar movimentação:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao deletar a movimentação";
-      toast.error("Error", {
+          ?.data?.message || t("condominio.balancete.movimentacao.table.errorDelete");
+      toast.error(t("common.error"), {
         description: message,
       });
     }
@@ -90,19 +92,19 @@ export function TableBalanceteMovimentacoesList({
           <thead>
             <tr>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Tipo
+                {t("condominio.balancete.movimentacao.table.tipo")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Data
+                {t("condominio.balancete.movimentacao.table.data")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Valor
+                {t("condominio.balancete.movimentacao.table.valor")}
               </th>
               <th className="w-1/2 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Motivo
+                {t("condominio.balancete.movimentacao.table.motivo")}
               </th>
               <th className="w-1/12 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Ação
+                {t("condominio.balancete.movimentacao.table.acao")}
               </th>
             </tr>
           </thead>
@@ -160,7 +162,7 @@ export function TableBalanceteMovimentacoesList({
         </table>
         {movimentacaoList?.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-emerald-200">
-            Nenhuma movimentação encontrada.
+            {t("condominio.balancete.movimentacao.table.emptyMessage")}
           </div>
         )}
       </div>

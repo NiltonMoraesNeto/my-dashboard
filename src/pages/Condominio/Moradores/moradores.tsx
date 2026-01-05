@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TableMorador } from "../../../components/table-morador";
 import type { MoradorList } from "../../../model/morador-model";
 import { fetchMoradoresList } from "../../../services/moradores";
 
 export function Moradores() {
+  const { t } = useTranslation();
   const [moradorList, setMoradorList] = useState<MoradorList[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
@@ -55,7 +57,7 @@ export function Moradores() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Moradores</h1>
+      <h1 className="text-3xl font-bold mb-6">{t("condominio.moradores.title")}</h1>
       <TableMorador
         search={search}
         setSearch={setSearch}

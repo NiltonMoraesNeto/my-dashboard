@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -28,6 +29,7 @@ interface ReuniaoResponse {
 }
 
 export function ReuniaoEdit() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams({ strict: false });
   const {
@@ -52,7 +54,7 @@ export function ReuniaoEdit() {
   useEffect(() => {
     const loadReuniao = async () => {
       if (!id) {
-        toast.error("Reunião não encontrada");
+        toast.error(t("condominio.reunioes.edit.notFound"));
         navigate({ to: "/condominio/reunioes" });
         return;
       }
@@ -74,7 +76,7 @@ export function ReuniaoEdit() {
         });
       } catch (error) {
         console.error("Erro ao carregar reunião:", error);
-        toast.error("Erro ao carregar dados da reunião");
+        toast.error(t("condominio.reunioes.edit.errorLoad"));
         navigate({ to: "/condominio/reunioes" });
       }
     };
@@ -104,14 +106,14 @@ export function ReuniaoEdit() {
 
       await updateReuniao(id, payload);
 
-      toast.success("Reunião atualizada com sucesso!");
+      toast.success(t("condominio.reunioes.edit.success"));
       navigate({ to: "/condominio/reunioes" });
     } catch (error: unknown) {
       console.error("Erro ao atualizar reunião:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao atualizar reunião";
-      toast.error("Erro ao atualizar reunião", {
+          ?.data?.message || t("condominio.reunioes.edit.error");
+      toast.error(t("condominio.reunioes.edit.error"), {
         description: message,
       });
     }
@@ -122,7 +124,7 @@ export function ReuniaoEdit() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Editar Reunião
+            {t("condominio.reunioes.edit.title")}
           </h1>
           <Button
             type="button"
@@ -130,7 +132,7 @@ export function ReuniaoEdit() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/reunioes" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.reunioes.edit.back")}
           </Button>
         </div>
 
@@ -139,17 +141,19 @@ export function ReuniaoEdit() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <div className="space-y-2">
-            <Label htmlFor="titulo">Título *</Label>
+            <Label htmlFor="titulo">
+              {t("condominio.reunioes.edit.titulo")} *
+            </Label>
             <Input
               id="titulo"
-              placeholder="Digite o título da reunião"
+              placeholder={t("condominio.reunioes.edit.tituloPlaceholder")}
               {...register("titulo")}
             />
             <FormErrorMessage message={errors.titulo?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="data">Data *</Label>
+            <Label htmlFor="data">{t("condominio.reunioes.edit.data")} *</Label>
             <Controller
               name="data"
               control={control}
@@ -167,46 +171,48 @@ export function ReuniaoEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="hora">Hora *</Label>
+            <Label htmlFor="hora">{t("condominio.reunioes.edit.hora")} *</Label>
             <Input id="hora" type="time" {...register("hora")} />
             <FormErrorMessage message={errors.hora?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="local">Local (opcional)</Label>
+            <Label htmlFor="local">{t("condominio.reunioes.edit.local")}</Label>
             <Input
               id="local"
-              placeholder="Digite o local da reunião"
+              placeholder={t("condominio.reunioes.edit.localPlaceholder")}
               {...register("local")}
             />
             <FormErrorMessage message={errors.local?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo (opcional)</Label>
+            <Label htmlFor="tipo">{t("condominio.reunioes.edit.tipo")}</Label>
             <Input
               id="tipo"
-              placeholder="Ex: Assembleia, Ordinária"
+              placeholder={t("condominio.reunioes.edit.tipoPlaceholder")}
               {...register("tipo")}
             />
             <FormErrorMessage message={errors.tipo?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status (opcional)</Label>
+            <Label htmlFor="status">
+              {t("condominio.reunioes.edit.status")}
+            </Label>
             <Input
               id="status"
-              placeholder="Ex: Agendada, Realizada"
+              placeholder={t("condominio.reunioes.edit.statusPlaceholder")}
               {...register("status")}
             />
             <FormErrorMessage message={errors.status?.message} />
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="pauta">Pauta (opcional)</Label>
+            <Label htmlFor="pauta">{t("condominio.reunioes.edit.pauta")}</Label>
             <textarea
               id="pauta"
-              placeholder="Digite a pauta da reunião"
+              placeholder={t("condominio.reunioes.edit.pautaPlaceholder")}
               {...register("pauta")}
               rows={4}
               className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -220,14 +226,16 @@ export function ReuniaoEdit() {
               disabled={isSubmitting}
               className="bg-emerald-500 text-white"
             >
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting
+                ? t("condominio.reunioes.edit.saving")
+                : t("condominio.reunioes.edit.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/reunioes" })}
             >
-              Cancelar
+              {t("condominio.reunioes.edit.cancel")}
             </Button>
           </div>
         </form>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -50,6 +51,7 @@ interface UnidadeOption {
 }
 
 export function BoletoEdit() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams({ strict: false });
   const [unidades, setUnidades] = useState<UnidadeOption[]>([]);
@@ -82,7 +84,7 @@ export function BoletoEdit() {
         }
       } catch (error) {
         console.error("Erro ao carregar unidades:", error);
-        toast.error("Erro ao carregar unidades");
+        toast.error(t("condominio.boletos.edit.errorLoadUnidades"));
       } finally {
         setLoadingUnidades(false);
       }
@@ -93,7 +95,7 @@ export function BoletoEdit() {
   useEffect(() => {
     const loadBoleto = async () => {
       if (!id) {
-        toast.error("Boleto não encontrado");
+        toast.error(t("condominio.boletos.edit.notFound"));
         navigate({ to: "/condominio/boletos" });
         return;
       }
@@ -118,7 +120,7 @@ export function BoletoEdit() {
         });
       } catch (error) {
         console.error("Erro ao carregar boleto:", error);
-        toast.error("Erro ao carregar dados do boleto");
+        toast.error(t("condominio.boletos.edit.errorLoadBoleto"));
         navigate({ to: "/condominio/boletos" });
       }
     };
@@ -147,14 +149,14 @@ export function BoletoEdit() {
 
       await updateBoleto(id, payload);
 
-      toast.success("Boleto atualizado com sucesso!");
+      toast.success(t("condominio.boletos.edit.success"));
       navigate({ to: "/condominio/boletos" });
     } catch (error: unknown) {
       console.error("Erro ao atualizar boleto:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao atualizar boleto";
-      toast.error("Erro ao atualizar boleto", {
+          ?.data?.message || t("condominio.boletos.edit.error");
+      toast.error(t("condominio.boletos.edit.error"), {
         description: message,
       });
     }
@@ -165,7 +167,7 @@ export function BoletoEdit() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Editar Boleto
+            {t("condominio.boletos.edit.title")}
           </h1>
           <Button
             type="button"
@@ -173,7 +175,7 @@ export function BoletoEdit() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/boletos" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.boletos.edit.back")}
           </Button>
         </div>
 
@@ -182,9 +184,9 @@ export function BoletoEdit() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <div className="space-y-2">
-            <Label htmlFor="unidadeId">Unidade *</Label>
+            <Label htmlFor="unidadeId">{t("condominio.boletos.edit.unidade")} *</Label>
             {loadingUnidades ? (
-              <div>Carregando unidades...</div>
+              <div>{t("condominio.boletos.edit.loadingUnidades")}</div>
             ) : (
               <Controller
                 name="unidadeId"
@@ -192,15 +194,15 @@ export function BoletoEdit() {
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma unidade" />
+                      <SelectValue placeholder={t("condominio.boletos.edit.unidadePlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {unidades.map((unidade) => (
                         <SelectItem key={unidade.id} value={unidade.id}>
                           {unidade.numero}
-                          {unidade.bloco && ` - Bloco ${unidade.bloco}`}
+                          {unidade.bloco && ` - ${t("condominio.boletos.table.bloco")} ${unidade.bloco}`}
                           {unidade.apartamento &&
-                            ` - Apt ${unidade.apartamento}`}
+                            ` - ${t("condominio.boletos.table.apt")} ${unidade.apartamento}`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -212,17 +214,17 @@ export function BoletoEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="descricao">Descrição *</Label>
+            <Label htmlFor="descricao">{t("condominio.boletos.edit.descricao")} *</Label>
             <Input
               id="descricao"
               {...register("descricao")}
-              placeholder="Ex: Taxa de condomínio - Janeiro 2024"
+              placeholder={t("condominio.boletos.edit.descricaoPlaceholder")}
             />
             <FormErrorMessage message={errors.descricao?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor *</Label>
+            <Label htmlFor="valor">{t("condominio.boletos.edit.valor")} *</Label>
             <Controller
               name="valor"
               control={control}
@@ -238,7 +240,7 @@ export function BoletoEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="vencimento">Data de Vencimento *</Label>
+            <Label htmlFor="vencimento">{t("condominio.boletos.edit.vencimento")} *</Label>
             <Controller
               name="vencimento"
               control={control}
@@ -256,7 +258,7 @@ export function BoletoEdit() {
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="arquivo">Arquivo PDF (opcional - deixe em branco para manter o atual)</Label>
+            <Label htmlFor="arquivo">{t("condominio.boletos.edit.arquivo")}</Label>
             <Controller
               name="arquivo"
               control={control}
@@ -273,20 +275,20 @@ export function BoletoEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
+            <Label htmlFor="status">{t("condominio.boletos.edit.status")}</Label>
             <Controller
               name="status"
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o status" />
+                    <SelectValue placeholder={t("condominio.boletos.edit.statusPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Pendente">Pendente</SelectItem>
-                    <SelectItem value="Pago">Pago</SelectItem>
-                    <SelectItem value="Vencido">Vencido</SelectItem>
-                    <SelectItem value="Cancelado">Cancelado</SelectItem>
+                    <SelectItem value="Pendente">{t("condominio.boletos.edit.statusPendente")}</SelectItem>
+                    <SelectItem value="Pago">{t("condominio.boletos.edit.statusPago")}</SelectItem>
+                    <SelectItem value="Vencido">{t("condominio.boletos.edit.statusVencido")}</SelectItem>
+                    <SelectItem value="Cancelado">{t("condominio.boletos.edit.statusCancelado")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -295,7 +297,7 @@ export function BoletoEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="dataPagamento">Data de Pagamento (opcional)</Label>
+            <Label htmlFor="dataPagamento">{t("condominio.boletos.edit.dataPagamento")}</Label>
             <Controller
               name="dataPagamento"
               control={control}
@@ -306,7 +308,7 @@ export function BoletoEdit() {
                   onChange={(date) => {
                     field.onChange(date ? formatDateToInput(date) : "");
                   }}
-                  placeholder="Selecione a data de pagamento"
+                  placeholder={t("condominio.boletos.edit.dataPagamentoPlaceholder")}
                 />
               )}
             />
@@ -314,7 +316,7 @@ export function BoletoEdit() {
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="observacoes">Observações (opcional)</Label>
+            <Label htmlFor="observacoes">{t("condominio.boletos.edit.observacoes")}</Label>
             <textarea
               id="observacoes"
               {...register("observacoes")}
@@ -330,14 +332,14 @@ export function BoletoEdit() {
               disabled={isSubmitting}
               className="bg-emerald-500 text-white"
             >
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.boletos.edit.saving") : t("condominio.boletos.edit.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/boletos" })}
             >
-              Cancelar
+              {t("condominio.boletos.edit.cancel")}
             </Button>
           </div>
         </form>

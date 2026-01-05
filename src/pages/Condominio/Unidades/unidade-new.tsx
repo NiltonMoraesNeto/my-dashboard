@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -22,6 +23,7 @@ import { fetchMoradoresList } from "../../../services/moradores";
 import type { MoradorList } from "../../../model/morador-model";
 
 export function UnidadeNew() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [moradores, setMoradores] = useState<MoradorList[]>([]);
   const [isLoadingMoradores, setIsLoadingMoradores] = useState(false);
@@ -78,15 +80,15 @@ export function UnidadeNew() {
         moradorId: data.moradorId || undefined,
       });
 
-      toast.success("Unidade criada com sucesso!");
+      toast.success(t("condominio.unidades.new.success"));
       reset();
       navigate({ to: "/condominio/unidades" });
     } catch (error: unknown) {
       console.error("Erro ao criar unidade:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao criar unidade";
-      toast.error("Erro ao criar unidade", {
+          ?.data?.message || t("condominio.unidades.new.error");
+      toast.error(t("condominio.unidades.new.error"), {
         description: message,
       });
     }
@@ -97,7 +99,7 @@ export function UnidadeNew() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Adicionar Nova Unidade
+            {t("condominio.unidades.new.title")}
           </h1>
           <Button
             type="button"
@@ -105,7 +107,7 @@ export function UnidadeNew() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/unidades" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.unidades.new.back")}
           </Button>
         </div>
 
@@ -114,33 +116,33 @@ export function UnidadeNew() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <div className="space-y-2">
-            <Label htmlFor="numero">Número *</Label>
-            <Input id="numero" placeholder="Ex: 101" {...register("numero")} />
+            <Label htmlFor="numero">{t("condominio.unidades.new.numero")} *</Label>
+            <Input id="numero" placeholder={t("condominio.unidades.new.numeroPlaceholder")} {...register("numero")} />
             <FormErrorMessage message={errors.numero?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bloco">Bloco (opcional)</Label>
+            <Label htmlFor="bloco">{t("condominio.unidades.new.bloco")}</Label>
             <Input
               id="bloco"
-              placeholder="Ex: A, B, 1"
+              placeholder={t("condominio.unidades.new.blocoPlaceholder")}
               {...register("bloco")}
             />
             <FormErrorMessage message={errors.bloco?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="apartamento">Apartamento (opcional)</Label>
+            <Label htmlFor="apartamento">{t("condominio.unidades.new.apartamento")}</Label>
             <Input
               id="apartamento"
-              placeholder="Ex: 101"
+              placeholder={t("condominio.unidades.new.apartamentoPlaceholder")}
               {...register("apartamento")}
             />
             <FormErrorMessage message={errors.apartamento?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo (opcional)</Label>
+            <Label htmlFor="tipo">{t("condominio.unidades.new.tipo")}</Label>
             <Controller
               name="tipo"
               control={control}
@@ -150,13 +152,13 @@ export function UnidadeNew() {
                   onValueChange={(value) => field.onChange(value || undefined)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o tipo" />
+                    <SelectValue placeholder={t("condominio.unidades.new.tipoPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Apartamento">Apartamento</SelectItem>
-                    <SelectItem value="Cobertura">Cobertura</SelectItem>
-                    <SelectItem value="Loja">Loja</SelectItem>
-                    <SelectItem value="Garagem">Garagem</SelectItem>
+                    <SelectItem value="Apartamento">{t("condominio.unidades.new.tipoApartamento")}</SelectItem>
+                    <SelectItem value="Cobertura">{t("condominio.unidades.new.tipoCobertura")}</SelectItem>
+                    <SelectItem value="Loja">{t("condominio.unidades.new.tipoLoja")}</SelectItem>
+                    <SelectItem value="Garagem">{t("condominio.unidades.new.tipoGaragem")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -165,19 +167,19 @@ export function UnidadeNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
+            <Label htmlFor="status">{t("condominio.unidades.new.status")}</Label>
             <Controller
               name="status"
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o status" />
+                    <SelectValue placeholder={t("condominio.unidades.new.statusPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Ativo">Ativo</SelectItem>
-                    <SelectItem value="Inativo">Inativo</SelectItem>
-                    <SelectItem value="Alugado">Alugado</SelectItem>
+                    <SelectItem value="Ativo">{t("condominio.unidades.new.statusAtivo")}</SelectItem>
+                    <SelectItem value="Inativo">{t("condominio.unidades.new.statusInativo")}</SelectItem>
+                    <SelectItem value="Alugado">{t("condominio.unidades.new.statusAlugado")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -186,10 +188,10 @@ export function UnidadeNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="moradorId">Morador (opcional)</Label>
+            <Label htmlFor="moradorId">{t("condominio.unidades.new.morador")}</Label>
             {isLoadingMoradores ? (
               <span className="text-sm text-emerald-500">
-                Carregando moradores...
+                {t("condominio.unidades.new.loadingMoradores")}
               </span>
             ) : (
               <>
@@ -205,7 +207,7 @@ export function UnidadeNew() {
                       disabled={isLoadingMoradores}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione um morador" />
+                        <SelectValue placeholder={t("condominio.unidades.new.moradorPlaceholder")} />
                       </SelectTrigger>
                       <SelectContent>
                         {moradores.map((morador) => (
@@ -223,31 +225,31 @@ export function UnidadeNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="proprietario">Proprietário (opcional)</Label>
+            <Label htmlFor="proprietario">{t("condominio.unidades.new.proprietario")}</Label>
             <Input
               id="proprietario"
-              placeholder="Nome do proprietário"
+              placeholder={t("condominio.unidades.new.proprietarioPlaceholder")}
               {...register("proprietario")}
             />
             <FormErrorMessage message={errors.proprietario?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="telefone">Telefone (opcional)</Label>
+            <Label htmlFor="telefone">{t("condominio.unidades.new.telefone")}</Label>
             <Input
               id="telefone"
-              placeholder="(00) 00000-0000"
+              placeholder={t("condominio.unidades.new.telefonePlaceholder")}
               {...register("telefone")}
             />
             <FormErrorMessage message={errors.telefone?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email (opcional)</Label>
+            <Label htmlFor="email">{t("condominio.unidades.new.email")}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="email@exemplo.com"
+              placeholder={t("condominio.unidades.new.emailPlaceholder")}
               {...register("email")}
             />
             <FormErrorMessage message={errors.email?.message} />
@@ -259,14 +261,14 @@ export function UnidadeNew() {
               disabled={isSubmitting}
               className="bg-emerald-500 text-white"
             >
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.unidades.new.saving") : t("condominio.unidades.new.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/unidades" })}
             >
-              Cancelar
+              {t("condominio.unidades.new.cancel")}
             </Button>
           </div>
         </form>

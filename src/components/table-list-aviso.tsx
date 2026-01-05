@@ -2,6 +2,7 @@ import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { AvisoList } from "../model/aviso-model";
 import { deleteAviso, marcarAvisoComoLido } from "../services/avisos";
 import { isSuccessRequest } from "../utils/response-request";
@@ -25,6 +26,7 @@ export function TableAvisosList({
   handleListData,
   onMarkAsRead,
 }: TableAvisosListProps) {
+  const { t } = useTranslation();
   const [avisoToDelete, setAvisoToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -40,22 +42,22 @@ export function TableAvisosList({
     try {
       const response = await deleteAviso(id);
       if (response && isSuccessRequest(response.status)) {
-        toast.success("Sucesso", {
-          description: "Aviso deletado com sucesso",
+        toast.success(t("common.success"), {
+          description: t("condominio.avisos.table.successDelete"),
         });
         closeDeleteDialog();
         handleListData();
       } else {
-        toast.error("Error", {
-          description: "Erro ao deletar o aviso",
+        toast.error(t("common.error"), {
+          description: t("condominio.avisos.table.errorDelete"),
         });
       }
     } catch (error: unknown) {
       console.error("Erro ao deletar aviso:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao deletar o aviso";
-      toast.error("Error", {
+          ?.data?.message || t("condominio.avisos.table.errorDelete");
+      toast.error(t("common.error"), {
         description: message,
       });
     }
@@ -70,7 +72,7 @@ export function TableAvisosList({
       }
     } catch (error: unknown) {
       console.error("Erro ao marcar aviso como lido:", error);
-      toast.error("Erro ao marcar aviso como lido");
+      toast.error(t("condominio.avisos.table.errorMarcarLido"));
     }
   };
 
@@ -86,22 +88,22 @@ export function TableAvisosList({
           <thead>
             <tr>
               <th className="w-1/12 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Lido
+                {t("condominio.avisos.table.lido")}
               </th>
               <th className="w-2/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Título
+                {t("condominio.avisos.table.titulo")}
               </th>
               <th className="w-2/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Descrição
+                {t("condominio.avisos.table.descricao")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Tipo
+                {t("condominio.avisos.table.tipo")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Data Início
+                {t("condominio.avisos.table.dataInicio")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Ação
+                {t("condominio.avisos.table.acao")}
               </th>
             </tr>
           </thead>
@@ -130,7 +132,7 @@ export function TableAvisosList({
                     {aviso.titulo}
                     {aviso.destaque && (
                       <span className="bg-yellow-500 text-white text-xs px-2 py-0.5 rounded">
-                        Destaque
+                        {t("condominio.avisos.table.destaque")}
                       </span>
                     )}
                   </div>
@@ -165,7 +167,7 @@ export function TableAvisosList({
                           });
                         }}
                       >
-                        Editar
+                        {t("condominio.avisos.table.editar")}
                       </DropdownMenuItem>
                       {!aviso.lido && (
                         <DropdownMenuItem
@@ -174,7 +176,7 @@ export function TableAvisosList({
                             handleMarkAsRead(aviso.id);
                           }}
                         >
-                          Marcar como lido
+                          {t("condominio.avisos.table.marcarLido")}
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem
@@ -184,7 +186,7 @@ export function TableAvisosList({
                         }}
                         className="text-red-600"
                       >
-                        Excluir
+                        {t("condominio.avisos.table.excluir")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -195,7 +197,7 @@ export function TableAvisosList({
         </table>
         {avisoList?.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-emerald-200">
-            Nenhum aviso encontrado.
+            {t("condominio.avisos.table.emptyMessage")}
           </div>
         )}
       </div>

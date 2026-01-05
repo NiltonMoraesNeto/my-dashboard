@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -15,6 +16,7 @@ import { schemaAvisoNew } from "../../../schemas/aviso-schema";
 import { createAviso } from "../../../services/avisos";
 
 export function AvisoNew() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     register,
@@ -49,15 +51,15 @@ export function AvisoNew() {
         destaque: data.destaque || false,
       });
 
-      toast.success("Aviso criado com sucesso!");
+      toast.success(t("condominio.avisos.new.success"));
       reset();
       navigate({ to: "/condominio/avisos" });
     } catch (error: unknown) {
       console.error("Erro ao criar aviso:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao criar aviso";
-      toast.error("Erro ao criar aviso", {
+          ?.data?.message || t("condominio.avisos.new.error");
+      toast.error(t("condominio.avisos.new.error"), {
         description: message,
       });
     }
@@ -68,7 +70,7 @@ export function AvisoNew() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Adicionar Novo Aviso
+            {t("condominio.avisos.new.title")}
           </h1>
           <Button
             type="button"
@@ -76,7 +78,7 @@ export function AvisoNew() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/avisos" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.avisos.new.back")}
           </Button>
         </div>
 
@@ -85,20 +87,20 @@ export function AvisoNew() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="titulo">Título *</Label>
+            <Label htmlFor="titulo">{t("condominio.avisos.new.titulo")} *</Label>
             <Input
               id="titulo"
-              placeholder="Digite o título do aviso"
+              placeholder={t("condominio.avisos.new.tituloPlaceholder")}
               {...register("titulo")}
             />
             <FormErrorMessage message={errors.titulo?.message} />
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="descricao">Descrição *</Label>
+            <Label htmlFor="descricao">{t("condominio.avisos.new.descricao")} *</Label>
             <textarea
               id="descricao"
-              placeholder="Digite a descrição do aviso"
+              placeholder={t("condominio.avisos.new.descricaoPlaceholder")}
               {...register("descricao")}
               rows={4}
               className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -107,17 +109,17 @@ export function AvisoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo (opcional)</Label>
+            <Label htmlFor="tipo">{t("condominio.avisos.new.tipo")}</Label>
             <Input
               id="tipo"
-              placeholder="Ex: Informativo, Urgente"
+              placeholder={t("condominio.avisos.new.tipoPlaceholder")}
               {...register("tipo")}
             />
             <FormErrorMessage message={errors.tipo?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="dataInicio">Data de Início *</Label>
+            <Label htmlFor="dataInicio">{t("condominio.avisos.new.dataInicio")} *</Label>
             <Controller
               name="dataInicio"
               control={control}
@@ -135,7 +137,7 @@ export function AvisoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="dataFim">Data de Fim (opcional)</Label>
+            <Label htmlFor="dataFim">{t("condominio.avisos.new.dataFim")}</Label>
             <Controller
               name="dataFim"
               control={control}
@@ -146,7 +148,7 @@ export function AvisoNew() {
                   onChange={(date) => {
                     field.onChange(date ? formatDateToInput(date) : "");
                   }}
-                  placeholder="Selecione a data de fim"
+                  placeholder={t("condominio.avisos.new.dataFimPlaceholder")}
                 />
               )}
             />
@@ -160,7 +162,7 @@ export function AvisoNew() {
               onCheckedChange={(checked) => setValue("destaque", !!checked)}
             />
             <Label htmlFor="destaque" className="cursor-pointer">
-              Marcar como destaque
+              {t("condominio.avisos.new.destaque")}
             </Label>
             <FormErrorMessage message={errors.destaque?.message} />
           </div>
@@ -171,14 +173,14 @@ export function AvisoNew() {
               disabled={isSubmitting}
               className="bg-emerald-500 text-white"
             >
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.avisos.new.saving") : t("condominio.avisos.new.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/avisos" })}
             >
-              Cancelar
+              {t("condominio.avisos.new.cancel")}
             </Button>
           </div>
         </form>

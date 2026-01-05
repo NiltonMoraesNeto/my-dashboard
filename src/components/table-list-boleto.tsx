@@ -2,6 +2,7 @@ import { EllipsisVertical, Download } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { BoletoList } from "../model/boleto-model";
 import { deleteBoleto, downloadBoletoPdf } from "../services/boletos";
 import { isSuccessRequest } from "../utils/response-request";
@@ -26,6 +27,7 @@ export function TableBoletosList({
   handleListData,
   isMorador = false,
 }: TableBoletosListProps) {
+  const { t } = useTranslation();
   const [boletoToDelete, setBoletoToDelete] = useState<string | null>(null);
   const [boletoToView, setBoletoToView] = useState<BoletoList | null>(null);
   const [modalBoletoOpen, setModalBoletoOpen] = useState(false);
@@ -124,28 +126,28 @@ export function TableBoletosList({
           <thead>
             <tr>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Unidade
+                {t("condominio.boletos.table.unidade")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Descrição
+                {t("condominio.boletos.table.descricao")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Valor
+                {t("condominio.boletos.table.valor")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Vencimento
+                {t("condominio.boletos.table.vencimento")}
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Status
+                {t("condominio.boletos.table.status")}
               </th>
               {isMorador && (
                 <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                  Download
+                  {t("condominio.boletos.table.download")}
                 </th>
               )}
               {!isMorador && (
                 <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                  Ação
+                  {t("condominio.boletos.table.acao")}
                 </th>
               )}
             </tr>
@@ -165,9 +167,9 @@ export function TableBoletosList({
               >
                 <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm">
                   {boleto.unidade?.numero || boleto.unidadeId}
-                  {boleto.unidade?.bloco && ` - Bloco ${boleto.unidade.bloco}`}
+                  {boleto.unidade?.bloco && ` - ${t("condominio.boletos.table.bloco")} ${boleto.unidade.bloco}`}
                   {boleto.unidade?.apartamento &&
-                    ` - Apt ${boleto.unidade.apartamento}`}
+                    ` - ${t("condominio.boletos.table.apt")} ${boleto.unidade.apartamento}`}
                 </td>
                 <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm">
                   {boleto.descricao}
@@ -195,7 +197,7 @@ export function TableBoletosList({
                         className="flex items-center gap-2"
                       >
                         <Download className="h-4 w-4" />
-                        Baixar PDF
+                        {t("condominio.boletos.table.baixarPdf")}
                       </Button>
                     ) : (
                       <span className="text-gray-400 text-xs">Sem arquivo</span>
@@ -218,13 +220,13 @@ export function TableBoletosList({
                             })
                           }
                         >
-                          Editar
+                          {t("condominio.boletos.table.editar")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => openDeleteDialog(boleto.id)}
                           className="text-red-600"
                         >
-                          Excluir
+                          {t("condominio.boletos.table.excluir")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -37,6 +38,7 @@ interface UnidadeResponse {
 }
 
 export function UnidadeEdit() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams({ strict: false });
   const [moradores, setMoradores] = useState<MoradorList[]>([]);
@@ -83,7 +85,7 @@ export function UnidadeEdit() {
   useEffect(() => {
     const loadUnidade = async () => {
       if (!id) {
-        toast.error("Unidade não encontrada");
+        toast.error(t("condominio.unidades.edit.notFound"));
         navigate({ to: "/condominio/unidades" });
         return;
       }
@@ -103,7 +105,7 @@ export function UnidadeEdit() {
         });
       } catch (error) {
         console.error("Erro ao carregar unidade:", error);
-        toast.error("Erro ao carregar dados da unidade");
+        toast.error(t("condominio.unidades.edit.errorLoad"));
         navigate({ to: "/condominio/unidades" });
       }
     };
@@ -126,14 +128,14 @@ export function UnidadeEdit() {
         moradorId: data.moradorId || undefined,
       });
 
-      toast.success("Unidade atualizada com sucesso!");
+      toast.success(t("condominio.unidades.edit.success"));
       navigate({ to: "/condominio/unidades" });
     } catch (error: unknown) {
       console.error("Erro ao atualizar unidade:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao atualizar unidade";
-      toast.error("Erro ao atualizar unidade", {
+          ?.data?.message || t("condominio.unidades.edit.error");
+      toast.error(t("condominio.unidades.edit.error"), {
         description: message,
       });
     }
@@ -144,7 +146,7 @@ export function UnidadeEdit() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Editar Unidade
+            {t("condominio.unidades.edit.title")}
           </h1>
           <Button
             type="button"
@@ -152,7 +154,7 @@ export function UnidadeEdit() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/unidades" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.unidades.edit.back")}
           </Button>
         </div>
 
@@ -161,33 +163,33 @@ export function UnidadeEdit() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <div className="space-y-2">
-            <Label htmlFor="numero">Número *</Label>
-            <Input id="numero" placeholder="Ex: 101" {...register("numero")} />
+            <Label htmlFor="numero">{t("condominio.unidades.edit.numero")} *</Label>
+            <Input id="numero" placeholder={t("condominio.unidades.edit.numeroPlaceholder")} {...register("numero")} />
             <FormErrorMessage message={errors.numero?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bloco">Bloco (opcional)</Label>
+            <Label htmlFor="bloco">{t("condominio.unidades.edit.bloco")}</Label>
             <Input
               id="bloco"
-              placeholder="Ex: A, B, 1"
+              placeholder={t("condominio.unidades.edit.blocoPlaceholder")}
               {...register("bloco")}
             />
             <FormErrorMessage message={errors.bloco?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="apartamento">Apartamento (opcional)</Label>
+            <Label htmlFor="apartamento">{t("condominio.unidades.edit.apartamento")}</Label>
             <Input
               id="apartamento"
-              placeholder="Ex: 101"
+              placeholder={t("condominio.unidades.edit.apartamentoPlaceholder")}
               {...register("apartamento")}
             />
             <FormErrorMessage message={errors.apartamento?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo (opcional)</Label>
+            <Label htmlFor="tipo">{t("condominio.unidades.edit.tipo")}</Label>
             <Controller
               name="tipo"
               control={control}
@@ -197,13 +199,13 @@ export function UnidadeEdit() {
                   onValueChange={(value) => field.onChange(value || undefined)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o tipo" />
+                    <SelectValue placeholder={t("condominio.unidades.edit.tipoPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Apartamento">Apartamento</SelectItem>
-                    <SelectItem value="Cobertura">Cobertura</SelectItem>
-                    <SelectItem value="Loja">Loja</SelectItem>
-                    <SelectItem value="Garagem">Garagem</SelectItem>
+                    <SelectItem value="Apartamento">{t("condominio.unidades.edit.tipoApartamento")}</SelectItem>
+                    <SelectItem value="Cobertura">{t("condominio.unidades.edit.tipoCobertura")}</SelectItem>
+                    <SelectItem value="Loja">{t("condominio.unidades.edit.tipoLoja")}</SelectItem>
+                    <SelectItem value="Garagem">{t("condominio.unidades.edit.tipoGaragem")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -212,19 +214,19 @@ export function UnidadeEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
+            <Label htmlFor="status">{t("condominio.unidades.edit.status")}</Label>
             <Controller
               name="status"
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o status" />
+                    <SelectValue placeholder={t("condominio.unidades.edit.statusPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Ativo">Ativo</SelectItem>
-                    <SelectItem value="Inativo">Inativo</SelectItem>
-                    <SelectItem value="Alugado">Alugado</SelectItem>
+                    <SelectItem value="Ativo">{t("condominio.unidades.edit.statusAtivo")}</SelectItem>
+                    <SelectItem value="Inativo">{t("condominio.unidades.edit.statusInativo")}</SelectItem>
+                    <SelectItem value="Alugado">{t("condominio.unidades.edit.statusAlugado")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -233,10 +235,10 @@ export function UnidadeEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="moradorId">Morador (opcional)</Label>
+            <Label htmlFor="moradorId">{t("condominio.unidades.edit.morador")}</Label>
             {isLoadingMoradores ? (
               <span className="text-sm text-emerald-500">
-                Carregando moradores...
+                {t("condominio.unidades.edit.loadingMoradores")}
               </span>
             ) : (
               <>
@@ -252,7 +254,7 @@ export function UnidadeEdit() {
                       disabled={isLoadingMoradores}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione um morador" />
+                        <SelectValue placeholder={t("condominio.unidades.edit.moradorPlaceholder")} />
                       </SelectTrigger>
                       <SelectContent>
                         {moradores.map((morador) => (
@@ -270,31 +272,31 @@ export function UnidadeEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="proprietario">Proprietário (opcional)</Label>
+            <Label htmlFor="proprietario">{t("condominio.unidades.edit.proprietario")}</Label>
             <Input
               id="proprietario"
-              placeholder="Nome do proprietário"
+              placeholder={t("condominio.unidades.edit.proprietarioPlaceholder")}
               {...register("proprietario")}
             />
             <FormErrorMessage message={errors.proprietario?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="telefone">Telefone (opcional)</Label>
+            <Label htmlFor="telefone">{t("condominio.unidades.edit.telefone")}</Label>
             <Input
               id="telefone"
-              placeholder="(00) 00000-0000"
+              placeholder={t("condominio.unidades.edit.telefonePlaceholder")}
               {...register("telefone")}
             />
             <FormErrorMessage message={errors.telefone?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email (opcional)</Label>
+            <Label htmlFor="email">{t("condominio.unidades.edit.email")}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="email@exemplo.com"
+              placeholder={t("condominio.unidades.edit.emailPlaceholder")}
               {...register("email")}
             />
             <FormErrorMessage message={errors.email?.message} />
@@ -306,14 +308,14 @@ export function UnidadeEdit() {
               disabled={isSubmitting}
               className="bg-emerald-500 text-white"
             >
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.unidades.edit.saving") : t("condominio.unidades.edit.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/unidades" })}
             >
-              Cancelar
+              {t("condominio.unidades.edit.cancel")}
             </Button>
           </div>
         </form>

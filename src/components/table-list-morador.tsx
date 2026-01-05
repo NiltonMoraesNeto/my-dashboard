@@ -2,6 +2,7 @@ import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { MoradorList } from "../model/morador-model";
 import { deleteMorador } from "../services/moradores";
 import { isSuccessRequest } from "../utils/response-request";
@@ -23,6 +24,7 @@ export function TableMoradoresList({
   moradorList,
   handleListData,
 }: TableMoradoresListProps) {
+  const { t } = useTranslation();
   const [moradorToDelete, setMoradorToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -38,22 +40,22 @@ export function TableMoradoresList({
     try {
       const response = await deleteMorador(id);
       if (response && isSuccessRequest(response.status)) {
-        toast.success("Sucesso", {
-          description: "Morador deletado com sucesso",
+        toast.success(t("common.success"), {
+          description: t("condominio.moradores.table.successDelete"),
         });
         closeDeleteDialog();
         handleListData();
       } else {
-        toast.error("Error", {
-          description: "Erro ao deletar o morador",
+        toast.error(t("common.error"), {
+          description: t("condominio.moradores.table.errorDelete"),
         });
       }
     } catch (error: unknown) {
       console.error("Erro ao deletar morador:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao deletar o morador";
-      toast.error("Error", {
+          ?.data?.message || t("condominio.moradores.table.errorDelete");
+      toast.error(t("common.error"), {
         description: message,
       });
     }
@@ -64,19 +66,19 @@ export function TableMoradoresList({
         <thead>
           <tr>
             <th className="w-2/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-              Nome do Morador
+              {t("condominio.moradores.table.nomeMorador")}
             </th>
             <th className="w-2/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-              Email
+              {t("condominio.moradores.table.email")}
             </th>
             <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-              CEP
+              {t("condominio.moradores.table.cep")}
             </th>
             <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-              Data de Criação
+              {t("condominio.moradores.table.dataCriacao")}
             </th>
             <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-              Ação
+              {t("condominio.moradores.table.acao")}
             </th>
           </tr>
         </thead>
@@ -119,7 +121,7 @@ export function TableMoradoresList({
                         });
                       }}
                     >
-                      Editar
+                      {t("condominio.moradores.table.editar")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={(e) => {
@@ -127,7 +129,7 @@ export function TableMoradoresList({
                         openDeleteDialog(morador.id);
                       }}
                     >
-                      Deletar
+                      {t("condominio.moradores.table.excluir")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

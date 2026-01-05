@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TableAviso } from "../../../components/table-aviso";
 import type { AvisoList } from "../../../model/aviso-model";
 import { fetchAvisosList } from "../../../services/avisos";
 
 export function Avisos() {
+  const { t } = useTranslation();
   const [avisoList, setAvisoList] = useState<AvisoList[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
@@ -58,7 +60,7 @@ export function Avisos() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Avisos</h1>
+      <h1 className="text-3xl font-bold mb-6">{t("condominio.avisos.title")}</h1>
       <TableAviso
         search={search}
         setSearch={setSearch}

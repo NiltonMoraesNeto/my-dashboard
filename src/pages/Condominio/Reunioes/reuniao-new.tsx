@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -14,6 +15,7 @@ import { schemaReuniaoNew } from "../../../schemas/reuniao-schema";
 import { createReuniao } from "../../../services/reunioes";
 
 export function ReuniaoNew() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     register,
@@ -46,15 +48,15 @@ export function ReuniaoNew() {
         status: data.status || "Agendada",
       });
 
-      toast.success("Reunião criada com sucesso!");
+      toast.success(t("condominio.reunioes.new.success"));
       reset();
       navigate({ to: "/condominio/reunioes" });
     } catch (error: unknown) {
       console.error("Erro ao criar reunião:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao criar reunião";
-      toast.error("Erro ao criar reunião", {
+          ?.data?.message || t("condominio.reunioes.new.error");
+      toast.error(t("condominio.reunioes.new.error"), {
         description: message,
       });
     }
@@ -65,7 +67,7 @@ export function ReuniaoNew() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Adicionar Nova Reunião
+            {t("condominio.reunioes.new.title")}
           </h1>
           <Button
             type="button"
@@ -73,7 +75,7 @@ export function ReuniaoNew() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/reunioes" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.reunioes.new.back")}
           </Button>
         </div>
 
@@ -82,17 +84,17 @@ export function ReuniaoNew() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <div className="space-y-2">
-            <Label htmlFor="titulo">Título *</Label>
+            <Label htmlFor="titulo">{t("condominio.reunioes.new.titulo")} *</Label>
             <Input
               id="titulo"
-              placeholder="Digite o título da reunião"
+              placeholder={t("condominio.reunioes.new.tituloPlaceholder")}
               {...register("titulo")}
             />
             <FormErrorMessage message={errors.titulo?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="data">Data *</Label>
+            <Label htmlFor="data">{t("condominio.reunioes.new.data")} *</Label>
             <Controller
               name="data"
               control={control}
@@ -110,46 +112,46 @@ export function ReuniaoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="hora">Hora *</Label>
+            <Label htmlFor="hora">{t("condominio.reunioes.new.hora")} *</Label>
             <Input id="hora" type="time" {...register("hora")} />
             <FormErrorMessage message={errors.hora?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="local">Local (opcional)</Label>
+            <Label htmlFor="local">{t("condominio.reunioes.new.local")}</Label>
             <Input
               id="local"
-              placeholder="Digite o local da reunião"
+              placeholder={t("condominio.reunioes.new.localPlaceholder")}
               {...register("local")}
             />
             <FormErrorMessage message={errors.local?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo (opcional)</Label>
+            <Label htmlFor="tipo">{t("condominio.reunioes.new.tipo")}</Label>
             <Input
               id="tipo"
-              placeholder="Ex: Assembleia, Ordinária"
+              placeholder={t("condominio.reunioes.new.tipoPlaceholder")}
               {...register("tipo")}
             />
             <FormErrorMessage message={errors.tipo?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status (opcional)</Label>
+            <Label htmlFor="status">{t("condominio.reunioes.new.status")}</Label>
             <Input
               id="status"
-              placeholder="Ex: Agendada, Realizada"
+              placeholder={t("condominio.reunioes.new.statusPlaceholder")}
               {...register("status")}
             />
             <FormErrorMessage message={errors.status?.message} />
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="pauta">Pauta (opcional)</Label>
+            <Label htmlFor="pauta">{t("condominio.reunioes.new.pauta")}</Label>
             <textarea
               id="pauta"
-              placeholder="Digite a pauta da reunião"
+              placeholder={t("condominio.reunioes.new.pautaPlaceholder")}
               {...register("pauta")}
               rows={4}
               className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -163,14 +165,14 @@ export function ReuniaoNew() {
               disabled={isSubmitting}
               className="bg-emerald-500 text-white"
             >
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.reunioes.new.saving") : t("condominio.reunioes.new.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/reunioes" })}
             >
-              Cancelar
+              {t("condominio.reunioes.new.cancel")}
             </Button>
           </div>
         </form>

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -28,6 +29,7 @@ interface AvisoResponse {
 }
 
 export function AvisoEdit() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams({ strict: false });
   const {
@@ -55,7 +57,7 @@ export function AvisoEdit() {
   useEffect(() => {
     const loadAviso = async () => {
       if (!id) {
-        toast.error("Aviso não encontrado");
+        toast.error(t("condominio.avisos.edit.notFound"));
         navigate({ to: "/condominio/avisos" });
         return;
       }
@@ -79,7 +81,7 @@ export function AvisoEdit() {
         });
       } catch (error) {
         console.error("Erro ao carregar aviso:", error);
-        toast.error("Erro ao carregar dados do aviso");
+        toast.error(t("condominio.avisos.edit.errorLoad"));
         navigate({ to: "/condominio/avisos" });
       }
     };
@@ -108,14 +110,14 @@ export function AvisoEdit() {
 
       await updateAviso(id, payload);
 
-      toast.success("Aviso atualizado com sucesso!");
+      toast.success(t("condominio.avisos.edit.success"));
       navigate({ to: "/condominio/avisos" });
     } catch (error: unknown) {
       console.error("Erro ao atualizar aviso:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao atualizar aviso";
-      toast.error("Erro ao atualizar aviso", {
+          ?.data?.message || t("condominio.avisos.edit.error");
+      toast.error(t("condominio.avisos.edit.error"), {
         description: message,
       });
     }
