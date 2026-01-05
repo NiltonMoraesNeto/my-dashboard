@@ -1,9 +1,9 @@
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Download } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { BoletoList } from "../model/boleto-model";
-import { deleteBoleto } from "../services/boletos";
+import { deleteBoleto, downloadBoletoPdf } from "../services/boletos";
 import { isSuccessRequest } from "../utils/response-request";
 import { ModalDeleteBoleto } from "./modal-delete-boleto";
 import { ModalBoleto } from "./modal-boleto";
@@ -94,22 +94,27 @@ export function TableBoletosList({
     }
   };
 
-  const getMonthName = (mes: number) => {
-    const months = [
-      "Janeiro",
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-      "Agosto",
-      "Setembro",
-      "Outubro",
-      "Novembro",
-      "Dezembro",
-    ];
-    return months[mes - 1] || "";
+  const handleDownloadPdf = async (boleto: BoletoList, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!boleto.arquivoPdf) {
+      toast.error("Arquivo PDF não disponível");
+      return;
+    }
+    try {
+      const response = await downloadBoletoPdf(boleto.id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `boleto-${boleto.id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("PDF baixado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao baixar PDF:", error);
+      toast.error("Erro ao baixar PDF");
+    }
   };
 
   return (
@@ -122,7 +127,7 @@ export function TableBoletosList({
                 Unidade
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
-                Mês/Ano
+                Descrição
               </th>
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
                 Valor
@@ -133,6 +138,11 @@ export function TableBoletosList({
               <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
                 Status
               </th>
+              {isMorador && (
+                <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
+                  Download
+                </th>
+              )}
               {!isMorador && (
                 <th className="w-1/6 py-3 px-4 border-b border-gray-200 dark:border-emerald-800 dark:bg-emerald-600 dark:text-emerald-300 text-gray-700 bg-gray-50 text-left text-sm font-medium">
                   Ação
@@ -160,7 +170,7 @@ export function TableBoletosList({
                     ` - Apt ${boleto.unidade.apartamento}`}
                 </td>
                 <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm">
-                  {getMonthName(boleto.mes)}/{boleto.ano}
+                  {boleto.descricao}
                 </td>
                 <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm font-semibold">
                   {formatCurrency(boleto.valor)}
@@ -175,6 +185,23 @@ export function TableBoletosList({
                     {boleto.status}
                   </span>
                 </td>
+                {isMorador && (
+                  <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm">
+                    {boleto.arquivoPdf ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => handleDownloadPdf(boleto, e)}
+                        className="flex items-center gap-2"
+                      >
+                        <Download className="h-4 w-4" />
+                        Baixar PDF
+                      </Button>
+                    ) : (
+                      <span className="text-gray-400 text-xs">Sem arquivo</span>
+                    )}
+                  </td>
+                )}
                 {!isMorador && (
                   <td className="py-3 px-4 border-b border-gray-200 dark:border-emerald-700 text-gray-900 dark:text-emerald-100 text-sm">
                     <DropdownMenu>

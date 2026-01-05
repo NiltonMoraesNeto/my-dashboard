@@ -9,6 +9,7 @@ import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { InputDate } from "../../../components/ui/input-date";
+import { InputFile } from "../../../components/ui/input-file";
 import { InputMoney } from "../../../components/ui/input-money";
 import { Label } from "../../../components/ui/label";
 import { formatDateToInput } from "../../../lib/utils";
@@ -30,12 +31,10 @@ import { fetchUnidadesList } from "../../../services/unidades";
 interface BoletoResponse {
   id: string;
   unidadeId: string;
-  mes: number;
-  ano: number;
+  descricao: string;
   valor: number;
   vencimento: string;
-  codigoBarras?: string;
-  nossoNumero?: string;
+  arquivoPdf?: string;
   status: string;
   dataPagamento?: string;
   observacoes?: string;
@@ -66,12 +65,9 @@ export function BoletoEdit() {
     resolver: zodResolver(schemaBoletoEdit),
     defaultValues: {
       unidadeId: "",
-      mes: new Date().getMonth() + 1,
-      ano: new Date().getFullYear(),
+      descricao: "",
       valor: 0,
       vencimento: "",
-      codigoBarras: "",
-      nossoNumero: "",
       status: "Pendente",
       observacoes: "",
     },
@@ -112,12 +108,10 @@ export function BoletoEdit() {
           : "";
         reset({
           unidadeId: boleto.unidadeId || "",
-          mes: boleto.mes || new Date().getMonth() + 1,
-          ano: boleto.ano || new Date().getFullYear(),
+          descricao: boleto.descricao || "",
           valor: boleto.valor || 0,
           vencimento: vencimentoFormatada,
-          codigoBarras: boleto.codigoBarras || "",
-          nossoNumero: boleto.nossoNumero || "",
+          arquivo: boleto.arquivoPdf || undefined,
           status: boleto.status || "Pendente",
           dataPagamento: dataPagamentoFormatada,
           observacoes: boleto.observacoes || "",
@@ -137,14 +131,14 @@ export function BoletoEdit() {
     try {
       const payload: UpdateBoletoPayload = {};
       if (data.unidadeId !== undefined) payload.unidadeId = data.unidadeId;
-      if (data.mes !== undefined) payload.mes = data.mes;
-      if (data.ano !== undefined) payload.ano = data.ano;
+      if (data.descricao !== undefined) payload.descricao = data.descricao;
       if (data.valor !== undefined) payload.valor = data.valor;
       if (data.vencimento !== undefined) payload.vencimento = data.vencimento;
-      if (data.codigoBarras !== undefined)
-        payload.codigoBarras = data.codigoBarras || undefined;
-      if (data.nossoNumero !== undefined)
-        payload.nossoNumero = data.nossoNumero || undefined;
+      if (data.arquivo !== undefined) {
+        if (data.arquivo instanceof File) {
+          payload.arquivo = data.arquivo;
+        }
+      }
       if (data.status !== undefined) payload.status = data.status || undefined;
       if (data.dataPagamento !== undefined)
         payload.dataPagamento = data.dataPagamento || undefined;
@@ -218,26 +212,13 @@ export function BoletoEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mes">Mês *</Label>
+            <Label htmlFor="descricao">Descrição *</Label>
             <Input
-              id="mes"
-              type="number"
-              min="1"
-              max="12"
-              {...register("mes", { valueAsNumber: true })}
+              id="descricao"
+              {...register("descricao")}
+              placeholder="Ex: Taxa de condomínio - Janeiro 2024"
             />
-            <FormErrorMessage message={errors.mes?.message} />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="ano">Ano *</Label>
-            <Input
-              id="ano"
-              type="number"
-              min="2000"
-              {...register("ano", { valueAsNumber: true })}
-            />
-            <FormErrorMessage message={errors.ano?.message} />
+            <FormErrorMessage message={errors.descricao?.message} />
           </div>
 
           <div className="space-y-2">
@@ -274,6 +255,23 @@ export function BoletoEdit() {
             <FormErrorMessage message={errors.vencimento?.message} />
           </div>
 
+          <div className="md:col-span-2 space-y-2">
+            <Label htmlFor="arquivo">Arquivo PDF (opcional - deixe em branco para manter o atual)</Label>
+            <Controller
+              name="arquivo"
+              control={control}
+              render={({ field }) => (
+                <InputFile
+                  id="arquivo"
+                  accept=".pdf,application/pdf"
+                  value={field.value || null}
+                  onChange={(file) => field.onChange(file)}
+                />
+              )}
+            />
+            <FormErrorMessage message={errors.arquivo?.message} />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
             <Controller
@@ -294,18 +292,6 @@ export function BoletoEdit() {
               )}
             />
             <FormErrorMessage message={errors.status?.message} />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="codigoBarras">Código de Barras (opcional)</Label>
-            <Input id="codigoBarras" {...register("codigoBarras")} />
-            <FormErrorMessage message={errors.codigoBarras?.message} />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="nossoNumero">Nosso Número (opcional)</Label>
-            <Input id="nossoNumero" {...register("nossoNumero")} />
-            <FormErrorMessage message={errors.nossoNumero?.message} />
           </div>
 
           <div className="space-y-2">

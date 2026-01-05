@@ -1,12 +1,10 @@
 export interface BoletoList {
   id: string;
   unidadeId: string;
-  mes: number;
-  ano: number;
+  descricao: string;
   valor: number;
   vencimento: string;
-  codigoBarras?: string;
-  nossoNumero?: string;
+  arquivoPdf?: string;
   status: string;
   dataPagamento?: string;
   observacoes?: string;

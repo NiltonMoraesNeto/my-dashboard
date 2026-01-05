@@ -1,8 +1,10 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import type { BoletoList } from "../model/boleto-model";
-import { X } from "lucide-react";
+import { X, Download } from "lucide-react";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
+import { downloadBoletoPdf } from "../services/boletos";
+import { toast } from "sonner";
 
 interface ModalBoletoProps {
   open: boolean;
@@ -36,22 +38,26 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
     }
   };
 
-  const getMonthName = (mes: number) => {
-    const months = [
-      "Janeiro",
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-      "Agosto",
-      "Setembro",
-      "Outubro",
-      "Novembro",
-      "Dezembro",
-    ];
-    return months[mes - 1] || "";
+  const handleDownloadPdf = async () => {
+    if (!boleto?.arquivoPdf) {
+      toast.error("Arquivo PDF não disponível");
+      return;
+    }
+    try {
+      const response = await downloadBoletoPdf(boleto.id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `boleto-${boleto.id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("PDF baixado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao baixar PDF:", error);
+      toast.error("Erro ao baixar PDF");
+    }
   };
 
   if (!boleto) {
@@ -91,10 +97,10 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
 
             <div>
               <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Mês/Ano
+                Descrição
               </Label>
               <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                {getMonthName(boleto.mes)}/{boleto.ano}
+                {boleto.descricao}
               </p>
             </div>
 
@@ -141,28 +147,6 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
             )}
           </div>
 
-          {boleto.codigoBarras && (
-            <div>
-              <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Código de Barras
-              </Label>
-              <p className="mt-1 text-sm font-mono text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 p-2 rounded">
-                {boleto.codigoBarras}
-              </p>
-            </div>
-          )}
-
-          {boleto.nossoNumero && (
-            <div>
-              <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Nosso Número
-              </Label>
-              <p className="mt-1 text-sm font-mono text-gray-900 dark:text-gray-100">
-                {boleto.nossoNumero}
-              </p>
-            </div>
-          )}
-
           {boleto.observacoes && (
             <div>
               <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -174,13 +158,17 @@ export function ModalBoleto({ open, onOpenChange, boleto }: ModalBoletoProps) {
             </div>
           )}
 
-          {/* Área reservada para implementação futura do boleto */}
-          <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-              Funcionalidade de visualização/baixar boleto será implementada em
-              breve
-            </p>
-          </div>
+          {boleto.arquivoPdf && (
+            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <Button
+                onClick={handleDownloadPdf}
+                className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white hover:bg-emerald-600"
+              >
+                <Download className="h-4 w-4" />
+                Baixar PDF do Boleto
+              </Button>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

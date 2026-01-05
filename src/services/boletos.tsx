@@ -3,12 +3,10 @@ import api from "./api";
 
 interface CreateBoletoPayload {
   unidadeId: string;
-  mes: number;
-  ano: number;
+  descricao: string;
   valor: number;
   vencimento: string;
-  codigoBarras?: string;
-  nossoNumero?: string;
+  arquivo?: File;
   status?: string;
   dataPagamento?: string;
   observacoes?: string;
@@ -16,12 +14,10 @@ interface CreateBoletoPayload {
 
 export interface UpdateBoletoPayload {
   unidadeId?: string;
-  mes?: number;
-  ano?: number;
+  descricao?: string;
   valor?: number;
   vencimento?: string;
-  codigoBarras?: string;
-  nossoNumero?: string;
+  arquivo?: File;
   status?: string;
   dataPagamento?: string;
   observacoes?: string;
@@ -29,7 +25,33 @@ export interface UpdateBoletoPayload {
 
 export const createBoleto = async (payload: CreateBoletoPayload) => {
   try {
-    const response = await api.post("/condominio/boletos", payload);
+    const formData = new FormData();
+    formData.append("unidadeId", payload.unidadeId);
+    formData.append("descricao", payload.descricao);
+    formData.append("valor", payload.valor.toString());
+    formData.append("vencimento", payload.vencimento);
+    
+    if (payload.arquivo) {
+      formData.append("arquivo", payload.arquivo);
+    }
+    
+    if (payload.status) {
+      formData.append("status", payload.status);
+    }
+    
+    if (payload.dataPagamento) {
+      formData.append("dataPagamento", payload.dataPagamento);
+    }
+    
+    if (payload.observacoes) {
+      formData.append("observacoes", payload.observacoes);
+    }
+
+    const response = await api.post("/condominio/boletos", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response;
   } catch (error) {
     console.error("Erro ao criar boleto:", error);
@@ -52,7 +74,45 @@ export const updateBoleto = async (
   payload: UpdateBoletoPayload
 ) => {
   try {
-    const response = await api.patch(`/condominio/boletos/${id}`, payload);
+    const formData = new FormData();
+    
+    if (payload.unidadeId) {
+      formData.append("unidadeId", payload.unidadeId);
+    }
+    
+    if (payload.descricao) {
+      formData.append("descricao", payload.descricao);
+    }
+    
+    if (payload.valor !== undefined) {
+      formData.append("valor", payload.valor.toString());
+    }
+    
+    if (payload.vencimento) {
+      formData.append("vencimento", payload.vencimento);
+    }
+    
+    if (payload.arquivo) {
+      formData.append("arquivo", payload.arquivo);
+    }
+    
+    if (payload.status) {
+      formData.append("status", payload.status);
+    }
+    
+    if (payload.dataPagamento) {
+      formData.append("dataPagamento", payload.dataPagamento);
+    }
+    
+    if (payload.observacoes) {
+      formData.append("observacoes", payload.observacoes);
+    }
+
+    const response = await api.patch(`/condominio/boletos/${id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response;
   } catch (error) {
     console.error("Erro ao atualizar boleto:", error);
@@ -63,20 +123,14 @@ export const updateBoleto = async (
 export const fetchBoletosList = async (
   page: number,
   totalItemsByPage: number,
-  mes?: number,
-  ano?: number,
   unidadeId?: string
 ) => {
   try {
     const params: {
       page: number;
       totalItemsByPage: number;
-      mes?: number;
-      ano?: number;
       unidadeId?: string;
     } = { page, totalItemsByPage };
-    if (mes !== undefined) params.mes = mes;
-    if (ano !== undefined) params.ano = ano;
     if (unidadeId) params.unidadeId = unidadeId;
 
     const response = await api.get("/condominio/boletos", { params });
@@ -88,6 +142,18 @@ export const fetchBoletosList = async (
   } catch (error) {
     console.error("Erro ao buscar boletos:", error);
     return false;
+  }
+};
+
+export const downloadBoletoPdf = async (id: string) => {
+  try {
+    const response = await api.get(`/condominio/boletos/${id}/download`, {
+      responseType: "blob",
+    });
+    return response;
+  } catch (error) {
+    console.error("Erro ao baixar PDF do boleto:", error);
+    throw error;
   }
 };
 

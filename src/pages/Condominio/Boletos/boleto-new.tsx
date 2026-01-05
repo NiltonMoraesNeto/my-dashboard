@@ -9,6 +9,7 @@ import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { InputDate } from "../../../components/ui/input-date";
+import { InputFile } from "../../../components/ui/input-file";
 import { InputMoney } from "../../../components/ui/input-money";
 import { Label } from "../../../components/ui/label";
 import { formatDateToInput } from "../../../lib/utils";
@@ -45,12 +46,9 @@ export function BoletoNew() {
     resolver: zodResolver(schemaBoletoNew),
     defaultValues: {
       unidadeId: "",
-      mes: new Date().getMonth() + 1,
-      ano: new Date().getFullYear(),
+      descricao: "",
       valor: 0,
       vencimento: "",
-      codigoBarras: "",
-      nossoNumero: "",
       status: "Pendente",
       observacoes: "",
     },
@@ -77,12 +75,10 @@ export function BoletoNew() {
     try {
       await createBoleto({
         unidadeId: data.unidadeId,
-        mes: data.mes,
-        ano: data.ano,
+        descricao: data.descricao,
         valor: data.valor,
         vencimento: data.vencimento,
-        codigoBarras: data.codigoBarras || undefined,
-        nossoNumero: data.nossoNumero || undefined,
+        arquivo: data.arquivo,
         status: data.status || "Pendente",
         dataPagamento: data.dataPagamento || undefined,
         observacoes: data.observacoes || undefined,
@@ -148,26 +144,13 @@ export function BoletoNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mes">Mês *</Label>
+            <Label htmlFor="descricao">Descrição *</Label>
             <Input
-              id="mes"
-              type="number"
-              min="1"
-              max="12"
-              {...register("mes", { valueAsNumber: true })}
+              id="descricao"
+              {...register("descricao")}
+              placeholder="Ex: Taxa de condomínio - Janeiro 2024"
             />
-            <FormErrorMessage message={errors.mes?.message} />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="ano">Ano *</Label>
-            <Input
-              id="ano"
-              type="number"
-              min="2000"
-              {...register("ano", { valueAsNumber: true })}
-            />
-            <FormErrorMessage message={errors.ano?.message} />
+            <FormErrorMessage message={errors.descricao?.message} />
           </div>
 
           <div className="space-y-2">
@@ -204,6 +187,23 @@ export function BoletoNew() {
             <FormErrorMessage message={errors.vencimento?.message} />
           </div>
 
+          <div className="md:col-span-2 space-y-2">
+            <Label htmlFor="arquivo">Arquivo PDF *</Label>
+            <Controller
+              name="arquivo"
+              control={control}
+              render={({ field }) => (
+                <InputFile
+                  id="arquivo"
+                  accept=".pdf,application/pdf"
+                  value={field.value || null}
+                  onChange={(file) => field.onChange(file)}
+                />
+              )}
+            />
+            <FormErrorMessage message={errors.arquivo?.message} />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
               <Controller
@@ -224,18 +224,6 @@ export function BoletoNew() {
                 )}
               />
             <FormErrorMessage message={errors.status?.message} />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="codigoBarras">Código de Barras (opcional)</Label>
-            <Input id="codigoBarras" {...register("codigoBarras")} />
-            <FormErrorMessage message={errors.codigoBarras?.message} />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="nossoNumero">Nosso Número (opcional)</Label>
-            <Input id="nossoNumero" {...register("nossoNumero")} />
-            <FormErrorMessage message={errors.nossoNumero?.message} />
           </div>
 
           <div className="space-y-2">
