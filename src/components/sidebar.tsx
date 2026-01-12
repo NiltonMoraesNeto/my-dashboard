@@ -7,6 +7,7 @@ import {
   Home,
   Menu,
   NotebookPen,
+  Building2,
 } from "lucide-react";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -47,6 +48,7 @@ const menuConfig: SidebarMenuItem[] = [
     children: [
       { labelKey: "sidebar.menu.profile", to: "/profile" },
       { labelKey: "sidebar.menu.user", to: "/user" },
+      { labelKey: "sidebar.menu.empresas", to: "/admin/empresas" },
     ],
   },
   {
@@ -64,6 +66,8 @@ const menuConfig: SidebarMenuItem[] = [
 
 export function Sidebar() {
   const { t } = useTranslation();
+  const { profileUser } = useAuth();
+  const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
   const [isOpen, setIsOpen] = useState(true);
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const pathname = useRouterState({
@@ -130,6 +134,27 @@ export function Sidebar() {
     return keys;
   }, [pathname]);
 
+  // Filtrar menu config para SuperAdmin
+  const filteredMenuConfig = useMemo(() => {
+    return menuConfig.map((item) => {
+      if (item.children) {
+        const filteredChildren = item.children.filter((child) => {
+          // Filtrar item "empresas" se não for SuperAdmin
+          if (child.to === "/admin/empresas") {
+            return isSuperAdmin;
+          }
+          return true;
+        });
+        // Se não tem mais children, não retornar o item
+        if (filteredChildren.length === 0) {
+          return null;
+        }
+        return { ...item, children: filteredChildren };
+      }
+      return item;
+    }).filter((item) => item !== null) as SidebarMenuItem[];
+  }, [isSuperAdmin]);
+
   return (
     <div className="flex h-auto">
       <div className="absolute p-4 md:hidden text-indigo-600">
@@ -186,7 +211,7 @@ export function Sidebar() {
         )}
         <nav className={cn(!isOpen && "mt-6")}>
           <ul className="space-y-4">
-            {menuConfig.map((item) => {
+            {filteredMenuConfig.map((item) => {
               const Icon = item.icon;
               const isActive = activeKeys.has(item.key);
               const hasChildren = Boolean(item.children);

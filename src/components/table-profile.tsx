@@ -1,5 +1,9 @@
 import { Info, Search } from "lucide-react";
-import type { Control, FieldErrors, UseFormHandleSubmit } from "react-hook-form";
+import type {
+  Control,
+  FieldErrors,
+  UseFormHandleSubmit,
+} from "react-hook-form";
 import type { z } from "zod";
 import type { ProfileList } from "../model/profile-model";
 import type { schemaAddProfile } from "../schemas/profile-schema";
@@ -9,7 +13,12 @@ import { TableListProfile } from "./table-list-profile";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 interface TableProfileProps {
   openModal: boolean;
@@ -78,7 +87,7 @@ export function TableProfile({
                     </Label>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Apenas o perfil Administrador pode acessar</p>
+                    <p>Apenas o perfil Super Adm pode acessar</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -97,7 +106,10 @@ export function TableProfile({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col justify-between">
-        <TableListProfile profileList={profileList} handleListData={handleListData} />
+        <TableListProfile
+          profileList={profileList}
+          handleListData={handleListData}
+        />
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </CardContent>
     </Card>

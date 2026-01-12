@@ -53,7 +53,7 @@ export function ModalAddNewProfile({
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
-        <Button disabled={profileUser !== "Adminstrador"} className="max-sm:mb-4">
+        <Button disabled={profileUser !== "SuperAdmin"} className="max-sm:mb-4">
           Adicionar Novo
         </Button>
       </DialogTrigger>
@@ -65,7 +65,9 @@ export function ModalAddNewProfile({
               <div className="w-full mx-auto">
                 <div className="relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800">
                   <div className="relative px-6 pt-12 pb-6">
-                    <div className="relative shrink-0 mb-2">Nome do Perfil *</div>
+                    <div className="relative shrink-0 mb-2">
+                      Nome do Perfil *
+                    </div>
                     <div className="relative shrink-0">
                       <Controller
                         name="descricao"
@@ -81,7 +83,9 @@ export function ModalAddNewProfile({
                     </div>
                     <div className="relative shrink-0 mt-2">
                       {errors.descricao && (
-                        <p className="text-red-500">{errors.descricao.message}</p>
+                        <p className="text-red-500">
+                          {errors.descricao.message}
+                        </p>
                       )}
                     </div>
 

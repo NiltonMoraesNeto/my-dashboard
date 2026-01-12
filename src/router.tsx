@@ -38,6 +38,9 @@ import { BoletosMorador } from "./pages/Boletos/boletos";
 import { Moradores } from "./pages/Condominio/Moradores/moradores";
 import { MoradorNew } from "./pages/Condominio/Moradores/morador-new";
 import { MoradorEdit } from "./pages/Condominio/Moradores/morador-edit";
+import { Empresas } from "./pages/Empresas/empresas";
+import { EmpresaNew } from "./pages/Empresas/empresa-new";
+import { EmpresaEdit } from "./pages/Empresas/empresa-edit";
 
 type RouterContext = {
   auth: AuthContextType;
@@ -71,6 +74,10 @@ const isCondominioProfile = (profileUser?: string) => {
 
 const isMoradorProfile = (profileUser?: string) => {
   return profileUser?.toLowerCase() === "morador";
+};
+
+const isSuperAdminProfile = (profileUser?: string) => {
+  return profileUser?.toLowerCase() === "superadmin";
 };
 
 const indexRoute = createRoute({
@@ -425,6 +432,43 @@ const moradorEditRoute = createRoute({
   },
 });
 
+// Rotas do SuperAdmin - Empresas
+const empresasRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "admin/empresas",
+  component: Empresas,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isSuperAdminProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
+const empresaNewRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "admin/empresas/new",
+  component: EmpresaNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isSuperAdminProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
+const empresaEditRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "admin/empresas/$id/edit",
+  component: EmpresaEdit,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isSuperAdminProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
 const authenticatedNotFoundRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "*",
@@ -469,6 +513,9 @@ const routeTree = rootRoute.addChildren([
     moradoresRoute,
     moradorNewRoute,
     moradorEditRoute,
+    empresasRoute,
+    empresaNewRoute,
+    empresaEditRoute,
     authenticatedNotFoundRoute,
   ]),
 ]);

@@ -8,6 +8,7 @@ interface CreateUserPayload {
   perfilId: number;
   cep?: string;
   condominioId?: string;
+  empresaId?: string;
 }
 
 interface CondominioOption {
@@ -22,6 +23,7 @@ interface UpdateUserPayload {
   perfilId: number;
   cep?: string;
   condominioId?: string;
+  empresaId?: string;
 }
 
 interface ChangePasswordPayload {

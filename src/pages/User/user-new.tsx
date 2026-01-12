@@ -19,12 +19,18 @@ import {
 import { useProfiles } from "../../hooks/useProfiles";
 import { schemaUserNew } from "../../schemas/user-new-schema";
 import { createUser, fetchCondominiosList } from "../../services/usuarios";
+import { useAuth } from "../../contexts/auth-context";
+import { fetchEmpresasForSelect } from "../../services/empresas";
 
 export function UserNew() {
   const navigate = useNavigate();
   const { profiles, isLoading: isLoadingProfiles, error: profilesError, refresh } = useProfiles();
+  const { profileUser } = useAuth();
+  const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
   const [condominios, setCondominios] = useState<Array<{ id: string; nome: string; email: string }>>([]);
   const [isLoadingCondominios, setIsLoadingCondominios] = useState(false);
+  const [empresas, setEmpresas] = useState<Array<{ id: string; nome: string }>>([]);
+  const [isLoadingEmpresas, setIsLoadingEmpresas] = useState(false);
   
   const {
     register,
@@ -42,6 +48,7 @@ export function UserNew() {
       perfilId: 0,
       cep: "",
       condominioId: undefined,
+      empresaId: undefined,
     },
   });
 
@@ -52,6 +59,24 @@ export function UserNew() {
     (p) => p.descricao.toLowerCase().includes("morador")
   );
   const isMoradorProfile = perfilMorador && selectedPerfilId === perfilMorador.id;
+
+  // Carregar empresas se for SuperAdmin
+  useEffect(() => {
+    if (isSuperAdmin) {
+      setIsLoadingEmpresas(true);
+      fetchEmpresasForSelect()
+        .then((data) => {
+          setEmpresas(data);
+        })
+        .catch((error) => {
+          console.error("Erro ao carregar empresas:", error);
+          toast.error("Erro ao carregar lista de empresas");
+        })
+        .finally(() => {
+          setIsLoadingEmpresas(false);
+        });
+    }
+  }, [isSuperAdmin]);
 
   // Carregar condomínios quando o perfil Morador for selecionado
   useEffect(() => {
@@ -82,6 +107,7 @@ export function UserNew() {
         perfilId: data.perfilId,
         cep: data.cep || undefined,
         condominioId: data.condominioId || undefined,
+        empresaId: data.empresaId || undefined,
       });
 
       toast.success("Usuário criado com sucesso!");
@@ -185,6 +211,41 @@ export function UserNew() {
             <Input id="cep" placeholder="00000000" maxLength={8} {...register("cep")} />
             <FormErrorMessage message={errors.cep?.message} />
           </div>
+
+          {isSuperAdmin && (
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="empresaId">Empresa (opcional)</Label>
+              {isLoadingEmpresas ? (
+                <span className="text-sm text-indigo-500">Carregando empresas...</span>
+              ) : (
+                <>
+                  <Controller
+                    name="empresaId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value || ""}
+                        onValueChange={field.onChange}
+                        disabled={isLoadingEmpresas}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione uma empresa (opcional)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {empresas.map((empresa) => (
+                            <SelectItem key={empresa.id} value={empresa.id}>
+                              {empresa.nome}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <FormErrorMessage message={errors.empresaId?.message} />
+                </>
+              )}
+            </div>
+          )}
 
           {isMoradorProfile && (
             <div className="space-y-2 md:col-span-2">
