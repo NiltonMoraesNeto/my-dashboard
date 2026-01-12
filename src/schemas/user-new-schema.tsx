@@ -10,4 +10,5 @@ export const schemaUserNew = z.object({
     .min(6, "Senha deve ter no mínimo 6 caracteres"),
   perfilId: z.number({ required_error: "Perfil é obrigatório" }).min(1, "Selecione um perfil"),
   cep: z.string().max(8, "CEP deve ter no máximo 8 caracteres").optional().or(z.literal("")),
+  condominioId: z.string().optional(),
 });

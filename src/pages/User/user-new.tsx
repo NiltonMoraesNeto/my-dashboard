@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -17,15 +18,19 @@ import {
 } from "../../components/ui/select";
 import { useProfiles } from "../../hooks/useProfiles";
 import { schemaUserNew } from "../../schemas/user-new-schema";
-import { createUser } from "../../services/usuarios";
+import { createUser, fetchCondominiosList } from "../../services/usuarios";
 
 export function UserNew() {
   const navigate = useNavigate();
   const { profiles, isLoading: isLoadingProfiles, error: profilesError, refresh } = useProfiles();
+  const [condominios, setCondominios] = useState<Array<{ id: string; nome: string; email: string }>>([]);
+  const [isLoadingCondominios, setIsLoadingCondominios] = useState(false);
+  
   const {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<z.infer<typeof schemaUserNew>>({
@@ -36,8 +41,37 @@ export function UserNew() {
       password: "",
       perfilId: 0,
       cep: "",
+      condominioId: undefined,
     },
   });
+
+  const selectedPerfilId = watch("perfilId");
+  
+  // Buscar perfil Morador
+  const perfilMorador = profiles.find(
+    (p) => p.descricao.toLowerCase().includes("morador")
+  );
+  const isMoradorProfile = perfilMorador && selectedPerfilId === perfilMorador.id;
+
+  // Carregar condomínios quando o perfil Morador for selecionado
+  useEffect(() => {
+    if (isMoradorProfile) {
+      setIsLoadingCondominios(true);
+      fetchCondominiosList()
+        .then((data) => {
+          setCondominios(data);
+        })
+        .catch((error) => {
+          console.error("Erro ao carregar condomínios:", error);
+          toast.error("Erro ao carregar lista de condomínios");
+        })
+        .finally(() => {
+          setIsLoadingCondominios(false);
+        });
+    } else {
+      setCondominios([]);
+    }
+  }, [isMoradorProfile]);
 
   const onSubmit = async (data: z.infer<typeof schemaUserNew>) => {
     try {
@@ -47,15 +81,19 @@ export function UserNew() {
         password: data.password,
         perfilId: data.perfilId,
         cep: data.cep || undefined,
+        condominioId: data.condominioId || undefined,
       });
 
       toast.success("Usuário criado com sucesso!");
       reset();
       navigate({ to: "/user" });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Erro ao criar usuário:", error);
+      const errorMessage = 
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Verifique os dados informados e tente novamente";
       toast.error("Erro ao criar usuário", {
-        description: "Verifique os dados informados e tente novamente",
+        description: errorMessage,
       });
     }
   };
@@ -147,6 +185,48 @@ export function UserNew() {
             <Input id="cep" placeholder="00000000" maxLength={8} {...register("cep")} />
             <FormErrorMessage message={errors.cep?.message} />
           </div>
+
+          {isMoradorProfile && (
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="condominioId">Condomínio *</Label>
+              {isLoadingCondominios ? (
+                <span className="text-sm text-indigo-500">Carregando condomínios...</span>
+              ) : (
+                <>
+                  <Controller
+                    name="condominioId"
+                    control={control}
+                    rules={{ required: isMoradorProfile ? "Condomínio é obrigatório para perfil Morador" : false }}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value || ""}
+                        onValueChange={field.onChange}
+                        disabled={isLoadingCondominios}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um condomínio" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {condominios.length === 0 ? (
+                            <SelectItem value="empty" disabled>
+                              Nenhum condomínio disponível
+                            </SelectItem>
+                          ) : (
+                            condominios.map((condominio) => (
+                              <SelectItem key={condominio.id} value={condominio.id}>
+                                {condominio.nome} ({condominio.email})
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <FormErrorMessage message={errors.condominioId?.message} />
+                </>
+              )}
+            </div>
+          )}
 
           <div className="md:col-span-2 flex justify-end gap-3">
             <Button

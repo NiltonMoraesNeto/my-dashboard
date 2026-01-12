@@ -7,6 +7,13 @@ interface CreateUserPayload {
   password: string;
   perfilId: number;
   cep?: string;
+  condominioId?: string;
+}
+
+interface CondominioOption {
+  id: string;
+  nome: string;
+  email: string;
 }
 
 interface UpdateUserPayload {
@@ -14,6 +21,7 @@ interface UpdateUserPayload {
   email: string;
   perfilId: number;
   cep?: string;
+  condominioId?: string;
 }
 
 interface ChangePasswordPayload {
@@ -141,5 +149,15 @@ export const deleteUser = async (id: string) => {
   } catch (error) {
     console.error("Erro ao deletar o Usuário", error);
     return false;
+  }
+};
+
+export const fetchCondominiosList = async (): Promise<CondominioOption[]> => {
+  try {
+    const response = await api.get("/users/condominios/list");
+    return response.data || [];
+  } catch (error) {
+    console.error("Erro ao buscar condomínios:", error);
+    return [];
   }
 };

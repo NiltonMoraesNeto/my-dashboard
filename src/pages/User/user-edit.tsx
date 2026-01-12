@@ -18,7 +18,7 @@ import {
 } from "../../components/ui/select";
 import { useProfiles } from "../../hooks/useProfiles";
 import { schemaUserEdit } from "../../schemas/user-edit-schema";
-import { fetchUserById, updateUser } from "../../services/usuarios";
+import { fetchUserById, updateUser, fetchCondominiosList } from "../../services/usuarios";
 
 interface UserResponse {
   id: string;
@@ -26,6 +26,7 @@ interface UserResponse {
   email: string;
   perfilId: number;
   cep?: string | null;
+  condominioId?: string | null;
   perfil?: {
     id: number;
     descricao: string;
@@ -38,10 +39,14 @@ export function UserEdit() {
     from: "/authenticated/user/$id/edit",
   });
   const { profiles, isLoading: isLoadingProfiles, error: profilesError, refresh } = useProfiles();
+  const [condominios, setCondominios] = useState<Array<{ id: string; nome: string; email: string }>>([]);
+  const [isLoadingCondominios, setIsLoadingCondominios] = useState(false);
+  
   const {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors, isSubmitting },
     reset,
     setValue,
@@ -52,9 +57,18 @@ export function UserEdit() {
       email: "",
       perfilId: 0,
       cep: "",
+      condominioId: undefined,
     },
   });
   const [isLoadingUser, setIsLoadingUser] = useState(true);
+
+  const selectedPerfilId = watch("perfilId");
+  
+  // Buscar perfil Morador
+  const perfilMorador = profiles.find(
+    (p) => p.descricao.toLowerCase().includes("morador")
+  );
+  const isMoradorProfile = perfilMorador && selectedPerfilId === perfilMorador.id;
 
   useEffect(() => {
     const loadUser = async () => {
@@ -68,8 +82,29 @@ export function UserEdit() {
         const response: UserResponse = await fetchUserById(id);
         setValue("nome", response.nome);
         setValue("email", response.email);
-        setValue("perfilId", response.perfilId || response.perfil?.id || 0);
+        const perfilId = response.perfilId || response.perfil?.id || 0;
+        setValue("perfilId", perfilId);
         setValue("cep", response.cep || "");
+        setValue("condominioId", response.condominioId || undefined);
+        
+        // Se o perfil for Morador, carregar condomínios
+        const perfilMorador = profiles.find(
+          (p) => p.descricao.toLowerCase().includes("morador")
+        );
+        if (perfilMorador && perfilId === perfilMorador.id) {
+          setIsLoadingCondominios(true);
+          fetchCondominiosList()
+            .then((data) => {
+              setCondominios(data);
+            })
+            .catch((error) => {
+              console.error("Erro ao carregar condomínios:", error);
+              toast.error("Erro ao carregar lista de condomínios");
+            })
+            .finally(() => {
+              setIsLoadingCondominios(false);
+            });
+        }
       } catch (error) {
         console.error("Erro ao carregar usuário:", error);
         toast.error("Erro ao carregar dados do usuário");
@@ -80,7 +115,27 @@ export function UserEdit() {
     };
 
     loadUser();
-  }, [id, navigate, setValue]);
+  }, [id, navigate, setValue, profiles]);
+
+  // Carregar condomínios quando o perfil Morador for selecionado
+  useEffect(() => {
+    if (isMoradorProfile) {
+      setIsLoadingCondominios(true);
+      fetchCondominiosList()
+        .then((data) => {
+          setCondominios(data);
+        })
+        .catch((error) => {
+          console.error("Erro ao carregar condomínios:", error);
+          toast.error("Erro ao carregar lista de condomínios");
+        })
+        .finally(() => {
+          setIsLoadingCondominios(false);
+        });
+    } else {
+      setCondominios([]);
+    }
+  }, [isMoradorProfile]);
 
   const onSubmit = async (data: z.infer<typeof schemaUserEdit>) => {
     if (!id) return;
@@ -91,6 +146,7 @@ export function UserEdit() {
         email: data.email,
         perfilId: data.perfilId,
         cep: data.cep || undefined,
+        condominioId: data.condominioId || undefined,
       });
 
       toast.success("Usuário atualizado com sucesso!");
@@ -185,6 +241,48 @@ export function UserEdit() {
               <Input id="cep" placeholder="00000000" maxLength={8} {...register("cep")} />
               <FormErrorMessage message={errors.cep?.message} />
             </div>
+
+            {isMoradorProfile && (
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="condominioId">Condomínio *</Label>
+                {isLoadingCondominios ? (
+                  <span className="text-sm text-indigo-500">Carregando condomínios...</span>
+                ) : (
+                  <>
+                    <Controller
+                      name="condominioId"
+                      control={control}
+                      rules={{ required: isMoradorProfile ? "Condomínio é obrigatório para perfil Morador" : false }}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value || ""}
+                          onValueChange={field.onChange}
+                          disabled={isLoadingCondominios}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione um condomínio" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {condominios.length === 0 ? (
+                              <SelectItem value="empty" disabled>
+                                Nenhum condomínio disponível
+                              </SelectItem>
+                            ) : (
+                              condominios.map((condominio) => (
+                                <SelectItem key={condominio.id} value={condominio.id}>
+                                  {condominio.nome} ({condominio.email})
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <FormErrorMessage message={errors.condominioId?.message} />
+                  </>
+                )}
+              </div>
+            )}
 
             <div className="md:col-span-2 flex justify-end gap-3">
               <Button
