@@ -7,7 +7,10 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { FormErrorMessage } from "../../components/form-error-message";
-import { empresaSchema, type EmpresaFormData } from "../../schemas/empresa-schema";
+import {
+  empresaSchema,
+  type EmpresaFormData,
+} from "../../schemas/empresa-schema";
 import { fetchEmpresa, updateEmpresa } from "../../services/empresas";
 import { toast } from "sonner";
 
@@ -25,6 +28,7 @@ export function EmpresaEdit() {
 
   useEffect(() => {
     const loadEmpresa = async () => {
+      if (!id) return;
       try {
         const empresa = await fetchEmpresa(id);
         reset({
@@ -35,7 +39,8 @@ export function EmpresaEdit() {
           ativa: empresa.ativa,
           observacoes: empresa.observacoes || "",
         });
-      } catch (error: any) {
+      } catch (_error: any) {
+        console.error("Erro ao carregar dados da empresa:", _error);
         toast.error("Erro ao carregar dados da empresa");
         navigate({ to: "/admin/empresas" });
       }
@@ -44,6 +49,7 @@ export function EmpresaEdit() {
   }, [id, reset, navigate]);
 
   const onSubmit = async (data: EmpresaFormData) => {
+    if (!id) return;
     try {
       await updateEmpresa(id, {
         nome: data.nome,
@@ -77,28 +83,48 @@ export function EmpresaEdit() {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <div className="space-y-2">
             <Label htmlFor="nome">Nome da Empresa *</Label>
-            <Input id="nome" placeholder="Digite o nome da empresa" {...register("nome")} />
+            <Input
+              id="nome"
+              placeholder="Digite o nome da empresa"
+              {...register("nome")}
+            />
             <FormErrorMessage message={errors.nome?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="cnpj">CNPJ</Label>
-            <Input id="cnpj" placeholder="Digite o CNPJ" {...register("cnpj")} />
+            <Input
+              id="cnpj"
+              placeholder="Digite o CNPJ"
+              {...register("cnpj")}
+            />
             <FormErrorMessage message={errors.cnpj?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Digite o email" {...register("email")} />
+            <Input
+              id="email"
+              type="email"
+              placeholder="Digite o email"
+              {...register("email")}
+            />
             <FormErrorMessage message={errors.email?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="telefone">Telefone</Label>
-            <Input id="telefone" placeholder="Digite o telefone" {...register("telefone")} />
+            <Input
+              id="telefone"
+              placeholder="Digite o telefone"
+              {...register("telefone")}
+            />
             <FormErrorMessage message={errors.telefone?.message} />
           </div>
 

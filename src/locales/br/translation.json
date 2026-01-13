@@ -239,10 +239,6 @@
       "addButton": "Nova Conta",
       "emptyMessage": "Nenhuma conta a pagar cadastrada. Clique em 'Nova Conta' para começar."
     },
-    "balancete": {
-      "title": "Balancete",
-      "emptyMessage": "Nenhum balancete disponível no momento."
-    },
     "boletos": {
       "title": "Boletos",
       "generateButton": "Gerar Boletos",

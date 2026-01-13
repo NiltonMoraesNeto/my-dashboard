@@ -29,6 +29,7 @@ interface UserResponse {
   perfilId: number;
   cep?: string | null;
   condominioId?: string | null;
+  empresaId?: string | null;
   perfil?: {
     id: number;
     descricao: string;

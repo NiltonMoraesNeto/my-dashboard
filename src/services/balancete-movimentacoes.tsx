@@ -80,6 +80,7 @@ export const fetchBalanceteMovimentacoesList = async (
     const params: {
       page: string;
       totalItemsByPage: string;
+      tipo?: string;
     } = {
       page: page.toString(),
       totalItemsByPage: limit.toString(),

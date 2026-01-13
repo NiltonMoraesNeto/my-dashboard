@@ -7,7 +7,6 @@ import {
   Home,
   Menu,
   NotebookPen,
-  Building2,
 } from "lucide-react";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -136,23 +135,25 @@ export function Sidebar() {
 
   // Filtrar menu config para SuperAdmin
   const filteredMenuConfig = useMemo(() => {
-    return menuConfig.map((item) => {
-      if (item.children) {
-        const filteredChildren = item.children.filter((child) => {
-          // Filtrar item "empresas" se não for SuperAdmin
-          if (child.to === "/admin/empresas") {
-            return isSuperAdmin;
+    return menuConfig
+      .map((item) => {
+        if (item.children) {
+          const filteredChildren = item.children.filter((child) => {
+            // Filtrar item "empresas" se não for SuperAdmin
+            if (child.to === "/admin/empresas") {
+              return isSuperAdmin;
+            }
+            return true;
+          });
+          // Se não tem mais children, não retornar o item
+          if (filteredChildren.length === 0) {
+            return null;
           }
-          return true;
-        });
-        // Se não tem mais children, não retornar o item
-        if (filteredChildren.length === 0) {
-          return null;
+          return { ...item, children: filteredChildren };
         }
-        return { ...item, children: filteredChildren };
-      }
-      return item;
-    }).filter((item) => item !== null) as SidebarMenuItem[];
+        return item;
+      })
+      .filter((item) => item !== null) as SidebarMenuItem[];
   }, [isSuperAdmin]);
 
   return (

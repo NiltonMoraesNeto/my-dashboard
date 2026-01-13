@@ -4,7 +4,7 @@ import { Button } from "./button";
 import { cn } from "../../lib/utils";
 
 export interface InputFileProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "onChange"> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "onChange" | "value"> {
   onChange?: (file: File | null) => void;
   accept?: string;
   value?: File | string | null;
