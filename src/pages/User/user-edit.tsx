@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -21,6 +21,9 @@ import { schemaUserEdit } from "../../schemas/user-edit-schema";
 import { fetchUserById, updateUser, fetchCondominiosList } from "../../services/usuarios";
 import { useAuth } from "../../contexts/auth-context";
 import { fetchEmpresasForSelect } from "../../services/empresas";
+import { buscarCep } from "../../services/viacep";
+import { maskCpf, unmaskCpf } from "../../utils/mask-cpf";
+import { InputDate } from "../../components/ui/input-date";
 
 interface UserResponse {
   id: string;
@@ -28,6 +31,14 @@ interface UserResponse {
   email: string;
   perfilId: number;
   cep?: string | null;
+  cpf?: string | null;
+  dataNascimento?: Date | string | null;
+  logradouro?: string | null;
+  numero?: string | null;
+  complemento?: string | null;
+  bairro?: string | null;
+  cidade?: string | null;
+  uf?: string | null;
   condominioId?: string | null;
   empresaId?: string | null;
   perfil?: {
@@ -48,6 +59,9 @@ export function UserEdit() {
   const [isLoadingCondominios, setIsLoadingCondominios] = useState(false);
   const [empresas, setEmpresas] = useState<Array<{ id: string; nome: string }>>([]);
   const [isLoadingEmpresas, setIsLoadingEmpresas] = useState(false);
+  const [isLoadingCep, setIsLoadingCep] = useState(false);
+  const isInitialLoad = useRef(true);
+  const previousCepRef = useRef<string>("");
   
   const {
     register,
@@ -63,7 +77,15 @@ export function UserEdit() {
       nome: "",
       email: "",
       perfilId: 0,
+      cpf: "",
+      dataNascimento: undefined,
       cep: "",
+      logradouro: "",
+      numero: "",
+      complemento: "",
+      bairro: "",
+      cidade: "",
+      uf: "",
       condominioId: undefined,
       empresaId: undefined,
     },
@@ -71,12 +93,53 @@ export function UserEdit() {
   const [isLoadingUser, setIsLoadingUser] = useState(true);
 
   const selectedPerfilId = watch("perfilId");
+  const cepValue = watch("cep");
   
   // Buscar perfil Morador
   const perfilMorador = profiles.find(
     (p) => p.descricao.toLowerCase().includes("morador")
   );
   const isMoradorProfile = perfilMorador && selectedPerfilId === perfilMorador.id;
+
+  // Buscar CEP quando o campo for preenchido (apenas quando o usuário digitar, não no carregamento inicial)
+  useEffect(() => {
+    // Ignorar se for o carregamento inicial
+    if (isInitialLoad.current) {
+      return;
+    }
+
+    // Ignorar se o CEP não mudou
+    const cepLimpo = cepValue?.replace(/\D/g, "") || "";
+    const previousCepLimpo = previousCepRef.current?.replace(/\D/g, "") || "";
+    
+    if (cepLimpo === previousCepLimpo) {
+      return;
+    }
+
+    const buscarEndereco = async () => {
+      if (cepLimpo.length === 8) {
+        setIsLoadingCep(true);
+        const endereco = await buscarCep(cepLimpo);
+        
+        if (endereco) {
+          setValue("logradouro", endereco.logradouro);
+          setValue("bairro", endereco.bairro);
+          setValue("cidade", endereco.cidade);
+          setValue("uf", endereco.uf);
+          toast.success("Endereço encontrado!");
+        } else {
+          toast.error("CEP não encontrado. Preencha os dados manualmente.");
+        }
+        setIsLoadingCep(false);
+      }
+    };
+
+    if (cepValue) {
+      previousCepRef.current = cepValue;
+      const timeoutId = setTimeout(buscarEndereco, 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [cepValue, setValue]);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -92,9 +155,21 @@ export function UserEdit() {
         setValue("email", response.email);
         const perfilId = response.perfilId || response.perfil?.id || 0;
         setValue("perfilId", perfilId);
+        setValue("cpf", response.cpf ? maskCpf(response.cpf) : "");
+        setValue("dataNascimento", response.dataNascimento ? new Date(response.dataNascimento) : undefined);
         setValue("cep", response.cep || "");
+        setValue("logradouro", response.logradouro || "");
+        setValue("numero", response.numero || "");
+        setValue("complemento", response.complemento || "");
+        setValue("bairro", response.bairro || "");
+        setValue("cidade", response.cidade || "");
+        setValue("uf", response.uf || "");
         setValue("condominioId", response.condominioId || undefined);
         setValue("empresaId", response.empresaId || undefined);
+        
+        // Marcar que o carregamento inicial foi concluído e atualizar ref do CEP
+        previousCepRef.current = response.cep || "";
+        isInitialLoad.current = false;
         
         // Se o perfil for Morador, carregar condomínios
         const perfilMorador = profiles.find(
@@ -172,7 +247,17 @@ export function UserEdit() {
         nome: data.nome,
         email: data.email,
         perfilId: data.perfilId,
-        cep: data.cep || undefined,
+        cpf: data.cpf ? unmaskCpf(data.cpf) : undefined,
+        dataNascimento: data.dataNascimento instanceof Date 
+          ? data.dataNascimento.toISOString() 
+          : data.dataNascimento || undefined,
+        cep: data.cep,
+        logradouro: data.logradouro,
+        numero: data.numero,
+        complemento: data.complemento || undefined,
+        bairro: data.bairro,
+        cidade: data.cidade,
+        uf: data.uf,
         condominioId: data.condominioId || undefined,
         empresaId: data.empresaId || undefined,
       });
@@ -264,10 +349,97 @@ export function UserEdit() {
               )}
             </div>
 
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="cep">CEP (opcional)</Label>
-              <Input id="cep" placeholder="00000000" maxLength={8} {...register("cep")} />
+            <div className="space-y-2">
+              <Label htmlFor="dataNascimento">Data de Nascimento</Label>
+              <Controller
+                name="dataNascimento"
+                control={control}
+                render={({ field }) => (
+                  <InputDate
+                    id="dataNascimento"
+                    value={field.value}
+                    onChange={(date) => field.onChange(date)}
+                    placeholder="Selecione a data de nascimento"
+                  />
+                )}
+              />
+              <FormErrorMessage message={errors.dataNascimento?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cep">CEP *</Label>
+              <div className="relative">
+                <Input
+                  id="cep"
+                  placeholder="00000000"
+                  maxLength={8}
+                  {...register("cep")}
+                  disabled={isLoadingCep}
+                />
+                {isLoadingCep && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-indigo-500">
+                    Buscando...
+                  </span>
+                )}
+              </div>
               <FormErrorMessage message={errors.cep?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cpf">CPF</Label>
+              <Controller
+                name="cpf"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="cpf"
+                    placeholder="000.000.000-00"
+                    maxLength={14}
+                    value={field.value || ""}
+                    onChange={(e) => {
+                      const masked = maskCpf(e.target.value);
+                      field.onChange(masked);
+                    }}
+                  />
+                )}
+              />
+              <FormErrorMessage message={errors.cpf?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="logradouro">Logradouro *</Label>
+              <Input id="logradouro" placeholder="Rua, Avenida, etc." {...register("logradouro")} />
+              <FormErrorMessage message={errors.logradouro?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="numero">Número *</Label>
+              <Input id="numero" placeholder="123 ou 123A" {...register("numero")} />
+              <FormErrorMessage message={errors.numero?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="complemento">Complemento (opcional)</Label>
+              <Input id="complemento" placeholder="Apto, Bloco, etc." {...register("complemento")} />
+              <FormErrorMessage message={errors.complemento?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="bairro">Bairro *</Label>
+              <Input id="bairro" placeholder="Nome do bairro" {...register("bairro")} />
+              <FormErrorMessage message={errors.bairro?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cidade">Cidade *</Label>
+              <Input id="cidade" placeholder="Nome da cidade" {...register("cidade")} />
+              <FormErrorMessage message={errors.cidade?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="uf">UF *</Label>
+              <Input id="uf" placeholder="UF" maxLength={2} {...register("uf")} />
+              <FormErrorMessage message={errors.uf?.message} />
             </div>
 
             {isSuperAdmin && (

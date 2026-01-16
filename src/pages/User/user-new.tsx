@@ -21,22 +21,36 @@ import { schemaUserNew } from "../../schemas/user-new-schema";
 import { createUser, fetchCondominiosList } from "../../services/usuarios";
 import { useAuth } from "../../contexts/auth-context";
 import { fetchEmpresasForSelect } from "../../services/empresas";
+import { buscarCep } from "../../services/viacep";
+import { maskCpf, unmaskCpf } from "../../utils/mask-cpf";
+import { InputDate } from "../../components/ui/input-date";
 
 export function UserNew() {
   const navigate = useNavigate();
-  const { profiles, isLoading: isLoadingProfiles, error: profilesError, refresh } = useProfiles();
+  const {
+    profiles,
+    isLoading: isLoadingProfiles,
+    error: profilesError,
+    refresh,
+  } = useProfiles();
   const { profileUser } = useAuth();
   const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
-  const [condominios, setCondominios] = useState<Array<{ id: string; nome: string; email: string }>>([]);
+  const [condominios, setCondominios] = useState<
+    Array<{ id: string; nome: string; email: string }>
+  >([]);
   const [isLoadingCondominios, setIsLoadingCondominios] = useState(false);
-  const [empresas, setEmpresas] = useState<Array<{ id: string; nome: string }>>([]);
+  const [empresas, setEmpresas] = useState<Array<{ id: string; nome: string }>>(
+    []
+  );
   const [isLoadingEmpresas, setIsLoadingEmpresas] = useState(false);
-  
+  const [isLoadingCep, setIsLoadingCep] = useState(false);
+
   const {
     register,
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<z.infer<typeof schemaUserNew>>({
@@ -46,19 +60,57 @@ export function UserNew() {
       email: "",
       password: "",
       perfilId: 0,
+      cpf: "",
+      dataNascimento: undefined,
       cep: "",
+      logradouro: "",
+      numero: "",
+      complemento: "",
+      bairro: "",
+      cidade: "",
+      uf: "",
       condominioId: undefined,
       empresaId: undefined,
     },
   });
 
   const selectedPerfilId = watch("perfilId");
-  
+  const cepValue = watch("cep");
+
   // Buscar perfil Morador
-  const perfilMorador = profiles.find(
-    (p) => p.descricao.toLowerCase().includes("morador")
+  const perfilMorador = profiles.find((p) =>
+    p.descricao.toLowerCase().includes("morador")
   );
-  const isMoradorProfile = perfilMorador && selectedPerfilId === perfilMorador.id;
+  const isMoradorProfile =
+    perfilMorador && selectedPerfilId === perfilMorador.id;
+
+  // Buscar CEP quando o campo for preenchido
+  useEffect(() => {
+    const buscarEndereco = async () => {
+      const cepLimpo = cepValue?.replace(/\D/g, "") || "";
+
+      if (cepLimpo.length === 8) {
+        setIsLoadingCep(true);
+        const endereco = await buscarCep(cepLimpo);
+
+        if (endereco) {
+          setValue("logradouro", endereco.logradouro);
+          setValue("bairro", endereco.bairro);
+          setValue("cidade", endereco.cidade);
+          setValue("uf", endereco.uf);
+          toast.success("Endereço encontrado!");
+        } else {
+          toast.error("CEP não encontrado. Preencha os dados manualmente.");
+        }
+        setIsLoadingCep(false);
+      }
+    };
+
+    if (cepValue) {
+      const timeoutId = setTimeout(buscarEndereco, 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [cepValue, setValue]);
 
   // Carregar empresas se for SuperAdmin
   useEffect(() => {
@@ -105,7 +157,18 @@ export function UserNew() {
         email: data.email,
         password: data.password,
         perfilId: data.perfilId,
-        cep: data.cep || undefined,
+        cpf: data.cpf ? unmaskCpf(data.cpf) : undefined,
+        dataNascimento:
+          data.dataNascimento instanceof Date
+            ? data.dataNascimento.toISOString()
+            : data.dataNascimento || undefined,
+        cep: data.cep,
+        logradouro: data.logradouro,
+        numero: data.numero,
+        complemento: data.complemento || undefined,
+        bairro: data.bairro,
+        cidade: data.cidade,
+        uf: data.uf,
         condominioId: data.condominioId || undefined,
         empresaId: data.empresaId || undefined,
       });
@@ -115,9 +178,9 @@ export function UserNew() {
       navigate({ to: "/user" });
     } catch (error: unknown) {
       console.error("Erro ao criar usuário:", error);
-      const errorMessage = 
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Verifique os dados informados e tente novamente";
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Verifique os dados informados e tente novamente";
       toast.error("Erro ao criar usuário", {
         description: errorMessage,
       });
@@ -141,16 +204,28 @@ export function UserNew() {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           <div className="space-y-2">
             <Label htmlFor="nome">Nome completo *</Label>
-            <Input id="nome" placeholder="Digite o nome" {...register("nome")} />
+            <Input
+              id="nome"
+              placeholder="Digite o nome"
+              {...register("nome")}
+            />
             <FormErrorMessage message={errors.nome?.message} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="email">Email *</Label>
-            <Input id="email" type="email" placeholder="Digite o email" {...register("email")} />
+            <Input
+              id="email"
+              type="email"
+              placeholder="Digite o email"
+              {...register("email")}
+            />
             <FormErrorMessage message={errors.email?.message} />
           </div>
 
@@ -168,7 +243,9 @@ export function UserNew() {
           <div className="space-y-2">
             <Label htmlFor="perfilId">Perfil *</Label>
             {isLoadingProfiles ? (
-              <span className="text-sm text-indigo-500">Carregando perfis...</span>
+              <span className="text-sm text-indigo-500">
+                Carregando perfis...
+              </span>
             ) : (
               <>
                 <Controller
@@ -177,7 +254,9 @@ export function UserNew() {
                   render={({ field }) => (
                     <Select
                       value={field.value?.toString()}
-                      onValueChange={(value) => field.onChange(parseInt(value, 10))}
+                      onValueChange={(value) =>
+                        field.onChange(parseInt(value, 10))
+                      }
                       disabled={isLoadingProfiles}
                     >
                       <SelectTrigger>
@@ -185,7 +264,10 @@ export function UserNew() {
                       </SelectTrigger>
                       <SelectContent>
                         {profiles.map((profile) => (
-                          <SelectItem key={profile.id} value={profile.id.toString()}>
+                          <SelectItem
+                            key={profile.id}
+                            value={profile.id.toString()}
+                          >
                             {profile.descricao}
                           </SelectItem>
                         ))}
@@ -197,7 +279,12 @@ export function UserNew() {
                 {profilesError && (
                   <div className="text-sm text-red-500 flex items-center gap-2">
                     <span>{profilesError}</span>
-                    <Button type="button" variant="link" className="p-0 h-auto" onClick={refresh}>
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="p-0 h-auto"
+                      onClick={refresh}
+                    >
                       Tentar novamente
                     </Button>
                   </div>
@@ -206,17 +293,126 @@ export function UserNew() {
             )}
           </div>
 
-          <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="cep">CEP (opcional)</Label>
-            <Input id="cep" placeholder="00000000" maxLength={8} {...register("cep")} />
+          <div className="space-y-2">
+            <Label htmlFor="dataNascimento">Data de Nascimento</Label>
+            <Controller
+              name="dataNascimento"
+              control={control}
+              render={({ field }) => (
+                <InputDate
+                  id="dataNascimento"
+                  value={field.value}
+                  onChange={(date) => field.onChange(date)}
+                  placeholder="Selecione a data de nascimento"
+                />
+              )}
+            />
+            <FormErrorMessage message={errors.dataNascimento?.message} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="cep">CEP *</Label>
+            <div className="relative">
+              <Input
+                id="cep"
+                placeholder="00000000"
+                maxLength={8}
+                {...register("cep")}
+                disabled={isLoadingCep}
+              />
+              {isLoadingCep && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-indigo-500">
+                  Buscando...
+                </span>
+              )}
+            </div>
             <FormErrorMessage message={errors.cep?.message} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="cpf">CPF</Label>
+            <Controller
+              name="cpf"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  id="cpf"
+                  placeholder="000.000.000-00"
+                  maxLength={14}
+                  value={field.value || ""}
+                  onChange={(e) => {
+                    const masked = maskCpf(e.target.value);
+                    field.onChange(masked);
+                  }}
+                />
+              )}
+            />
+            <FormErrorMessage message={errors.cpf?.message} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="logradouro">Logradouro *</Label>
+            <Input
+              id="logradouro"
+              placeholder="Rua, Avenida, etc."
+              {...register("logradouro")}
+            />
+            <FormErrorMessage message={errors.logradouro?.message} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="numero">Número *</Label>
+            <Input
+              id="numero"
+              placeholder="123 ou 123A"
+              {...register("numero")}
+            />
+            <FormErrorMessage message={errors.numero?.message} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="complemento">Complemento (opcional)</Label>
+            <Input
+              id="complemento"
+              placeholder="Apto, Bloco, etc."
+              {...register("complemento")}
+            />
+            <FormErrorMessage message={errors.complemento?.message} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="bairro">Bairro *</Label>
+            <Input
+              id="bairro"
+              placeholder="Nome do bairro"
+              {...register("bairro")}
+            />
+            <FormErrorMessage message={errors.bairro?.message} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="cidade">Cidade *</Label>
+            <Input
+              id="cidade"
+              placeholder="Nome da cidade"
+              {...register("cidade")}
+            />
+            <FormErrorMessage message={errors.cidade?.message} />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="uf">UF *</Label>
+            <Input id="uf" placeholder="UF" maxLength={2} {...register("uf")} />
+            <FormErrorMessage message={errors.uf?.message} />
           </div>
 
           {isSuperAdmin && (
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="empresaId">Empresa (opcional)</Label>
               {isLoadingEmpresas ? (
-                <span className="text-sm text-indigo-500">Carregando empresas...</span>
+                <span className="text-sm text-indigo-500">
+                  Carregando empresas...
+                </span>
               ) : (
                 <>
                   <Controller
@@ -251,13 +447,19 @@ export function UserNew() {
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="condominioId">Condomínio *</Label>
               {isLoadingCondominios ? (
-                <span className="text-sm text-indigo-500">Carregando condomínios...</span>
+                <span className="text-sm text-indigo-500">
+                  Carregando condomínios...
+                </span>
               ) : (
                 <>
                   <Controller
                     name="condominioId"
                     control={control}
-                    rules={{ required: isMoradorProfile ? "Condomínio é obrigatório para perfil Morador" : false }}
+                    rules={{
+                      required: isMoradorProfile
+                        ? "Condomínio é obrigatório para perfil Morador"
+                        : false,
+                    }}
                     render={({ field }) => (
                       <Select
                         value={field.value || ""}
@@ -274,7 +476,10 @@ export function UserNew() {
                             </SelectItem>
                           ) : (
                             condominios.map((condominio) => (
-                              <SelectItem key={condominio.id} value={condominio.id}>
+                              <SelectItem
+                                key={condominio.id}
+                                value={condominio.id}
+                              >
                                 {condominio.nome} ({condominio.email})
                               </SelectItem>
                             ))

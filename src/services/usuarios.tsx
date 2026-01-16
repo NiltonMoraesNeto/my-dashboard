@@ -7,6 +7,14 @@ interface CreateUserPayload {
   password: string;
   perfilId: number;
   cep?: string;
+  cpf?: string;
+  dataNascimento?: Date | string;
+  logradouro?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
+  cidade?: string;
+  uf?: string;
   condominioId?: string;
   empresaId?: string;
 }
@@ -22,6 +30,14 @@ interface UpdateUserPayload {
   email: string;
   perfilId: number;
   cep?: string;
+  cpf?: string;
+  dataNascimento?: Date | string;
+  logradouro?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
+  cidade?: string;
+  uf?: string;
   condominioId?: string;
   empresaId?: string;
 }
