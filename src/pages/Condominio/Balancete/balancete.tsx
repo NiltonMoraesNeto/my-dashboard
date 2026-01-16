@@ -8,10 +8,16 @@ import { Pagination } from "../../../components/pagination";
 import type { BalanceteMovimentacaoList } from "../../../model/balancete-movimentacao-model";
 import { fetchBalanceteMovimentacoesList } from "../../../services/balancete-movimentacoes";
 import { MesAnoFilter } from "../../../components/filters/mes-ano-filter";
+import { useAuth } from "../../../contexts/auth-context";
+import { useCondominio } from "../../../contexts/condominio-context";
+import { CondominioGuard } from "../../../components/condominio-guard";
 
 export function Balancete() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { profileUser } = useAuth();
+  const { selectedCondominioId } = useCondominio();
+  const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
   const [movimentacaoList, setMovimentacaoList] = useState<
     BalanceteMovimentacaoList[]
   >([]);
@@ -22,7 +28,14 @@ export function Balancete() {
   const [ano, setAno] = useState<number>(new Date().getFullYear());
 
   const loadMovimentacaoData = useCallback(async () => {
-    const response = await fetchBalanceteMovimentacoesList(page, limit, undefined, mes, ano);
+    const response = await fetchBalanceteMovimentacoesList(
+      page,
+      limit,
+      undefined,
+      mes,
+      ano,
+      isSuperAdmin && selectedCondominioId ? selectedCondominioId : undefined
+    );
     if (response) {
       if (response.data && response.total !== undefined) {
         setMovimentacaoList(response.data);
@@ -32,7 +45,7 @@ export function Balancete() {
         setTotalPages(Math.ceil(response.length / limit));
       }
     }
-  }, [page, limit, mes, ano]);
+  }, [page, limit, mes, ano, isSuperAdmin, selectedCondominioId]);
 
   useEffect(() => {
     loadMovimentacaoData();
@@ -115,22 +128,24 @@ export function Balancete() {
         </div>
       </div>
 
-      {/* Filtros */}
-      <MesAnoFilter
-        mes={mes}
-        ano={ano}
-        onMesChange={setMes}
-        onAnoChange={setAno}
-      />
-
-      {/* Tabela de movimentações */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-        <TableBalanceteMovimentacao
-          movimentacaoList={movimentacaoList}
-          handleListData={loadMovimentacaoData}
+      <CondominioGuard>
+        {/* Filtros */}
+        <MesAnoFilter
+          mes={mes}
+          ano={ano}
+          onMesChange={setMes}
+          onAnoChange={setAno}
         />
-        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-      </div>
+
+        {/* Tabela de movimentações */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+          <TableBalanceteMovimentacao
+            movimentacaoList={movimentacaoList}
+            handleListData={loadMovimentacaoData}
+          />
+          <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+        </div>
+      </CondominioGuard>
     </div>
   );
 }

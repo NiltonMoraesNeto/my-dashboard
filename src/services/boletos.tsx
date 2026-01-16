@@ -125,7 +125,8 @@ export const fetchBoletosList = async (
   totalItemsByPage: number,
   unidadeId?: string,
   mes?: number,
-  ano?: number
+  ano?: number,
+  condominioId?: string
 ) => {
   try {
     const params: {
@@ -134,10 +135,12 @@ export const fetchBoletosList = async (
       unidadeId?: string;
       mes?: number;
       ano?: number;
+      condominioId?: string;
     } = { page, totalItemsByPage };
     if (unidadeId) params.unidadeId = unidadeId;
     if (mes) params.mes = mes;
     if (ano) params.ano = ano;
+    if (condominioId) params.condominioId = condominioId;
 
     const response = await api.get("/condominio/boletos", { params });
 

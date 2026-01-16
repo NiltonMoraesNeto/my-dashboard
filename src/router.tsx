@@ -188,7 +188,7 @@ const condominioHomeRoute = createRoute({
   component: HomeCondominio,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -200,7 +200,7 @@ const unidadesRoute = createRoute({
   component: Unidades,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -212,7 +212,7 @@ const unidadeNewRoute = createRoute({
   component: UnidadeNew,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -224,7 +224,7 @@ const unidadeEditRoute = createRoute({
   component: UnidadeEdit,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -236,7 +236,7 @@ const contasPagarRoute = createRoute({
   component: ContasPagar,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -248,7 +248,7 @@ const contaPagarNewRoute = createRoute({
   component: ContaPagarNew,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -260,7 +260,7 @@ const contaPagarEditRoute = createRoute({
   component: ContaPagarEdit,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -272,7 +272,7 @@ const balanceteRoute = createRoute({
   component: Balancete,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -284,7 +284,7 @@ const movimentacaoNewRoute = createRoute({
   component: MovimentacaoNew,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -296,7 +296,7 @@ const movimentacaoEditRoute = createRoute({
   component: MovimentacaoEdit,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -308,7 +308,7 @@ const boletosRoute = createRoute({
   component: Boletos,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -320,7 +320,7 @@ const boletoNewRoute = createRoute({
   component: BoletoNew,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -332,7 +332,7 @@ const boletoEditRoute = createRoute({
   component: BoletoEdit,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -356,7 +356,7 @@ const reunioesRoute = createRoute({
   component: Reunioes,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -368,7 +368,7 @@ const reuniaoNewRoute = createRoute({
   component: ReuniaoNew,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -380,7 +380,7 @@ const reuniaoEditRoute = createRoute({
   component: ReuniaoEdit,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -392,7 +392,7 @@ const avisosRoute = createRoute({
   component: Avisos,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -404,7 +404,7 @@ const avisoNewRoute = createRoute({
   component: AvisoNew,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -416,7 +416,7 @@ const avisoEditRoute = createRoute({
   component: AvisoEdit,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -428,7 +428,7 @@ const moradoresRoute = createRoute({
   component: Moradores,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -440,7 +440,7 @@ const moradorNewRoute = createRoute({
   component: MoradorNew,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },
@@ -452,7 +452,7 @@ const moradorEditRoute = createRoute({
   component: MoradorEdit,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
-    if (!isCondominioProfile(profile)) {
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
       throw redirect({ to: getRedirectPath(profile) });
     }
   },

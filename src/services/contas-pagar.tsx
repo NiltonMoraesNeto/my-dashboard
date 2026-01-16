@@ -51,7 +51,8 @@ export const fetchContasPagarList = async (
   page: number = 1,
   totalItemsByPage: number = 10,
   mes?: number,
-  ano?: number
+  ano?: number,
+  condominioId?: string
 ): Promise<ContasPagarListResponse> => {
   try {
     const params: Record<string, string> = {
@@ -65,6 +66,10 @@ export const fetchContasPagarList = async (
 
     if (ano) {
       params.ano = ano.toString();
+    }
+
+    if (condominioId) {
+      params.condominioId = condominioId;
     }
 
     const response = await api.get<ContasPagarListResponse>(

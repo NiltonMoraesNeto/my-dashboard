@@ -3,8 +3,14 @@ import { TableContaPagar } from "../../../components/table-conta-pagar";
 import type { ContaPagar } from "../../../services/contas-pagar";
 import { fetchContasPagarList } from "../../../services/contas-pagar";
 import { MesAnoFilter } from "../../../components/filters/mes-ano-filter";
+import { useAuth } from "../../../contexts/auth-context";
+import { useCondominio } from "../../../contexts/condominio-context";
+import { CondominioGuard } from "../../../components/condominio-guard";
 
 export function ContasPagar() {
+  const { profileUser } = useAuth();
+  const { selectedCondominioId } = useCondominio();
+  const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
   const [contaPagarList, setContaPagarList] = useState<ContaPagar[]>([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
@@ -16,7 +22,13 @@ export function ContasPagar() {
 
   const loadContasPagarData = useCallback(async () => {
     try {
-      const response = await fetchContasPagarList(page, limit, mes, ano);
+      const response = await fetchContasPagarList(
+        page,
+        limit,
+        mes,
+        ano,
+        isSuperAdmin && selectedCondominioId ? selectedCondominioId : undefined
+      );
       if (response) {
         setContaPagarList(response.data);
         setTotalPages(response.totalPages || Math.ceil(response.total / limit));
@@ -24,7 +36,7 @@ export function ContasPagar() {
     } catch (error) {
       console.error("Erro ao carregar contas a pagar:", error);
     }
-  }, [page, limit, mes, ano]);
+  }, [page, limit, mes, ano, isSuperAdmin, selectedCondominioId]);
 
   useEffect(() => {
     loadContasPagarData();
@@ -53,8 +65,9 @@ export function ContasPagar() {
   });
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Contas a Pagar</h1>
+    <CondominioGuard>
+      <div className="p-6">
+        <h1 className="text-3xl font-bold mb-6">Contas a Pagar</h1>
       
       <MesAnoFilter
         mes={mes}
@@ -72,6 +85,7 @@ export function ContasPagar() {
         setPage={setPage}
         handleListData={loadContasPagarData}
       />
-    </div>
+      </div>
+    </CondominioGuard>
   );
 }

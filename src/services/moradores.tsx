@@ -45,11 +45,23 @@ export const updateMorador = async (id: string, payload: UpdateMoradorPayload) =
   }
 };
 
-export const fetchMoradoresList = async (page: number, totalItemsByPage: number, search: string) => {
+export const fetchMoradoresList = async (
+  page: number,
+  totalItemsByPage: number,
+  search: string,
+  condominioId?: string
+) => {
   try {
-    const response = await api.get("/condominio/moradores", {
-      params: { page, totalItemsByPage, search },
-    });
+    const params: Record<string, string> = {
+      page: page.toString(),
+      totalItemsByPage: totalItemsByPage.toString(),
+      search,
+    };
+    if (condominioId) {
+      params.condominioId = condominioId;
+    }
+
+    const response = await api.get("/condominio/moradores", { params });
 
     if (response.data) {
       return response.data;

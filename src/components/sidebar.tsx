@@ -3,6 +3,7 @@ import {
   ArrowDown,
   ArrowLeft,
   ArrowUp,
+  Building2,
   ChartArea,
   Home,
   Menu,
@@ -51,6 +52,40 @@ const menuConfig: SidebarMenuItem[] = [
     ],
   },
   {
+    key: "condominio",
+    icon: Building2,
+    labelKey: "sidebar.menu.condominio",
+    submenuKey: "condominio",
+    children: [
+      { labelKey: "sidebar.condominio.menu.home", to: "/condominio/home" },
+      {
+        labelKey: "sidebar.condominio.menu.unidades",
+        to: "/condominio/unidades",
+      },
+      {
+        labelKey: "sidebar.condominio.menu.moradores",
+        to: "/condominio/moradores",
+      },
+      {
+        labelKey: "sidebar.condominio.menu.contasPagar",
+        to: "/condominio/contas-pagar",
+      },
+      {
+        labelKey: "sidebar.condominio.menu.balancete",
+        to: "/condominio/balancete",
+      },
+      {
+        labelKey: "sidebar.condominio.menu.boletos",
+        to: "/condominio/boletos",
+      },
+      {
+        labelKey: "sidebar.condominio.menu.reunioes",
+        to: "/condominio/reunioes",
+      },
+      { labelKey: "sidebar.condominio.menu.avisos", to: "/condominio/avisos" },
+    ],
+  },
+  {
     key: "outromenu",
     icon: Apple,
     labelKey: "sidebar.menu.other",
@@ -67,6 +102,7 @@ export function Sidebar() {
   const { t } = useTranslation();
   const { profileUser } = useAuth();
   const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
+  const isAdministrador = profileUser?.toLowerCase() === "administrador";
   const [isOpen, setIsOpen] = useState(true);
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const pathname = useRouterState({
@@ -137,11 +173,20 @@ export function Sidebar() {
   const filteredMenuConfig = useMemo(() => {
     return menuConfig
       .map((item) => {
+        // Filtrar menu "condominio" se não for SuperAdmin
+        if (item.key === "condominio" && !isSuperAdmin) {
+          return null;
+        }
+
         if (item.children) {
           const filteredChildren = item.children.filter((child) => {
             // Filtrar item "empresas" se não for SuperAdmin
             if (child.to === "/admin/empresas") {
               return isSuperAdmin;
+            }
+            // Filtrar item "profile" se for Administrador
+            if (child.to === "/profile") {
+              return !isAdministrador;
             }
             return true;
           });
@@ -154,7 +199,7 @@ export function Sidebar() {
         return item;
       })
       .filter((item) => item !== null) as SidebarMenuItem[];
-  }, [isSuperAdmin]);
+  }, [isSuperAdmin, isAdministrador]);
 
   return (
     <div className="flex h-auto">

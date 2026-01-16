@@ -51,11 +51,21 @@ export const updateReuniao = async (id: string, payload: UpdateReuniaoPayload) =
   }
 };
 
-export const fetchReunioesList = async (page: number, totalItemsByPage: number) => {
+export const fetchReunioesList = async (
+  page: number,
+  totalItemsByPage: number,
+  condominioId?: string
+) => {
   try {
-    const response = await api.get("/condominio/reunioes", {
-      params: { page, totalItemsByPage },
-    });
+    const params: Record<string, string> = {
+      page: page.toString(),
+      totalItemsByPage: totalItemsByPage.toString(),
+    };
+    if (condominioId) {
+      params.condominioId = condominioId;
+    }
+
+    const response = await api.get("/condominio/reunioes", { params });
 
     if (response.data) {
       return response.data;

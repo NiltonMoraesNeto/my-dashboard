@@ -55,11 +55,23 @@ export const updateUnidade = async (id: string, payload: UpdateUnidadePayload) =
   }
 };
 
-export const fetchUnidadesList = async (page: number, totalItemsByPage: number, search: string) => {
+export const fetchUnidadesList = async (
+  page: number,
+  totalItemsByPage: number,
+  search: string,
+  condominioId?: string
+) => {
   try {
-    const response = await api.get("/condominio/unidades", {
-      params: { page, totalItemsByPage, search },
-    });
+    const params: Record<string, string> = {
+      page: page.toString(),
+      totalItemsByPage: totalItemsByPage.toString(),
+      search,
+    };
+    if (condominioId) {
+      params.condominioId = condominioId;
+    }
+
+    const response = await api.get("/condominio/unidades", { params });
 
     if (response.data) {
       return response.data;

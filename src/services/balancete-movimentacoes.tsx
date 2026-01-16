@@ -76,7 +76,8 @@ export const fetchBalanceteMovimentacoesList = async (
   limit: number = 10,
   tipo?: string,
   mes?: number,
-  ano?: number
+  ano?: number,
+  condominioId?: string
 ) => {
   try {
     const params: {
@@ -85,6 +86,7 @@ export const fetchBalanceteMovimentacoesList = async (
       tipo?: string;
       mes?: string;
       ano?: string;
+      condominioId?: string;
     } = {
       page: page.toString(),
       totalItemsByPage: limit.toString(),
@@ -97,6 +99,9 @@ export const fetchBalanceteMovimentacoesList = async (
     }
     if (ano) {
       params.ano = ano.toString();
+    }
+    if (condominioId) {
+      params.condominioId = condominioId;
     }
     const response = await api.get<BalanceteMovimentacaoResponse>(
       "/condominio/balancete/movimentacoes",

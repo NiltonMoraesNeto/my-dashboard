@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../contexts/auth-context";
+import { useCondominio } from "../../../contexts/condominio-context";
 import { fetchUnidadesList } from "../../../services/unidades";
 import { fetchReunioesList } from "../../../services/reunioes";
 import { fetchMovimentacoesMensal } from "../../../services/home";
@@ -25,10 +26,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import type { ReuniaoList } from "../../../model/reuniao-model";
+import { CondominioSelector } from "../../../components/condominio-selector";
 
 export function HomeCondominio() {
   const { t } = useTranslation();
-  const { dataUser } = useAuth();
+  const { dataUser, profileUser } = useAuth();
+  const { selectedCondominioId, shouldShowSelector } = useCondominio();
+  const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
+  // Para SuperAdmin, usa o condomínio selecionado; caso contrário, usa o próprio userId
+  const condominioIdToUse = isSuperAdmin && selectedCondominioId ? selectedCondominioId : dataUser?.sub;
   const [totalUnidades, setTotalUnidades] = useState<number>(0);
   const [isLoadingUnidades, setIsLoadingUnidades] = useState(true);
   const [proximaReuniao, setProximaReuniao] = useState<ReuniaoList | null>(
@@ -56,7 +62,12 @@ export function HomeCondominio() {
     const loadTotalUnidades = async () => {
       try {
         setIsLoadingUnidades(true);
-        const response = await fetchUnidadesList(1, 1, "");
+        const response = await fetchUnidadesList(
+          1,
+          1,
+          "",
+          isSuperAdmin && selectedCondominioId ? selectedCondominioId : undefined
+        );
         if (response && response.total !== undefined) {
           setTotalUnidades(response.total);
         }
@@ -67,14 +78,20 @@ export function HomeCondominio() {
       }
     };
 
-    loadTotalUnidades();
-  }, []);
+    if (condominioIdToUse) {
+      loadTotalUnidades();
+    }
+  }, [condominioIdToUse, isSuperAdmin, selectedCondominioId]);
 
   useEffect(() => {
     const loadProximaReuniao = async () => {
       try {
         setIsLoadingReuniao(true);
-        const response = await fetchReunioesList(1, 100);
+        const response = await fetchReunioesList(
+          1,
+          100,
+          isSuperAdmin && selectedCondominioId ? selectedCondominioId : undefined
+        );
         if (response?.data) {
           const reunioes = response.data;
           const agora = new Date();
@@ -141,13 +158,15 @@ export function HomeCondominio() {
       }
     };
 
-    loadProximaReuniao();
-  }, []);
+    if (condominioIdToUse) {
+      loadProximaReuniao();
+    }
+  }, [condominioIdToUse, isSuperAdmin, selectedCondominioId]);
 
   // Buscar dados de movimentações (gráfico individual)
   useEffect(() => {
     const fetchData = async () => {
-      if (!tipo || !dataUser?.sub) {
+      if (!tipo || !condominioIdToUse) {
         setMovimentacoesData([]);
         setLoadingMovimentacoes(false);
         return;
@@ -160,7 +179,7 @@ export function HomeCondominio() {
         const data = await fetchMovimentacoesMensal({
           ano,
           tipo,
-          // Para perfil Condomínio, não passa condominioId (usa o próprio userId)
+          condominioId: isSuperAdmin ? condominioIdToUse : undefined,
         });
 
         setMovimentacoesData(data);
@@ -174,12 +193,12 @@ export function HomeCondominio() {
     };
 
     fetchData();
-  }, [ano, tipo, dataUser?.sub]);
+  }, [ano, tipo, condominioIdToUse, isSuperAdmin]);
 
   // Buscar dados para gráfico comparativo (sempre busca ambos)
   useEffect(() => {
     const fetchComparisonData = async () => {
-      if (!dataUser?.sub) {
+      if (!condominioIdToUse) {
         return;
       }
 
@@ -190,12 +209,12 @@ export function HomeCondominio() {
           fetchMovimentacoesMensal({
             ano,
             tipo: "Entrada",
-            // Para perfil Condomínio, não passa condominioId (usa o próprio userId)
+            condominioId: isSuperAdmin ? condominioIdToUse : undefined,
           }),
           fetchMovimentacoesMensal({
             ano,
             tipo: "Saída",
-            // Para perfil Condomínio, não passa condominioId (usa o próprio userId)
+            condominioId: isSuperAdmin ? condominioIdToUse : undefined,
           }),
         ]);
 
@@ -210,7 +229,7 @@ export function HomeCondominio() {
     };
 
     fetchComparisonData();
-  }, [ano, dataUser?.sub]);
+  }, [ano, condominioIdToUse, isSuperAdmin]);
 
   // Gerar lista de anos (últimos 5 anos + ano atual + próximos 2 anos)
   const anosDisponiveis = Array.from(
@@ -229,6 +248,7 @@ export function HomeCondominio() {
 
   return (
     <div className="p-6">
+      {shouldShowSelector && <CondominioSelector />}
       <h1 className="text-3xl font-bold mb-6">{t("condominio.home.title")}</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
