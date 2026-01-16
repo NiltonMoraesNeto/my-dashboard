@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { TableBoleto } from "../../../components/table-boleto";
 import type { BoletoList } from "../../../model/boleto-model";
 import { fetchBoletosList } from "../../../services/boletos";
+import { MesAnoFilter } from "../../../components/filters/mes-ano-filter";
 
 export function Boletos() {
   const { t } = useTranslation();
@@ -12,9 +13,11 @@ export function Boletos() {
   const [search, setSearch] = useState("");
   const [totalPages, setTotalPages] = useState(1);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [mes, setMes] = useState<number | undefined>(undefined);
+  const [ano, setAno] = useState<number>(new Date().getFullYear());
 
   const loadBoletoData = useCallback(async () => {
-    const response = await fetchBoletosList(page, limit);
+    const response = await fetchBoletosList(page, limit, undefined, mes, ano);
     if (response) {
       if (response.data && response.total !== undefined) {
         setBoletoList(response.data);
@@ -24,11 +27,16 @@ export function Boletos() {
         setTotalPages(Math.ceil(response.length / limit));
       }
     }
-  }, [page, limit]);
+  }, [page, limit, mes, ano]);
 
   useEffect(() => {
     loadBoletoData();
   }, [loadBoletoData]);
+
+  // Resetar página quando filtros mudarem
+  useEffect(() => {
+    setPage(1);
+  }, [mes, ano]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -56,6 +64,14 @@ export function Boletos() {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">{t("condominio.boletos.title")}</h1>
+      
+      <MesAnoFilter
+        mes={mes}
+        ano={ano}
+        onMesChange={setMes}
+        onAnoChange={setAno}
+      />
+
       <TableBoleto
         search={search}
         setSearch={setSearch}

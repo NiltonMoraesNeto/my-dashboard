@@ -74,19 +74,29 @@ export const updateBalanceteMovimentacao = async (
 export const fetchBalanceteMovimentacoesList = async (
   page: number = 1,
   limit: number = 10,
-  tipo?: string
+  tipo?: string,
+  mes?: number,
+  ano?: number
 ) => {
   try {
     const params: {
       page: string;
       totalItemsByPage: string;
       tipo?: string;
+      mes?: string;
+      ano?: string;
     } = {
       page: page.toString(),
       totalItemsByPage: limit.toString(),
     };
     if (tipo) {
       params.tipo = tipo;
+    }
+    if (mes) {
+      params.mes = mes.toString();
+    }
+    if (ano) {
+      params.ano = ano.toString();
     }
     const response = await api.get<BalanceteMovimentacaoResponse>(
       "/condominio/balancete/movimentacoes",

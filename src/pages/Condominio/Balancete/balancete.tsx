@@ -7,6 +7,7 @@ import { TableBalanceteMovimentacao } from "../../../components/table-balancete-
 import { Pagination } from "../../../components/pagination";
 import type { BalanceteMovimentacaoList } from "../../../model/balancete-movimentacao-model";
 import { fetchBalanceteMovimentacoesList } from "../../../services/balancete-movimentacoes";
+import { MesAnoFilter } from "../../../components/filters/mes-ano-filter";
 
 export function Balancete() {
   const { t } = useTranslation();
@@ -17,9 +18,11 @@ export function Balancete() {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  const [mes, setMes] = useState<number | undefined>(undefined);
+  const [ano, setAno] = useState<number>(new Date().getFullYear());
 
   const loadMovimentacaoData = useCallback(async () => {
-    const response = await fetchBalanceteMovimentacoesList(page, limit);
+    const response = await fetchBalanceteMovimentacoesList(page, limit, undefined, mes, ano);
     if (response) {
       if (response.data && response.total !== undefined) {
         setMovimentacaoList(response.data);
@@ -29,11 +32,16 @@ export function Balancete() {
         setTotalPages(Math.ceil(response.length / limit));
       }
     }
-  }, [page, limit]);
+  }, [page, limit, mes, ano]);
 
   useEffect(() => {
     loadMovimentacaoData();
   }, [loadMovimentacaoData]);
+
+  // Resetar página quando filtros mudarem
+  useEffect(() => {
+    setPage(1);
+  }, [mes, ano]);
 
   // Calcular saldo
   const entradas = movimentacaoList
@@ -106,6 +114,14 @@ export function Balancete() {
           </p>
         </div>
       </div>
+
+      {/* Filtros */}
+      <MesAnoFilter
+        mes={mes}
+        ano={ano}
+        onMesChange={setMes}
+        onAnoChange={setAno}
+      />
 
       {/* Tabela de movimentações */}
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">

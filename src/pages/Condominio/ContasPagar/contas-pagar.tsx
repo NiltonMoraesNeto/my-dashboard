@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { TableContaPagar } from "../../../components/table-conta-pagar";
 import type { ContaPagar } from "../../../services/contas-pagar";
 import { fetchContasPagarList } from "../../../services/contas-pagar";
+import { MesAnoFilter } from "../../../components/filters/mes-ano-filter";
 
 export function ContasPagar() {
   const [contaPagarList, setContaPagarList] = useState<ContaPagar[]>([]);
@@ -10,8 +11,8 @@ export function ContasPagar() {
   const [search, setSearch] = useState("");
   const [totalPages, setTotalPages] = useState(1);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
-  const [mes, _setMes] = useState<number | undefined>(undefined);
-  const [ano, _setAno] = useState<number | undefined>(undefined);
+  const [mes, setMes] = useState<number | undefined>(undefined);
+  const [ano, setAno] = useState<number>(new Date().getFullYear());
 
   const loadContasPagarData = useCallback(async () => {
     try {
@@ -54,6 +55,14 @@ export function ContasPagar() {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">Contas a Pagar</h1>
+      
+      <MesAnoFilter
+        mes={mes}
+        ano={ano}
+        onMesChange={setMes}
+        onAnoChange={setAno}
+      />
+
       <TableContaPagar
         search={search}
         setSearch={setSearch}

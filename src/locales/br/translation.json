@@ -244,8 +244,10 @@
     },
     "boletos": {
       "title": "Boletos",
+      "addButton": "Novo Boleto",
       "generateButton": "Gerar Boletos",
       "emptyMessage": "Nenhum boleto gerado. Clique em 'Gerar Boletos' para criar boletos para as unidades.",
+      "searchPlaceholder": "Pesquisar",
       "new": {
         "title": "Adicionar Novo Boleto",
         "back": "Voltar",
@@ -571,7 +573,8 @@
           "editar": "Editar",
           "excluir": "Excluir",
           "successDelete": "Movimentação deletada com sucesso",
-          "errorDelete": "Erro ao deletar a movimentação"
+          "errorDelete": "Erro ao deletar a movimentação",
+          "emptyMessage": "Nenhuma movimentação encontrada."
         }
       }
     }
