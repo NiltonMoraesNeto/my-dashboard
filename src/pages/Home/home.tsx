@@ -4,7 +4,12 @@ import { fetchMovimentacoesMensal } from "../../services/home";
 import { fetchCondominiosList } from "../../services/usuarios";
 import { MovimentacoesChart } from "../../components/charts/movimentacoes-chart";
 import { MovimentacoesComparisonChart } from "../../components/charts/movimentacoes-comparison-chart";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Label } from "../../components/ui/label";
 import {
@@ -34,7 +39,9 @@ export function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [ano, setAno] = useState(new Date().getFullYear());
   const [tipo, setTipo] = useState<"Entrada" | "Saída" | undefined>(undefined);
-  const [condominioId, setCondominioId] = useState<string | undefined>(undefined);
+  const [condominioId, setCondominioId] = useState<string | undefined>(
+    undefined
+  );
   const [condominios, setCondominios] = useState<CondominioOption[]>([]);
   const [loadingCondominios, setLoadingCondominios] = useState(false);
   const [movimentacoesData, setMovimentacoesData] = useState<
@@ -51,8 +58,10 @@ export function HomePage() {
   // Identificar perfil: SuperAdmin tem perfilId === 99
   const isSuperAdmin = dataUser?.perfilId === 99;
   const isAdmin = profileUser?.toLowerCase().includes("admin") && !isSuperAdmin;
-  const isCondominio = profileUser?.toLowerCase().includes("condomínio") || 
-                       profileUser?.toLowerCase().includes("condominio");
+  const isCondominio =
+    profileUser?.toLowerCase().includes("condomínio") ||
+    profileUser?.toLowerCase().includes("condominio");
+  console.log("🚀 ~ HomePage ~ isCondominio:", isCondominio);
 
   // Carregar lista de condomínios baseado no perfil
   useEffect(() => {
@@ -179,7 +188,9 @@ export function HomePage() {
             <Select
               value={tipo || ""}
               onValueChange={(value) =>
-                setTipo(value === "Entrada" || value === "Saída" ? value : undefined)
+                setTipo(
+                  value === "Entrada" || value === "Saída" ? value : undefined
+                )
               }
             >
               <SelectTrigger id="tipo">
@@ -227,7 +238,10 @@ export function HomePage() {
                   {ano} <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="max-h-[300px] overflow-y-auto">
+              <DropdownMenuContent
+                align="end"
+                className="max-h-[300px] overflow-y-auto"
+              >
                 {anosDisponiveis.map((anoOption) => (
                   <DropdownMenuItem
                     key={anoOption}
@@ -259,12 +273,14 @@ export function HomePage() {
         {!tipo && (
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Selecione um tipo de dado para visualizar o gráfico</CardTitle>
+              <CardTitle>
+                Selecione um tipo de dado para visualizar o gráfico
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 dark:text-gray-300">
-                Escolha entre "Entrada" ou "Saída" no filtro acima para ver os dados
-                mensais do ano selecionado.
+                Escolha entre "Entrada" ou "Saída" no filtro acima para ver os
+                dados mensais do ano selecionado.
               </p>
             </CardContent>
           </Card>
@@ -278,7 +294,8 @@ export function HomePage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 dark:text-gray-300">
-                Não há movimentações do tipo "{tipo}" para o período selecionado.
+                Não há movimentações do tipo "{tipo}" para o período
+                selecionado.
               </p>
             </CardContent>
           </Card>

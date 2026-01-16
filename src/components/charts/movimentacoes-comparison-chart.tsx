@@ -27,9 +27,23 @@ export function MovimentacoesComparisonChart({
   saidasData,
   condominioId,
 }: MovimentacoesComparisonChartProps) {
+  console.log(
+    "🚀 ~ MovimentacoesComparisonChart ~ condominioId:",
+    condominioId
+  );
   const meses = [
-    "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-    "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
   ];
 
   // Combinar dados de entradas e saídas por mês
@@ -65,7 +79,11 @@ export function MovimentacoesComparisonChart({
                     return (
                       <div className="bg-white p-3 border rounded shadow-sm">
                         {payload.map((entry, index) => (
-                          <p key={index} className="text-xs" style={{ color: entry.color }}>
+                          <p
+                            key={index}
+                            className="text-xs"
+                            style={{ color: entry.color }}
+                          >
                             {entry.name}:{" "}
                             {new Intl.NumberFormat("pt-BR", {
                               style: "currency",
@@ -80,16 +98,8 @@ export function MovimentacoesComparisonChart({
                 }}
               />
               <Legend />
-              <Bar
-                dataKey="Entradas"
-                fill="#10B981"
-                radius={[4, 4, 0, 0]}
-              />
-              <Bar
-                dataKey="Saídas"
-                fill="#EF4444"
-                radius={[4, 4, 0, 0]}
-              />
+              <Bar dataKey="Entradas" fill="#10B981" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="Saídas" fill="#EF4444" radius={[4, 4, 0, 0]} />
             </RechartsBarChart>
           </ResponsiveContainer>
         </div>

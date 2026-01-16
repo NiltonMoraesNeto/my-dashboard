@@ -8,7 +8,6 @@ import {
   YAxis,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { useTranslation } from "react-i18next";
 
 interface MovimentacoesChartProps {
   data: {
@@ -19,11 +18,19 @@ interface MovimentacoesChartProps {
 }
 
 export function MovimentacoesChart({ data, tipo }: MovimentacoesChartProps) {
-  const { t } = useTranslation();
-
   const meses = [
-    "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-    "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
   ];
 
   const chartData = data.map((item) => ({
@@ -31,7 +38,12 @@ export function MovimentacoesChart({ data, tipo }: MovimentacoesChartProps) {
     value: item.valor,
   }));
 
-  const tipoLabel = tipo === "Entrada" ? "Entradas" : tipo === "Saída" ? "Saídas" : "Movimentações";
+  const tipoLabel =
+    tipo === "Entrada"
+      ? "Entradas"
+      : tipo === "Saída"
+        ? "Saídas"
+        : "Movimentações";
 
   return (
     <Card>
@@ -64,7 +76,13 @@ export function MovimentacoesChart({ data, tipo }: MovimentacoesChartProps) {
               />
               <Bar
                 dataKey="value"
-                fill={tipo === "Entrada" ? "#10B981" : tipo === "Saída" ? "#EF4444" : "#3B82F6"}
+                fill={
+                  tipo === "Entrada"
+                    ? "#10B981"
+                    : tipo === "Saída"
+                      ? "#EF4444"
+                      : "#3B82F6"
+                }
                 radius={[4, 4, 0, 0]}
               />
             </RechartsBarChart>
