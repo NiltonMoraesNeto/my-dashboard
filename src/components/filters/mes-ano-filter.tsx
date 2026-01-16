@@ -50,6 +50,7 @@ export function MesAnoFilter({
   );
 
   const mesSelecionado = meses.find((m) => m.value === mes);
+  console.log("🚀 ~ MesAnoFilter ~ mesSelecionado:", mesSelecionado);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -85,7 +86,10 @@ export function MesAnoFilter({
               {ano} <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="max-h-[300px] overflow-y-auto">
+          <DropdownMenuContent
+            align="end"
+            className="max-h-[300px] overflow-y-auto"
+          >
             {anosDisponiveis.map((anoOption) => (
               <DropdownMenuItem
                 key={anoOption}
