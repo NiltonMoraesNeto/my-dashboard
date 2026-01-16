@@ -81,6 +81,7 @@ export function InputDate({
         <Calendar
           mode="single"
           selected={dateValue}
+          defaultMonth={dateValue || new Date()}
           captionLayout="dropdown"
           onSelect={handleSelect}
           locale={ptBR}
