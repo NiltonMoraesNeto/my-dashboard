@@ -78,9 +78,9 @@ export function MovimentacoesComparisonChart({
                   if (active && payload && payload.length) {
                     return (
                       <div className="bg-white p-3 border rounded shadow-sm">
-                        {payload.map((entry, index) => (
+                        {payload.map((entry) => (
                           <p
-                            key={index}
+                            key={entry.name}
                             className="text-xs"
                             style={{ color: entry.color }}
                           >

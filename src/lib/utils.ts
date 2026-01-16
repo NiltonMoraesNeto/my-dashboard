@@ -6,13 +6,17 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Formata uma Date para string no formato YYYY-MM-DD usando timezone local
+ * Formata uma Date ou string de data para string no formato YYYY-MM-DD usando timezone local
  * Evita problemas de timezone que causam diferença de um dia
  */
-export function formatDateToInput(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+export function formatDateToInput(date: Date | string): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  if (isNaN(dateObj.getTime())) {
+    return '';
+  }
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const day = String(dateObj.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 
@@ -26,4 +30,19 @@ export function parseDateFromInput(dateString: string): Date {
     return new Date(year, month - 1, day);
   }
   return new Date(dateString);
+}
+
+/**
+ * Formata uma Date ou string de data para string legível no formato brasileiro (DD/MM/YYYY)
+ */
+export function formatDateDisplay(date: Date | string): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  if (isNaN(dateObj.getTime())) {
+    return '';
+  }
+  return dateObj.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }

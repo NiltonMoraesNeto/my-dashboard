@@ -136,6 +136,9 @@
           "title": "Meetings",
           "description": "Manage condominium meetings"
         }
+      },
+      "graficos": {
+        "title": "Financial Charts"
       }
     },
     "unidades": {

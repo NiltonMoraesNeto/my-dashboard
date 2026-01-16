@@ -138,6 +138,9 @@
           "title": "Reuniões",
           "description": "Gerencie as reuniões do condomínio"
         }
+      },
+      "graficos": {
+        "title": "Gráficos Financeiros"
       }
     },
     "unidades": {

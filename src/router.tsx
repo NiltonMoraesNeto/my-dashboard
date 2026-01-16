@@ -22,6 +22,8 @@ import { Unidades } from "./pages/Condominio/Unidades/unidades";
 import { UnidadeNew } from "./pages/Condominio/Unidades/unidade-new";
 import { UnidadeEdit } from "./pages/Condominio/Unidades/unidade-edit";
 import { ContasPagar } from "./pages/Condominio/ContasPagar/contas-pagar";
+import { ContaPagarNew } from "./pages/Condominio/ContasPagar/conta-pagar-new";
+import { ContaPagarEdit } from "./pages/Condominio/ContasPagar/conta-pagar-edit";
 import { Balancete } from "./pages/Condominio/Balancete/balancete";
 import { MovimentacaoNew } from "./pages/Condominio/Balancete/movimentacao-new";
 import { MovimentacaoEdit } from "./pages/Condominio/Balancete/movimentacao-edit";
@@ -232,6 +234,30 @@ const contasPagarRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/contas-pagar",
   component: ContasPagar,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
+const contaPagarNewRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "condominio/contas-pagar/new",
+  component: ContaPagarNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
+const contaPagarEditRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "condominio/contas-pagar/$id/edit",
+  component: ContaPagarEdit,
   beforeLoad: ({ context }) => {
     const profile = context.auth.profileUser;
     if (!isCondominioProfile(profile)) {
@@ -497,6 +523,8 @@ const routeTree = rootRoute.addChildren([
     unidadeNewRoute,
     unidadeEditRoute,
     contasPagarRoute,
+    contaPagarNewRoute,
+    contaPagarEditRoute,
     balanceteRoute,
     movimentacaoNewRoute,
     movimentacaoEditRoute,

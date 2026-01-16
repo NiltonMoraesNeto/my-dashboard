@@ -136,6 +136,9 @@
           "title": "Reuniones",
           "description": "Gestiona las reuniones del condominio"
         }
+      },
+      "graficos": {
+        "title": "Gráficos Financieros"
       }
     },
     "unidades": {
