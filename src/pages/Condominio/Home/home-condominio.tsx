@@ -1,17 +1,56 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../contexts/auth-context";
 import { fetchUnidadesList } from "../../../services/unidades";
 import { fetchReunioesList } from "../../../services/reunioes";
+import { fetchMovimentacoesMensal } from "../../../services/home";
+import { MovimentacoesChart } from "../../../components/charts/movimentacoes-chart";
+import { MovimentacoesComparisonChart } from "../../../components/charts/movimentacoes-comparison-chart";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
+import { Label } from "../../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
+import { ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 import type { ReuniaoList } from "../../../model/reuniao-model";
 
 export function HomeCondominio() {
   const { t } = useTranslation();
+  const { dataUser } = useAuth();
   const [totalUnidades, setTotalUnidades] = useState<number>(0);
   const [isLoadingUnidades, setIsLoadingUnidades] = useState(true);
   const [proximaReuniao, setProximaReuniao] = useState<ReuniaoList | null>(
     null
   );
   const [isLoadingReuniao, setIsLoadingReuniao] = useState(true);
+  
+  // Estados para gráficos
+  const [ano, setAno] = useState(new Date().getFullYear());
+  const [tipo, setTipo] = useState<"Entrada" | "Saída" | undefined>(undefined);
+  const [movimentacoesData, setMovimentacoesData] = useState<
+    Array<{ mes: number; valor: number }>
+  >([]);
+  const [entradasData, setEntradasData] = useState<
+    Array<{ mes: number; valor: number }>
+  >([]);
+  const [saidasData, setSaidasData] = useState<
+    Array<{ mes: number; valor: number }>
+  >([]);
+  const [loadingMovimentacoes, setLoadingMovimentacoes] = useState(false);
+  const [loadingComparison, setLoadingComparison] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadTotalUnidades = async () => {
@@ -105,6 +144,80 @@ export function HomeCondominio() {
     loadProximaReuniao();
   }, []);
 
+  // Buscar dados de movimentações (gráfico individual)
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!tipo || !dataUser?.sub) {
+        setMovimentacoesData([]);
+        setLoadingMovimentacoes(false);
+        return;
+      }
+
+      try {
+        setLoadingMovimentacoes(true);
+        setError(null);
+
+        const data = await fetchMovimentacoesMensal({
+          ano,
+          tipo,
+          // Para perfil Condomínio, não passa condominioId (usa o próprio userId)
+        });
+
+        setMovimentacoesData(data);
+      } catch (err) {
+        console.error("Erro ao carregar movimentações:", err);
+        setError("Erro ao carregar dados");
+        toast.error("Erro ao carregar movimentações");
+      } finally {
+        setLoadingMovimentacoes(false);
+      }
+    };
+
+    fetchData();
+  }, [ano, tipo, dataUser?.sub]);
+
+  // Buscar dados para gráfico comparativo (sempre busca ambos)
+  useEffect(() => {
+    const fetchComparisonData = async () => {
+      if (!dataUser?.sub) {
+        return;
+      }
+
+      try {
+        setLoadingComparison(true);
+
+        const [entradas, saidas] = await Promise.all([
+          fetchMovimentacoesMensal({
+            ano,
+            tipo: "Entrada",
+            // Para perfil Condomínio, não passa condominioId (usa o próprio userId)
+          }),
+          fetchMovimentacoesMensal({
+            ano,
+            tipo: "Saída",
+            // Para perfil Condomínio, não passa condominioId (usa o próprio userId)
+          }),
+        ]);
+
+        setEntradasData(entradas);
+        setSaidasData(saidas);
+      } catch (err) {
+        console.error("Erro ao carregar dados comparativos:", err);
+        toast.error("Erro ao carregar dados comparativos");
+      } finally {
+        setLoadingComparison(false);
+      }
+    };
+
+    fetchComparisonData();
+  }, [ano, dataUser?.sub]);
+
+  // Gerar lista de anos (últimos 5 anos + ano atual + próximos 2 anos)
+  const anosDisponiveis = Array.from(
+    { length: 8 },
+    (_, i) => new Date().getFullYear() - 5 + i
+  );
+
   const formatDateTime = (dataString: string, horaString: string) => {
     const dataFormatada = new Date(dataString).toLocaleDateString("pt-BR", {
       day: "2-digit",
@@ -172,6 +285,132 @@ export function HomeCondominio() {
             <p className="text-gray-500 dark:text-gray-400">
               Nenhuma reunião agendada
             </p>
+          )}
+        </div>
+      </div>
+
+      {/* Seção de Gráficos */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-6">{t("condominio.home.graficos.title") || "Gráficos Financeiros"}</h2>
+        
+        {/* Filtros */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {/* Filtro Tipo */}
+          <div className="space-y-2">
+            <Label htmlFor="tipo">Tipo do Dado</Label>
+            <Select
+              value={tipo || ""}
+              onValueChange={(value) =>
+                setTipo(value === "Entrada" || value === "Saída" ? value : undefined)
+              }
+            >
+              <SelectTrigger id="tipo">
+                <SelectValue placeholder="Selecione o tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Entrada">Entrada</SelectItem>
+                <SelectItem value="Saída">Saída</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Filtro Ano */}
+          <div className="space-y-2">
+            <Label htmlFor="ano">Ano</Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  {ano} <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="max-h-[300px] overflow-y-auto">
+                {anosDisponiveis.map((anoOption) => (
+                  <DropdownMenuItem
+                    key={anoOption}
+                    onSelect={() => setAno(anoOption)}
+                  >
+                    {anoOption}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Mensagem de erro */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
+        {/* Gráfico Individual */}
+        {tipo && movimentacoesData.length > 0 && (
+          <div className="mb-6">
+            <MovimentacoesChart data={movimentacoesData} tipo={tipo} />
+          </div>
+        )}
+
+        {/* Mensagem quando não há tipo selecionado */}
+        {!tipo && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Selecione um tipo de dado para visualizar o gráfico</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 dark:text-gray-300">
+                Escolha entre "Entrada" ou "Saída" no filtro acima para ver os dados
+                mensais do ano selecionado.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Mensagem quando não há dados */}
+        {tipo && movimentacoesData.length === 0 && !loadingMovimentacoes && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Nenhum dado encontrado</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 dark:text-gray-300">
+                Não há movimentações do tipo "{tipo}" para o período selecionado.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Gráfico Comparativo */}
+        <div className="mt-6">
+          {loadingComparison ? (
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex justify-center items-center h-64">
+                  <div className="text-lg text-gray-600 dark:text-gray-300">
+                    Carregando comparativo...
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              <MovimentacoesComparisonChart
+                entradasData={entradasData}
+                saidasData={saidasData}
+              />
+              {!loadingComparison && entradasData.length === 0 && saidasData.length === 0 && (
+                <Card className="mt-4">
+                  <CardHeader>
+                    <CardTitle>Nenhum dado encontrado</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Não há movimentações para o período selecionado.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </>
           )}
         </div>
       </div>
