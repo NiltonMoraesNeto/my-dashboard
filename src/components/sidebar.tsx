@@ -1,10 +1,8 @@
 import {
-  Apple,
   ArrowDown,
   ArrowLeft,
   ArrowUp,
   Building2,
-  ChartArea,
   Home,
   Menu,
   NotebookPen,
@@ -34,12 +32,12 @@ const menuConfig: SidebarMenuItem[] = [
     labelKey: "sidebar.menu.home",
     to: "/home",
   },
-  {
-    key: "dashboard",
-    icon: ChartArea,
-    labelKey: "sidebar.menu.dashboard",
-    to: "/dashboard",
-  },
+  // {
+  //   key: "dashboard",
+  //   icon: ChartArea,
+  //   labelKey: "sidebar.menu.dashboard",
+  //   to: "/dashboard",
+  // },
   {
     key: "cadastros",
     icon: NotebookPen,
@@ -82,20 +80,24 @@ const menuConfig: SidebarMenuItem[] = [
         labelKey: "sidebar.condominio.menu.reunioes",
         to: "/condominio/reunioes",
       },
+      {
+        labelKey: "sidebar.condominio.menu.entregas",
+        to: "/condominio/entregas",
+      },
       { labelKey: "sidebar.condominio.menu.avisos", to: "/condominio/avisos" },
     ],
   },
-  {
-    key: "outromenu",
-    icon: Apple,
-    labelKey: "sidebar.menu.other",
-    submenuKey: "outromenu",
-    children: [
-      { labelKey: "sidebar.menu.other1", to: "/outromenu/submenu1" },
-      { labelKey: "sidebar.menu.other2", to: "/outromenu/submenu2" },
-      { labelKey: "sidebar.menu.other3", to: "/outromenu/submenu3" },
-    ],
-  },
+  // {
+  //   key: "outromenu",
+  //   icon: Apple,
+  //   labelKey: "sidebar.menu.other",
+  //   submenuKey: "outromenu",
+  //   children: [
+  //     { labelKey: "sidebar.menu.other1", to: "/outromenu/submenu1" },
+  //     { labelKey: "sidebar.menu.other2", to: "/outromenu/submenu2" },
+  //     { labelKey: "sidebar.menu.other3", to: "/outromenu/submenu3" },
+  //   ],
+  // },
 ];
 
 export function Sidebar() {
@@ -103,6 +105,9 @@ export function Sidebar() {
   const { profileUser } = useAuth();
   const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
   const isAdministrador = profileUser?.toLowerCase() === "administrador";
+  const isCondominio = 
+    profileUser?.toLowerCase() === "condomínio" || 
+    profileUser?.toLowerCase() === "condominio";
   const [isOpen, setIsOpen] = useState(true);
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const pathname = useRouterState({
@@ -173,8 +178,8 @@ export function Sidebar() {
   const filteredMenuConfig = useMemo(() => {
     return menuConfig
       .map((item) => {
-        // Filtrar menu "condominio" se não for SuperAdmin
-        if (item.key === "condominio" && !isSuperAdmin) {
+        // Filtrar menu "condominio" se não for SuperAdmin nem Condomínio
+        if (item.key === "condominio" && !isSuperAdmin && !isCondominio) {
           return null;
         }
 
@@ -199,7 +204,7 @@ export function Sidebar() {
         return item;
       })
       .filter((item) => item !== null) as SidebarMenuItem[];
-  }, [isSuperAdmin, isAdministrador]);
+  }, [isSuperAdmin, isAdministrador, isCondominio]);
 
   return (
     <div className="flex h-auto">

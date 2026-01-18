@@ -7,6 +7,7 @@ import {
   Home,
   Menu,
   MessageSquare,
+  Package,
   Users,
   Wallet,
 } from "lucide-react";
@@ -63,6 +64,12 @@ const menuConfig: SidebarMenuItem[] = [
     icon: Calendar,
     labelKey: "sidebar.condominio.menu.reunioes",
     to: "/condominio/reunioes",
+  },
+  {
+    key: "entregas",
+    icon: Package,
+    labelKey: "sidebar.condominio.menu.entregas",
+    to: "/condominio/entregas",
   },
   {
     key: "avisos",

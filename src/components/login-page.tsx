@@ -56,7 +56,7 @@ export function LoginPage() {
         const isCondominioProfile = perfil?.toLowerCase() === "condomínio" || perfil?.toLowerCase() === "condominio";
         const isMoradorProfile = perfil?.toLowerCase() === "morador";
         
-        let redirectPath = "/dashboard";
+        let redirectPath = "/home";
         if (isCondominioProfile) {
           redirectPath = "/condominio/home";
         } else if (isMoradorProfile) {

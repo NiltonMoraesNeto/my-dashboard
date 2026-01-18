@@ -10,7 +10,7 @@ import { AuthenticatedLayout } from "./components/authenticated-layout";
 import { LoginPage } from "./components/login-page";
 import { useAuth } from "./contexts/auth-context";
 import type { AuthContextType } from "./model/auth-context-model";
-import { Dashboard } from "./pages/Dashboard/dashboard";
+//import { Dashboard } from "./pages/Dashboard/dashboard";
 import { HomePage } from "./pages/Home/home";
 import { NotFoundPage } from "./pages/NotFound/not-found";
 import { Profile } from "./pages/Profile/profile";
@@ -36,6 +36,9 @@ import { AvisoNew } from "./pages/Condominio/Avisos/aviso-new";
 import { AvisoEdit } from "./pages/Condominio/Avisos/aviso-edit";
 import { BoletoNew } from "./pages/Condominio/Boletos/boleto-new";
 import { BoletoEdit } from "./pages/Condominio/Boletos/boleto-edit";
+import { Entregas } from "./pages/Condominio/Entregas/entregas";
+import { EntregaNew } from "./pages/Condominio/Entregas/entrega-new";
+import { EntregaEdit } from "./pages/Condominio/Entregas/entrega-edit";
 import { BoletosMorador } from "./pages/Boletos/boletos";
 import { Moradores } from "./pages/Condominio/Moradores/moradores";
 import { MoradorNew } from "./pages/Condominio/Moradores/morador-new";
@@ -64,7 +67,7 @@ const getRedirectPath = (profileUser?: string) => {
   if (isMoradorProfile) {
     return "/home";
   }
-  return "/dashboard";
+  return "/home";
 };
 
 const isCondominioProfile = (profileUser?: string) => {
@@ -133,17 +136,17 @@ const profileRoute = createRoute({
   },
 });
 
-const dashboardRoute = createRoute({
-  getParentRoute: () => authenticatedRoute,
-  path: "dashboard",
-  component: Dashboard,
-  beforeLoad: ({ context }) => {
-    const profile = context.auth.profileUser;
-    if (isMoradorProfile(profile) || isCondominioProfile(profile)) {
-      throw redirect({ to: getRedirectPath(profile) });
-    }
-  },
-});
+// const dashboardRoute = createRoute({
+//   getParentRoute: () => authenticatedRoute,
+//   path: "dashboard",
+//   component: Dashboard,
+//   beforeLoad: ({ context }) => {
+//     const profile = context.auth.profileUser;
+//     if (isMoradorProfile(profile) || isCondominioProfile(profile)) {
+//       throw redirect({ to: getRedirectPath(profile) });
+//     }
+//   },
+// });
 
 const userRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
@@ -422,6 +425,42 @@ const avisoEditRoute = createRoute({
   },
 });
 
+const entregasRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "condominio/entregas",
+  component: Entregas,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
+const entregaNewRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "condominio/entregas/new",
+  component: EntregaNew,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
+const entregaEditRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: "condominio/entregas/$id/edit",
+  component: EntregaEdit,
+  beforeLoad: ({ context }) => {
+    const profile = context.auth.profileUser;
+    if (!isCondominioProfile(profile) && !isSuperAdminProfile(profile)) {
+      throw redirect({ to: getRedirectPath(profile) });
+    }
+  },
+});
+
 const moradoresRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "condominio/moradores",
@@ -514,7 +553,7 @@ const routeTree = rootRoute.addChildren([
   authenticatedRoute.addChildren([
     homeRoute,
     profileRoute,
-    dashboardRoute,
+    //dashboardRoute,
     userRoute,
     userNewRoute,
     userEditRoute,
@@ -538,6 +577,9 @@ const routeTree = rootRoute.addChildren([
     avisosRoute,
     avisoNewRoute,
     avisoEditRoute,
+    entregasRoute,
+    entregaNewRoute,
+    entregaEditRoute,
     moradoresRoute,
     moradorNewRoute,
     moradorEditRoute,

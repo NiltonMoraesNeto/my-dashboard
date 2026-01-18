@@ -35,6 +35,7 @@
         "balancete": "Balance Sheet",
         "boletos": "Invoices",
         "reunioes": "Meetings",
+        "entregas": "Deliveries",
         "avisos": "Notices"
       }
     }
