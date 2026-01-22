@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TableEntrega } from "../../../components/table-entrega";
 import type { Entrega } from "../../../services/entregas";
 import { fetchEntregasList } from "../../../services/entregas";
@@ -7,6 +8,7 @@ import { CondominioGuard } from "../../../components/condominio-guard";
 import { useAuth } from "../../../contexts/auth-context";
 
 export function Entregas() {
+  const { t } = useTranslation();
   const { profileUser } = useAuth();
   const { selectedCondominioId } = useCondominio();
   const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
@@ -76,7 +78,7 @@ export function Entregas() {
   return (
     <CondominioGuard>
       <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">Entregas</h1>
+        <h1 className="text-3xl font-bold mb-6">{t("condominio.entregas.title")}</h1>
         <TableEntrega
           search={search}
           setSearch={setSearch}

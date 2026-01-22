@@ -41,12 +41,14 @@
     }
   },
   "auth": {
-    "brand": "Nilton Moraes Neto",
+    "brand": "Lab808 Tech",
+    "subtitle": "Gestión Inteligente para Condominios",
     "hero": {
       "title": "¡Hola!",
       "subtitle": "Bienvenido de nuevo.",
       "callToAction": "¿No tienes una cuenta?",
-      "signUp": "Regístrate"
+      "signUp": "Regístrate",
+      "contactButton": "Contactar"
     },
     "form": {
       "title": "Iniciar Sesión",
@@ -118,9 +120,30 @@
     }
   },
   "home": {
-    "title": "Bienvenido - Inicio",
-    "loading": "Cargando datos del panel...",
-    "error": "Error al cargar datos del panel"
+    "title": "Inicio",
+    "loading": "Cargando...",
+    "loadingComparison": "Cargando comparativo...",
+    "error": "Error al cargar datos del panel",
+    "errorLoadCondominios": "Error al cargar lista de condominios",
+    "errorLoadMovimentacoes": "Error al cargar movimientos",
+    "errorLoadComparison": "Error al cargar datos comparativos",
+    "errorLoadData": "Error al cargar datos",
+    "filters": {
+      "tipoDado": "Tipo de Dato",
+      "tipoPlaceholder": "Selecciona el tipo",
+      "entrada": "Entrada",
+      "saida": "Salida",
+      "condominio": "Condominio",
+      "condominioPlaceholder": "Selecciona el condominio",
+      "todos": "Todos",
+      "ano": "Año"
+    },
+    "messages": {
+      "selectTipo": "Selecciona un tipo de dato para visualizar el gráfico",
+      "selectTipoDescription": "Elige entre \"Entrada\" o \"Salida\" en el filtro de arriba para ver los datos mensuales del año seleccionado.",
+      "noData": "No se encontraron datos",
+      "noDataDescription": "No hay movimientos del tipo \"{{tipo}}\" para el período seleccionado."
+    }
   },
   "condominio": {
     "home": {
@@ -579,6 +602,114 @@
         "successDelete": "Residente eliminado con éxito",
         "errorDelete": "Error al eliminar residente"
       }
+    },
+    "entregas": {
+      "title": "Entregas",
+      "addButton": "Nueva Entrega",
+      "emptyMessage": "No hay entregas registradas. Haz clic en 'Nueva Entrega' para comenzar.",
+      "searchPlaceholder": "Buscar",
+      "new": {
+        "title": "Nueva Entrega",
+        "back": "Volver",
+        "titulo": "Título",
+        "tituloPlaceholder": "Nueva entrega",
+        "tituloDefault": "Nueva entrega",
+        "dataHora": "Fecha y Hora",
+        "nomeRecebedor": "Nombre del Receptor",
+        "nomeRecebedorPlaceholder": "Nombre completo",
+        "recebidoPor": "Recibido Por",
+        "recebidoPorPlaceholder": "Selecciona quién recibió",
+        "recebidoPorPortaria": "Portería",
+        "recebidoPorZelador": "Conserje",
+        "recebidoPorMorador": "Residente",
+        "unidade": "Unidad",
+        "unidadePlaceholder": "Selecciona la unidad",
+        "loadingUnidades": "Cargando unidades...",
+        "anexo": "Foto del Producto (Anexo)",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "Entrega creada con éxito",
+        "error": "Error al crear entrega",
+        "errorLoadUnidades": "Error al cargar unidades"
+      },
+      "edit": {
+        "title": "Editar Entrega",
+        "back": "Volver",
+        "titulo": "Título",
+        "tituloPlaceholder": "Nueva entrega",
+        "dataHora": "Fecha y Hora",
+        "nomeRecebedor": "Nombre del Receptor",
+        "nomeRecebedorPlaceholder": "Nombre completo",
+        "recebidoPor": "Recibido Por",
+        "recebidoPorPlaceholder": "Selecciona quién recibió",
+        "recebidoPorPortaria": "Portería",
+        "recebidoPorZelador": "Conserje",
+        "recebidoPorMorador": "Residente",
+        "unidade": "Unidad",
+        "unidadePlaceholder": "Selecciona la unidad",
+        "loadingUnidades": "Cargando unidades...",
+        "anexo": "Foto del Producto (Anexo)",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "Entrega actualizada con éxito",
+        "error": "Error al actualizar entrega",
+        "errorLoad": "Error al cargar datos",
+        "loading": "Cargando..."
+      }
+    },
+    "contasPagar": {
+      "new": {
+        "title": "Nueva Cuenta por Pagar",
+        "back": "Volver",
+        "descricao": "Título del Gasto",
+        "descricaoPlaceholder": "Ej: Mantenimiento del ascensor",
+        "valor": "Valor",
+        "vencimento": "Fecha de Vencimiento",
+        "categoria": "Categoría",
+        "categoriaPlaceholder": "Ej: Mantenimiento, Limpieza, Seguridad",
+        "status": "Estado",
+        "statusPlaceholder": "Selecciona el estado",
+        "statusPendente": "Pendiente",
+        "statusPaga": "Pagada",
+        "statusVencida": "Vencida",
+        "anexo": "Anexo (Factura, Recibo, etc.)",
+        "observacoes": "Observaciones",
+        "observacoesPlaceholder": "Observaciones adicionales sobre la cuenta por pagar...",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "Cuenta por pagar creada con éxito",
+        "error": "Error al crear cuenta por pagar"
+      },
+      "edit": {
+        "title": "Editar Cuenta por Pagar",
+        "back": "Volver",
+        "descricao": "Título del Gasto",
+        "descricaoPlaceholder": "Ej: Mantenimiento del ascensor",
+        "valor": "Valor",
+        "vencimento": "Fecha de Vencimiento",
+        "categoria": "Categoría",
+        "categoriaPlaceholder": "Ej: Mantenimiento, Limpieza, Seguridad",
+        "status": "Estado",
+        "statusPlaceholder": "Selecciona el estado",
+        "statusPendente": "Pendiente",
+        "statusPaga": "Pagada",
+        "statusVencida": "Vencida",
+        "anexo": "Anexo (Factura, Recibo, etc.)",
+        "anexoAtual": "Anexo actual",
+        "anexoHint": "Deja en blanco para mantener el anexo actual o selecciona un nuevo archivo para reemplazar",
+        "observacoes": "Observaciones",
+        "observacoesPlaceholder": "Observaciones adicionales sobre la cuenta por pagar...",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "cancel": "Cancelar",
+        "success": "Cuenta por pagar actualizada con éxito",
+        "error": "Error al actualizar cuenta por pagar",
+        "errorLoad": "Error al cargar cuenta por pagar",
+        "loading": "Cargando..."
+      }
     }
   },
   "months": {
@@ -618,6 +749,9 @@
     "delete": "Eliminar",
     "action": "Acción",
     "loading": "Cargando...",
+    "loadingProfiles": "Cargando perfiles...",
+    "loadingCompanies": "Cargando empresas...",
+    "loadingCondominios": "Cargando condominios...",
     "select": "Seleccionar",
     "optional": "(opcional)",
     "required": "*",

@@ -278,7 +278,7 @@ export function HomeCondominio() {
             {t("condominio.home.cards.reunioes.description")}
           </p>
           {isLoadingReuniao ? (
-            <p className="text-gray-500 dark:text-gray-400">Carregando...</p>
+            <p className="text-gray-500 dark:text-gray-400">{t("common.loading")}</p>
           ) : proximaReuniao ? (
             <div>
               <p className="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-2">

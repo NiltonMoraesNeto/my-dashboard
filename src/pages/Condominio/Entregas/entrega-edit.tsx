@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -32,6 +33,7 @@ interface UnidadeOption {
 export function EntregaEdit() {
   const navigate = useNavigate();
   const { id } = useParams({ strict: false });
+  const { t } = useTranslation();
   const [unidades, setUnidades] = useState<UnidadeOption[]>([]);
   const [loadingUnidades, setLoadingUnidades] = useState(true);
   const [loadingEntrega, setLoadingEntrega] = useState(true);
@@ -78,7 +80,7 @@ export function EntregaEdit() {
         }
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
-        toast.error("Erro ao carregar dados");
+        toast.error(t("condominio.entregas.edit.errorLoad"));
       } finally {
         setLoadingUnidades(false);
         setLoadingEntrega(false);
@@ -125,21 +127,21 @@ export function EntregaEdit() {
 
       await updateEntrega(id, updateData, anexoToSend);
 
-      toast.success("Entrega atualizada com sucesso");
+      toast.success(t("condominio.entregas.edit.success"));
       navigate({ to: "/condominio/entregas" });
     } catch (error: unknown) {
       console.error("Erro ao atualizar entrega:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao atualizar entrega";
-      toast.error("Erro ao atualizar entrega", {
+          ?.data?.message || t("condominio.entregas.edit.error");
+      toast.error(t("condominio.entregas.edit.error"), {
         description: message,
       });
     }
   };
 
   if (loadingEntrega) {
-    return <div className="p-6">Carregando...</div>;
+    return <div className="p-6">{t("condominio.entregas.edit.loading")}</div>;
   }
 
   return (
@@ -147,7 +149,7 @@ export function EntregaEdit() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Editar Entrega
+            {t("condominio.entregas.edit.title")}
           </h1>
           <Button
             type="button"
@@ -155,23 +157,23 @@ export function EntregaEdit() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/entregas" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.entregas.edit.back")}
           </Button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="titulo">Título</Label>
+            <Label htmlFor="titulo">{t("condominio.entregas.edit.titulo")}</Label>
             <Input
               id="titulo"
               {...register("titulo")}
-              placeholder="Nova entrega"
+              placeholder={t("condominio.entregas.edit.tituloPlaceholder")}
             />
             <FormErrorMessage message={errors.titulo?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="dataHora">Data e Hora</Label>
+            <Label htmlFor="dataHora">{t("condominio.entregas.edit.dataHora")}</Label>
             <Controller
               name="dataHora"
               control={control}
@@ -189,29 +191,29 @@ export function EntregaEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="nomeRecebedor">Nome do Recebedor</Label>
+            <Label htmlFor="nomeRecebedor">{t("condominio.entregas.edit.nomeRecebedor")}</Label>
             <Input
               id="nomeRecebedor"
               {...register("nomeRecebedor")}
-              placeholder="Nome completo"
+              placeholder={t("condominio.entregas.edit.nomeRecebedorPlaceholder")}
             />
             <FormErrorMessage message={errors.nomeRecebedor?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="recebidoPor">Recebido Por</Label>
+            <Label htmlFor="recebidoPor">{t("condominio.entregas.edit.recebidoPor")}</Label>
             <Controller
               name="recebidoPor"
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione quem recebeu" />
+                    <SelectValue placeholder={t("condominio.entregas.edit.recebidoPorPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="portaria">Portaria</SelectItem>
-                    <SelectItem value="zelador">Zelador</SelectItem>
-                    <SelectItem value="morador">Morador</SelectItem>
+                    <SelectItem value="portaria">{t("condominio.entregas.edit.recebidoPorPortaria")}</SelectItem>
+                    <SelectItem value="zelador">{t("condominio.entregas.edit.recebidoPorZelador")}</SelectItem>
+                    <SelectItem value="morador">{t("condominio.entregas.edit.recebidoPorMorador")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -220,9 +222,9 @@ export function EntregaEdit() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="unidadeId">Unidade</Label>
+            <Label htmlFor="unidadeId">{t("condominio.entregas.edit.unidade")}</Label>
             {loadingUnidades ? (
-              <div>Carregando unidades...</div>
+              <div>{t("condominio.entregas.edit.loadingUnidades")}</div>
             ) : (
               <Controller
                 name="unidadeId"
@@ -230,7 +232,7 @@ export function EntregaEdit() {
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione a unidade" />
+                      <SelectValue placeholder={t("condominio.entregas.edit.unidadePlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {unidades.map((unidade) => (
@@ -249,7 +251,7 @@ export function EntregaEdit() {
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="anexo">Foto do Produto (Anexo)</Label>
+            <Label htmlFor="anexo">{t("condominio.entregas.edit.anexo")}</Label>
             <Controller
               name="anexo"
               control={control}
@@ -267,14 +269,14 @@ export function EntregaEdit() {
 
           <div className="md:col-span-2 flex gap-4">
             <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.entregas.edit.saving") : t("condominio.entregas.edit.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/entregas" })}
             >
-              Cancelar
+              {t("condominio.entregas.edit.cancel")}
             </Button>
           </div>
         </form>

@@ -43,12 +43,14 @@
     }
   },
   "auth": {
-    "brand": "Nilton Moraes Neto",
+    "brand": "Lab808 Tech",
+    "subtitle": "Gestão Inteligente para Condomínios",
     "hero": {
       "title": "Olá!",
       "subtitle": "Bem-vindo de volta.",
       "callToAction": "Ainda não tem uma conta?",
-      "signUp": "Criar conta"
+      "signUp": "Criar conta",
+      "contactButton": "Entrar em contato"
     },
     "form": {
       "title": "Entrar",
@@ -120,9 +122,30 @@
     }
   },
   "home": {
-    "title": "Bem-vindo - Home",
-    "loading": "Carregando dados do dashboard...",
-    "error": "Erro ao carregar dados do dashboard"
+    "title": "Home",
+    "loading": "Carregando...",
+    "loadingComparison": "Carregando comparativo...",
+    "error": "Erro ao carregar dados do dashboard",
+    "errorLoadCondominios": "Erro ao carregar lista de condomínios",
+    "errorLoadMovimentacoes": "Erro ao carregar movimentações",
+    "errorLoadComparison": "Erro ao carregar dados comparativos",
+    "errorLoadData": "Erro ao carregar dados",
+    "filters": {
+      "tipoDado": "Tipo do Dado",
+      "tipoPlaceholder": "Selecione o tipo",
+      "entrada": "Entrada",
+      "saida": "Saída",
+      "condominio": "Condomínio",
+      "condominioPlaceholder": "Selecione o condomínio",
+      "todos": "Todos",
+      "ano": "Ano"
+    },
+    "messages": {
+      "selectTipo": "Selecione um tipo de dado para visualizar o gráfico",
+      "selectTipoDescription": "Escolha entre \"Entrada\" ou \"Saída\" no filtro acima para ver os dados mensais do ano selecionado.",
+      "noData": "Nenhum dado encontrado",
+      "noDataDescription": "Não há movimentações do tipo \"{{tipo}}\" para o período selecionado."
+    }
   },
   "condominio": {
     "home": {
@@ -579,6 +602,114 @@
           "emptyMessage": "Nenhuma movimentação encontrada."
         }
       }
+    },
+    "entregas": {
+      "title": "Entregas",
+      "addButton": "Nova Entrega",
+      "emptyMessage": "Nenhuma entrega cadastrada. Clique em 'Nova Entrega' para começar.",
+      "searchPlaceholder": "Pesquisar",
+      "new": {
+        "title": "Nova Entrega",
+        "back": "Voltar",
+        "titulo": "Título",
+        "tituloPlaceholder": "Nova entrega",
+        "tituloDefault": "Nova entrega",
+        "dataHora": "Data e Hora",
+        "nomeRecebedor": "Nome do Recebedor",
+        "nomeRecebedorPlaceholder": "Nome completo",
+        "recebidoPor": "Recebido Por",
+        "recebidoPorPlaceholder": "Selecione quem recebeu",
+        "recebidoPorPortaria": "Portaria",
+        "recebidoPorZelador": "Zelador",
+        "recebidoPorMorador": "Morador",
+        "unidade": "Unidade",
+        "unidadePlaceholder": "Selecione a unidade",
+        "loadingUnidades": "Carregando unidades...",
+        "anexo": "Foto do Produto (Anexo)",
+        "save": "Salvar",
+        "saving": "Salvando...",
+        "cancel": "Cancelar",
+        "success": "Entrega criada com sucesso",
+        "error": "Erro ao criar entrega",
+        "errorLoadUnidades": "Erro ao carregar unidades"
+      },
+      "edit": {
+        "title": "Editar Entrega",
+        "back": "Voltar",
+        "titulo": "Título",
+        "tituloPlaceholder": "Nova entrega",
+        "dataHora": "Data e Hora",
+        "nomeRecebedor": "Nome do Recebedor",
+        "nomeRecebedorPlaceholder": "Nome completo",
+        "recebidoPor": "Recebido Por",
+        "recebidoPorPlaceholder": "Selecione quem recebeu",
+        "recebidoPorPortaria": "Portaria",
+        "recebidoPorZelador": "Zelador",
+        "recebidoPorMorador": "Morador",
+        "unidade": "Unidade",
+        "unidadePlaceholder": "Selecione a unidade",
+        "loadingUnidades": "Carregando unidades...",
+        "anexo": "Foto do Produto (Anexo)",
+        "save": "Salvar",
+        "saving": "Salvando...",
+        "cancel": "Cancelar",
+        "success": "Entrega atualizada com sucesso",
+        "error": "Erro ao atualizar entrega",
+        "errorLoad": "Erro ao carregar dados",
+        "loading": "Carregando..."
+      }
+    },
+    "contasPagar": {
+      "new": {
+        "title": "Nova Conta a Pagar",
+        "back": "Voltar",
+        "descricao": "Título da Despesa",
+        "descricaoPlaceholder": "Ex: Manutenção do elevador",
+        "valor": "Valor",
+        "vencimento": "Data de Vencimento",
+        "categoria": "Categoria",
+        "categoriaPlaceholder": "Ex: Manutenção, Limpeza, Segurança",
+        "status": "Status",
+        "statusPlaceholder": "Selecione o status",
+        "statusPendente": "Pendente",
+        "statusPaga": "Paga",
+        "statusVencida": "Vencida",
+        "anexo": "Anexo (Nota Fiscal, Recibo, etc.)",
+        "observacoes": "Observações",
+        "observacoesPlaceholder": "Observações adicionais sobre a conta a pagar...",
+        "save": "Salvar",
+        "saving": "Salvando...",
+        "cancel": "Cancelar",
+        "success": "Conta a pagar criada com sucesso",
+        "error": "Erro ao criar conta a pagar"
+      },
+      "edit": {
+        "title": "Editar Conta a Pagar",
+        "back": "Voltar",
+        "descricao": "Título da Despesa",
+        "descricaoPlaceholder": "Ex: Manutenção do elevador",
+        "valor": "Valor",
+        "vencimento": "Data de Vencimento",
+        "categoria": "Categoria",
+        "categoriaPlaceholder": "Ex: Manutenção, Limpeza, Segurança",
+        "status": "Status",
+        "statusPlaceholder": "Selecione o status",
+        "statusPendente": "Pendente",
+        "statusPaga": "Paga",
+        "statusVencida": "Vencida",
+        "anexo": "Anexo (Nota Fiscal, Recibo, etc.)",
+        "anexoAtual": "Anexo atual",
+        "anexoHint": "Deixe em branco para manter o anexo atual ou selecione um novo arquivo para substituir",
+        "observacoes": "Observações",
+        "observacoesPlaceholder": "Observações adicionais sobre a conta a pagar...",
+        "save": "Salvar",
+        "saving": "Salvando...",
+        "cancel": "Cancelar",
+        "success": "Conta a pagar atualizada com sucesso",
+        "error": "Erro ao atualizar conta a pagar",
+        "errorLoad": "Erro ao carregar conta a pagar",
+        "loading": "Carregando..."
+      }
     }
   },
   "months": {
@@ -618,6 +749,9 @@
     "delete": "Excluir",
     "action": "Ação",
     "loading": "Carregando...",
+    "loadingProfiles": "Carregando perfis...",
+    "loadingCompanies": "Carregando empresas...",
+    "loadingCondominios": "Carregando condomínios...",
     "select": "Selecione",
     "optional": "(opcional)",
     "required": "*",

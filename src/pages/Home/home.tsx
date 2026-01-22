@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../contexts/auth-context";
 import { fetchMovimentacoesMensal } from "../../services/home";
 import { fetchCondominiosList } from "../../services/usuarios";
@@ -34,6 +35,7 @@ interface CondominioOption {
 }
 
 export function HomePage() {
+  const { t } = useTranslation();
   const { profileUser, dataUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +76,7 @@ export function HomePage() {
           setCondominios(condominiosList);
         } catch (error) {
           console.error("Erro ao carregar condomínios:", error);
-          toast.error("Erro ao carregar lista de condomínios");
+          toast.error(t("home.errorLoadCondominios"));
         } finally {
           setLoadingCondominios(false);
         }
@@ -109,8 +111,8 @@ export function HomePage() {
         setMovimentacoesData(data);
       } catch (err) {
         console.error("Erro ao carregar movimentações:", err);
-        setError("Erro ao carregar dados");
-        toast.error("Erro ao carregar movimentações");
+        setError(t("home.errorLoadData"));
+        toast.error(t("home.errorLoadMovimentacoes"));
       } finally {
         setLoading(false);
       }
@@ -142,7 +144,7 @@ export function HomePage() {
         setSaidasData(saidas);
       } catch (err) {
         console.error("Erro ao carregar dados comparativos:", err);
-        toast.error("Erro ao carregar dados comparativos");
+        toast.error(t("home.errorLoadComparison"));
       } finally {
         setLoadingComparison(false);
       }
@@ -163,7 +165,7 @@ export function HomePage() {
         <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-indigo-800">
           <div className="flex justify-center items-center h-64">
             <div className="text-lg text-gray-600 dark:text-gray-300">
-              Carregando...
+              {t("home.loading")}
             </div>
           </div>
         </div>
@@ -176,7 +178,7 @@ export function HomePage() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-indigo-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-indigo-600 dark:text-indigo-300">
-            Home
+            {t("home.title")}
           </h1>
         </div>
 
@@ -184,7 +186,7 @@ export function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Filtro Tipo */}
           <div className="space-y-2">
-            <Label htmlFor="tipo">Tipo do Dado</Label>
+            <Label htmlFor="tipo">{t("home.filters.tipoDado")}</Label>
             <Select
               value={tipo || ""}
               onValueChange={(value) =>
@@ -194,11 +196,11 @@ export function HomePage() {
               }
             >
               <SelectTrigger id="tipo">
-                <SelectValue placeholder="Selecione o tipo" />
+                <SelectValue placeholder={t("home.filters.tipoPlaceholder")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Entrada">Entrada</SelectItem>
-                <SelectItem value="Saída">Saída</SelectItem>
+                <SelectItem value="Entrada">{t("home.filters.entrada")}</SelectItem>
+                <SelectItem value="Saída">{t("home.filters.saida")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -206,7 +208,7 @@ export function HomePage() {
           {/* Filtro Condomínio - apenas para SuperAdmin e Admin */}
           {(isSuperAdmin || isAdmin) && (
             <div className="space-y-2">
-              <Label htmlFor="condominio">Condomínio</Label>
+              <Label htmlFor="condominio">{t("home.filters.condominio")}</Label>
               <Select
                 value={condominioId || ""}
                 onValueChange={(value) =>
@@ -215,10 +217,10 @@ export function HomePage() {
                 disabled={loadingCondominios}
               >
                 <SelectTrigger id="condominio">
-                  <SelectValue placeholder="Selecione o condomínio" />
+                  <SelectValue placeholder={t("home.filters.condominioPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="todos">Todos</SelectItem>
+                  <SelectItem value="todos">{t("home.filters.todos")}</SelectItem>
                   {condominios.map((condominio) => (
                     <SelectItem key={condominio.id} value={condominio.id}>
                       {condominio.nome}
@@ -231,7 +233,7 @@ export function HomePage() {
 
           {/* Filtro Ano */}
           <div className="space-y-2">
-            <Label htmlFor="ano">Ano</Label>
+            <Label htmlFor="ano">{t("home.filters.ano")}</Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
@@ -274,13 +276,12 @@ export function HomePage() {
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>
-                Selecione um tipo de dado para visualizar o gráfico
+                {t("home.messages.selectTipo")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 dark:text-gray-300">
-                Escolha entre "Entrada" ou "Saída" no filtro acima para ver os
-                dados mensais do ano selecionado.
+                {t("home.messages.selectTipoDescription")}
               </p>
             </CardContent>
           </Card>
@@ -290,12 +291,11 @@ export function HomePage() {
         {tipo && movimentacoesData.length === 0 && !loading && (
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Nenhum dado encontrado</CardTitle>
+              <CardTitle>{t("home.messages.noData")}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 dark:text-gray-300">
-                Não há movimentações do tipo "{tipo}" para o período
-                selecionado.
+                {t("home.messages.noDataDescription", { tipo })}
               </p>
             </CardContent>
           </Card>
@@ -308,7 +308,7 @@ export function HomePage() {
               <CardContent className="p-6">
                 <div className="flex justify-center items-center h-64">
                   <div className="text-lg text-gray-600 dark:text-gray-300">
-                    Carregando comparativo...
+                    {t("home.loadingComparison")}
                   </div>
                 </div>
               </CardContent>

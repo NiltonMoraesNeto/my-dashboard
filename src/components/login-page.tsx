@@ -77,7 +77,8 @@ export function LoginPage() {
       {/* Coluna esquerda - Roxo  */}
       <div className="hidden w-1/2 flex-col justify-between bg-indigo-600 dark:bg-indigo-900 p-12 text-white md:flex h-full">
         <div>
-          <div className="flex items-center gap-2 text-xl font-semibold">Lab808 Tech
+          <div className="flex items-center gap-2 text-xl font-semibold">
+            {t("auth.brand")}
             <ThemeToggle />
           </div>
         </div>
@@ -93,9 +94,9 @@ export function LoginPage() {
                 type="button"
                 variant="default"
                 className="border-white text-white hover:bg-white/10 hover:text-white"
-                onClick={() => setOpenModalSignUp(true)}
+                onClick={() => window.open('https://www.lab808.com.br/', '_blank')}
               >
-                {t("auth.hero.signUp")}
+                {t("auth.hero.contactButton")}
               </Button>
             </div>
             <LanguageSwitcher isLabelVisible={false} />
@@ -113,7 +114,7 @@ export function LoginPage() {
               <img src="/logo-transparente-small.png" alt="Lab808 Tech" className="hidden dark:flex w-44" />
             </div>
             <h2 className="text-lg font-semibold text-indigo-600 uppercase mt-5 mb-5">
-              Gestão Inteligente para Condomínios
+              {t("auth.subtitle")}
             </h2>
             <h2 className="text-2xl font-semibold text-indigo-600 uppercase">
               {t("auth.form.title")}

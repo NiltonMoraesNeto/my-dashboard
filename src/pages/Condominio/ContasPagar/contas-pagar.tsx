@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TableContaPagar } from "../../../components/table-conta-pagar";
 import type { ContaPagar } from "../../../services/contas-pagar";
 import { fetchContasPagarList } from "../../../services/contas-pagar";
@@ -8,6 +9,7 @@ import { useCondominio } from "../../../contexts/condominio-context";
 import { CondominioGuard } from "../../../components/condominio-guard";
 
 export function ContasPagar() {
+  const { t } = useTranslation();
   const { profileUser } = useAuth();
   const { selectedCondominioId } = useCondominio();
   const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
@@ -67,7 +69,7 @@ export function ContasPagar() {
   return (
     <CondominioGuard>
       <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">Contas a Pagar</h1>
+        <h1 className="text-3xl font-bold mb-6">{t("condominio.contasPagar.title")}</h1>
       
       <MesAnoFilter
         mes={mes}

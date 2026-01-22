@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -48,6 +49,7 @@ interface UserResponse {
 }
 
 export function UserEdit() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams({
     from: "/authenticated/user/$id/edit",
@@ -311,7 +313,7 @@ export function UserEdit() {
             <div className="space-y-2">
               <Label htmlFor="perfilId">Perfil *</Label>
               {isLoadingProfiles ? (
-                <span className="text-sm text-indigo-500">Carregando perfis...</span>
+                <span className="text-sm text-indigo-500">{t("common.loadingProfiles")}</span>
               ) : (
                 <>
                   <Controller
@@ -446,7 +448,7 @@ export function UserEdit() {
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="empresaId">Empresa (opcional)</Label>
                 {isLoadingEmpresas ? (
-                  <span className="text-sm text-indigo-500">Carregando empresas...</span>
+                  <span className="text-sm text-indigo-500">{t("common.loadingCompanies")}</span>
                 ) : (
                   <>
                     <Controller
@@ -481,7 +483,7 @@ export function UserEdit() {
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="condominioId">Condomínio *</Label>
                 {isLoadingCondominios ? (
-                  <span className="text-sm text-indigo-500">Carregando condomínios...</span>
+                  <span className="text-sm text-indigo-500">{t("common.loadingCondominios")}</span>
                 ) : (
                   <>
                     <Controller

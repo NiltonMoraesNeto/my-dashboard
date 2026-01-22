@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -31,6 +32,7 @@ interface UnidadeOption {
 
 export function EntregaNew() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [unidades, setUnidades] = useState<UnidadeOption[]>([]);
   const [loadingUnidades, setLoadingUnidades] = useState(true);
 
@@ -43,7 +45,7 @@ export function EntregaNew() {
   } = useForm<z.infer<typeof schemaEntregaNew>>({
     resolver: zodResolver(schemaEntregaNew),
     defaultValues: {
-      titulo: "Nova entrega",
+      titulo: t("condominio.entregas.new.tituloDefault"),
       dataHora: undefined,
       nomeRecebedor: "",
       recebidoPor: undefined,
@@ -61,7 +63,7 @@ export function EntregaNew() {
         }
       } catch (error) {
         console.error("Erro ao carregar unidades:", error);
-        toast.error("Erro ao carregar unidades");
+        toast.error(t("condominio.entregas.new.errorLoadUnidades"));
       } finally {
         setLoadingUnidades(false);
       }
@@ -79,22 +81,22 @@ export function EntregaNew() {
         : new Date().toISOString();
 
       await createEntrega({
-        titulo: data.titulo || "Nova entrega",
+        titulo: data.titulo || t("condominio.entregas.new.tituloDefault"),
         dataHora: dataHoraISO,
         nomeRecebedor: data.nomeRecebedor,
         recebidoPor: data.recebidoPor,
         unidadeId: data.unidadeId,
       }, data.anexo);
 
-      toast.success("Entrega criada com sucesso");
+      toast.success(t("condominio.entregas.new.success"));
       reset();
       navigate({ to: "/condominio/entregas" });
     } catch (error: unknown) {
       console.error("Erro ao criar entrega:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response
-          ?.data?.message || "Erro ao criar entrega";
-      toast.error("Erro ao criar entrega", {
+          ?.data?.message || t("condominio.entregas.new.error");
+      toast.error(t("condominio.entregas.new.error"), {
         description: message,
       });
     }
@@ -105,7 +107,7 @@ export function EntregaNew() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Nova Entrega
+            {t("condominio.entregas.new.title")}
           </h1>
           <Button
             type="button"
@@ -113,24 +115,24 @@ export function EntregaNew() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/entregas" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.entregas.new.back")}
           </Button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="titulo">Título</Label>
+            <Label htmlFor="titulo">{t("condominio.entregas.new.titulo")}</Label>
             <Input
               id="titulo"
               {...register("titulo")}
-              placeholder="Nova entrega"
-              defaultValue="Nova entrega"
+              placeholder={t("condominio.entregas.new.tituloPlaceholder")}
+              defaultValue={t("condominio.entregas.new.tituloDefault")}
             />
             <FormErrorMessage message={errors.titulo?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="dataHora">Data e Hora *</Label>
+            <Label htmlFor="dataHora">{t("condominio.entregas.new.dataHora")} *</Label>
             <Controller
               name="dataHora"
               control={control}
@@ -148,29 +150,29 @@ export function EntregaNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="nomeRecebedor">Nome do Recebedor *</Label>
+            <Label htmlFor="nomeRecebedor">{t("condominio.entregas.new.nomeRecebedor")} *</Label>
             <Input
               id="nomeRecebedor"
               {...register("nomeRecebedor")}
-              placeholder="Nome completo"
+              placeholder={t("condominio.entregas.new.nomeRecebedorPlaceholder")}
             />
             <FormErrorMessage message={errors.nomeRecebedor?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="recebidoPor">Recebido Por *</Label>
+            <Label htmlFor="recebidoPor">{t("condominio.entregas.new.recebidoPor")} *</Label>
             <Controller
               name="recebidoPor"
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione quem recebeu" />
+                    <SelectValue placeholder={t("condominio.entregas.new.recebidoPorPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="portaria">Portaria</SelectItem>
-                    <SelectItem value="zelador">Zelador</SelectItem>
-                    <SelectItem value="morador">Morador</SelectItem>
+                    <SelectItem value="portaria">{t("condominio.entregas.new.recebidoPorPortaria")}</SelectItem>
+                    <SelectItem value="zelador">{t("condominio.entregas.new.recebidoPorZelador")}</SelectItem>
+                    <SelectItem value="morador">{t("condominio.entregas.new.recebidoPorMorador")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -179,9 +181,9 @@ export function EntregaNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="unidadeId">Unidade *</Label>
+            <Label htmlFor="unidadeId">{t("condominio.entregas.new.unidade")} *</Label>
             {loadingUnidades ? (
-              <div>Carregando unidades...</div>
+              <div>{t("condominio.entregas.new.loadingUnidades")}</div>
             ) : (
               <Controller
                 name="unidadeId"
@@ -189,7 +191,7 @@ export function EntregaNew() {
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione a unidade" />
+                      <SelectValue placeholder={t("condominio.entregas.new.unidadePlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {unidades.map((unidade) => (
@@ -208,7 +210,7 @@ export function EntregaNew() {
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="anexo">Foto do Produto (Anexo)</Label>
+            <Label htmlFor="anexo">{t("condominio.entregas.new.anexo")}</Label>
             <Controller
               name="anexo"
               control={control}
@@ -226,14 +228,14 @@ export function EntregaNew() {
 
           <div className="md:col-span-2 flex gap-4">
             <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.entregas.new.saving") : t("condominio.entregas.new.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/entregas" })}
             >
-              Cancelar
+              {t("condominio.entregas.new.cancel")}
             </Button>
           </div>
         </form>

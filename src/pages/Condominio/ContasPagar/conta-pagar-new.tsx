@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import type { z } from "zod";
 import { FormErrorMessage } from "../../../components/form-error-message";
 import { Button } from "../../../components/ui/button";
@@ -24,6 +25,7 @@ import { createContaPagar } from "../../../services/contas-pagar";
 
 export function ContaPagarNew() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -64,15 +66,15 @@ export function ContaPagarNew() {
         data.anexo
       );
 
-      toast.success("Conta a pagar criada com sucesso");
+      toast.success(t("condominio.contasPagar.new.success"));
       reset();
       navigate({ to: "/condominio/contas-pagar" });
     } catch (error: unknown) {
       console.error("Erro ao criar conta a pagar:", error);
       const message =
         (error as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Erro ao criar conta a pagar";
-      toast.error("Erro ao criar conta a pagar", {
+          ?.message || t("condominio.contasPagar.new.error");
+      toast.error(t("condominio.contasPagar.new.error"), {
         description: message,
       });
     }
@@ -83,7 +85,7 @@ export function ContaPagarNew() {
       <div className="max-w-full bg-white rounded-lg shadow-md p-6 dark:bg-emerald-800">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
-            Nova Conta a Pagar
+            {t("condominio.contasPagar.new.title")}
           </h1>
           <Button
             type="button"
@@ -91,23 +93,23 @@ export function ContaPagarNew() {
             className="text-lg text-emerald-600 dark:text-emerald-300 flex items-center gap-2"
             onClick={() => navigate({ to: "/condominio/contas-pagar" })}
           >
-            <ArrowLeft /> Voltar
+            <ArrowLeft /> {t("condominio.contasPagar.new.back")}
           </Button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="descricao">Título da Despesa *</Label>
+            <Label htmlFor="descricao">{t("condominio.contasPagar.new.descricao")} *</Label>
             <Input
               id="descricao"
               {...register("descricao")}
-              placeholder="Ex: Manutenção do elevador"
+              placeholder={t("condominio.contasPagar.new.descricaoPlaceholder")}
             />
             <FormErrorMessage message={errors.descricao?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="valor">Valor *</Label>
+            <Label htmlFor="valor">{t("condominio.contasPagar.new.valor")} *</Label>
             <Controller
               name="valor"
               control={control}
@@ -123,7 +125,7 @@ export function ContaPagarNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="vencimento">Data de Vencimento *</Label>
+            <Label htmlFor="vencimento">{t("condominio.contasPagar.new.vencimento")} *</Label>
             <Controller
               name="vencimento"
               control={control}
@@ -141,29 +143,29 @@ export function ContaPagarNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="categoria">Categoria</Label>
+            <Label htmlFor="categoria">{t("condominio.contasPagar.new.categoria")}</Label>
             <Input
               id="categoria"
               {...register("categoria")}
-              placeholder="Ex: Manutenção, Limpeza, Segurança"
+              placeholder={t("condominio.contasPagar.new.categoriaPlaceholder")}
             />
             <FormErrorMessage message={errors.categoria?.message} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
+            <Label htmlFor="status">{t("condominio.contasPagar.new.status")}</Label>
             <Controller
               name="status"
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione o status" />
+                    <SelectValue placeholder={t("condominio.contasPagar.new.statusPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Pendente">Pendente</SelectItem>
-                    <SelectItem value="Paga">Paga</SelectItem>
-                    <SelectItem value="Vencida">Vencida</SelectItem>
+                    <SelectItem value="Pendente">{t("condominio.contasPagar.new.statusPendente")}</SelectItem>
+                    <SelectItem value="Paga">{t("condominio.contasPagar.new.statusPaga")}</SelectItem>
+                    <SelectItem value="Vencida">{t("condominio.contasPagar.new.statusVencida")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -172,7 +174,7 @@ export function ContaPagarNew() {
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="anexo">Anexo (Nota Fiscal, Recibo, etc.)</Label>
+            <Label htmlFor="anexo">{t("condominio.contasPagar.new.anexo")}</Label>
             <Controller
               name="anexo"
               control={control}
@@ -189,27 +191,27 @@ export function ContaPagarNew() {
           </div>
 
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="observacoes">Observações</Label>
+            <Label htmlFor="observacoes">{t("condominio.contasPagar.new.observacoes")}</Label>
             <textarea
               id="observacoes"
               {...register("observacoes")}
               rows={4}
               className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Observações adicionais sobre a conta a pagar..."
+              placeholder={t("condominio.contasPagar.new.observacoesPlaceholder")}
             />
             <FormErrorMessage message={errors.observacoes?.message} />
           </div>
 
           <div className="md:col-span-2 flex gap-4">
             <Button type="submit" disabled={isSubmitting} className="bg-emerald-500 text-white">
-              {isSubmitting ? "Salvando..." : "Salvar"}
+              {isSubmitting ? t("condominio.contasPagar.new.saving") : t("condominio.contasPagar.new.save")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate({ to: "/condominio/contas-pagar" })}
             >
-              Cancelar
+              {t("condominio.contasPagar.new.cancel")}
             </Button>
           </div>
         </form>

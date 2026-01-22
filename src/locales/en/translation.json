@@ -41,12 +41,14 @@
     }
   },
   "auth": {
-    "brand": "Nilton Moraes Neto",
+    "brand": "Lab808 Tech",
+    "subtitle": "Smart Management for Condominiums",
     "hero": {
       "title": "Hey there!",
       "subtitle": "Welcome back.",
       "callToAction": "Don't have an account?",
-      "signUp": "Sign Up"
+      "signUp": "Sign Up",
+      "contactButton": "Contact Us"
     },
     "form": {
       "title": "Sign In",
@@ -118,9 +120,30 @@
     }
   },
   "home": {
-    "title": "Welcome - Home",
-    "loading": "Loading dashboard data...",
-    "error": "Error loading dashboard data"
+    "title": "Home",
+    "loading": "Loading...",
+    "loadingComparison": "Loading comparison...",
+    "error": "Error loading dashboard data",
+    "errorLoadCondominios": "Error loading condominiums list",
+    "errorLoadMovimentacoes": "Error loading transactions",
+    "errorLoadComparison": "Error loading comparison data",
+    "errorLoadData": "Error loading data",
+    "filters": {
+      "tipoDado": "Data Type",
+      "tipoPlaceholder": "Select the type",
+      "entrada": "Income",
+      "saida": "Expense",
+      "condominio": "Condominium",
+      "condominioPlaceholder": "Select the condominium",
+      "todos": "All",
+      "ano": "Year"
+    },
+    "messages": {
+      "selectTipo": "Select a data type to view the chart",
+      "selectTipoDescription": "Choose between \"Income\" or \"Expense\" in the filter above to see monthly data for the selected year.",
+      "noData": "No data found",
+      "noDataDescription": "There are no transactions of type \"{{tipo}}\" for the selected period."
+    }
   },
   "condominio": {
     "home": {
@@ -579,6 +602,114 @@
         "successDelete": "Resident deleted successfully",
         "errorDelete": "Error deleting resident"
       }
+    },
+    "entregas": {
+      "title": "Deliveries",
+      "addButton": "New Delivery",
+      "emptyMessage": "No deliveries registered. Click 'New Delivery' to start.",
+      "searchPlaceholder": "Search",
+      "new": {
+        "title": "New Delivery",
+        "back": "Back",
+        "titulo": "Title",
+        "tituloPlaceholder": "New delivery",
+        "tituloDefault": "New delivery",
+        "dataHora": "Date and Time",
+        "nomeRecebedor": "Recipient Name",
+        "nomeRecebedorPlaceholder": "Full name",
+        "recebidoPor": "Received By",
+        "recebidoPorPlaceholder": "Select who received",
+        "recebidoPorPortaria": "Concierge",
+        "recebidoPorZelador": "Caretaker",
+        "recebidoPorMorador": "Resident",
+        "unidade": "Unit",
+        "unidadePlaceholder": "Select the unit",
+        "loadingUnidades": "Loading units...",
+        "anexo": "Product Photo (Attachment)",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "success": "Delivery created successfully",
+        "error": "Error creating delivery",
+        "errorLoadUnidades": "Error loading units"
+      },
+      "edit": {
+        "title": "Edit Delivery",
+        "back": "Back",
+        "titulo": "Title",
+        "tituloPlaceholder": "New delivery",
+        "dataHora": "Date and Time",
+        "nomeRecebedor": "Recipient Name",
+        "nomeRecebedorPlaceholder": "Full name",
+        "recebidoPor": "Received By",
+        "recebidoPorPlaceholder": "Select who received",
+        "recebidoPorPortaria": "Concierge",
+        "recebidoPorZelador": "Caretaker",
+        "recebidoPorMorador": "Resident",
+        "unidade": "Unit",
+        "unidadePlaceholder": "Select the unit",
+        "loadingUnidades": "Loading units...",
+        "anexo": "Product Photo (Attachment)",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "success": "Delivery updated successfully",
+        "error": "Error updating delivery",
+        "errorLoad": "Error loading data",
+        "loading": "Loading..."
+      }
+    },
+    "contasPagar": {
+      "new": {
+        "title": "New Account Payable",
+        "back": "Back",
+        "descricao": "Expense Title",
+        "descricaoPlaceholder": "Ex: Elevator maintenance",
+        "valor": "Amount",
+        "vencimento": "Due Date",
+        "categoria": "Category",
+        "categoriaPlaceholder": "Ex: Maintenance, Cleaning, Security",
+        "status": "Status",
+        "statusPlaceholder": "Select status",
+        "statusPendente": "Pending",
+        "statusPaga": "Paid",
+        "statusVencida": "Overdue",
+        "anexo": "Attachment (Invoice, Receipt, etc.)",
+        "observacoes": "Notes",
+        "observacoesPlaceholder": "Additional notes about the account payable...",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "success": "Account payable created successfully",
+        "error": "Error creating account payable"
+      },
+      "edit": {
+        "title": "Edit Account Payable",
+        "back": "Back",
+        "descricao": "Expense Title",
+        "descricaoPlaceholder": "Ex: Elevator maintenance",
+        "valor": "Amount",
+        "vencimento": "Due Date",
+        "categoria": "Category",
+        "categoriaPlaceholder": "Ex: Maintenance, Cleaning, Security",
+        "status": "Status",
+        "statusPlaceholder": "Select status",
+        "statusPendente": "Pending",
+        "statusPaga": "Paid",
+        "statusVencida": "Overdue",
+        "anexo": "Attachment (Invoice, Receipt, etc.)",
+        "anexoAtual": "Current attachment",
+        "anexoHint": "Leave blank to keep current attachment or select a new file to replace",
+        "observacoes": "Notes",
+        "observacoesPlaceholder": "Additional notes about the account payable...",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "success": "Account payable updated successfully",
+        "error": "Error updating account payable",
+        "errorLoad": "Error loading account payable",
+        "loading": "Loading..."
+      }
     }
   },
   "months": {
@@ -618,6 +749,9 @@
     "delete": "Delete",
     "action": "Action",
     "loading": "Loading...",
+    "loadingProfiles": "Loading profiles...",
+    "loadingCompanies": "Loading companies...",
+    "loadingCondominios": "Loading condominiums...",
     "select": "Select",
     "optional": "(optional)",
     "required": "*",
