@@ -66,7 +66,7 @@ const Header: React.FC = () => {
           to="/home"
           className="text-2xl font-bold hover:text-gray-300 text-indigo-300"
         >
-          NM
+          Lab808 Tech - Condomínios
         </Link>
       </div>
       <div className="flex items-center space-x-4">

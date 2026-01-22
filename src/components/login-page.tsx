@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Wifi } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -78,9 +77,7 @@ export function LoginPage() {
       {/* Coluna esquerda - Roxo  */}
       <div className="hidden w-1/2 flex-col justify-between bg-indigo-600 dark:bg-indigo-900 p-12 text-white md:flex h-full">
         <div>
-          <div className="flex items-center gap-2 text-xl font-semibold">
-            <Wifi />
-            {t("auth.brand")}
+          <div className="flex items-center gap-2 text-xl font-semibold">Lab808 Tech
             <ThemeToggle />
           </div>
         </div>
@@ -111,6 +108,13 @@ export function LoginPage() {
       <div className="flex w-full flex-col items-center justify-center bg-white dark:bg-indigo-950 p-6 md:w-1/2 md:p-12 h-full">
         <div className="w-full max-w-md">
           <div className="text-center">
+            <div className="flex justify-center items-center">
+              <img src="/logo-light-small.png" alt="Lab808 Tech" className="dark:hidden w-44" />
+              <img src="/logo-transparente-small.png" alt="Lab808 Tech" className="hidden dark:flex w-44" />
+            </div>
+            <h2 className="text-lg font-semibold text-indigo-600 uppercase mt-5 mb-5">
+              Gestão Inteligente para Condomínios
+            </h2>
             <h2 className="text-2xl font-semibold text-indigo-600 uppercase">
               {t("auth.form.title")}
             </h2>
