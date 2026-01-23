@@ -23,10 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
+.env.example
+.env
+
 # Config files (processed by build tools, not linted)
 postcss.config.js
 tailwind.config.js
 vite.config.ts
-
-.env.example
-.env
