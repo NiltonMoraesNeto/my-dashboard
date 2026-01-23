@@ -38,17 +38,16 @@ export function ModalInputToken({
   const updateEmailUser = useUserStore((state) => state.updateEmailUser);
 
   const handleValidarToken = () => {
-    const resetCode = localStorage.getItem("resetCode");
-    if (resetCode === valueToken) {
-      setTokenIsValid(true);
-      toast.success("Sucesso", {
-        description: "Token válido",
-      });
-    } else {
+    if (!valueToken || valueToken.length !== 4) {
       toast.error("Error", {
-        description: "Token inválido",
+        description: "Por favor, digite o token completo de 4 dígitos",
       });
+      return;
     }
+
+    // Remove a validação local - o token será validado no backend quando o usuário tentar alterar a senha
+    // Por enquanto, apenas permite prosseguir para a tela de nova senha
+    setTokenIsValid(true);
   };
 
   const {
@@ -67,23 +66,42 @@ export function ModalInputToken({
     newPassword: string;
     newPasswordConfirmation: string;
   }> = async (data) => {
-    const response = (await resetPassword(emailUser, valueToken, data.newPassword)) as {
-      status?: number;
-    };
-    if (isSuccessRequest(response?.status)) {
-      await resetCodeDelete(emailUser, valueToken);
-      localStorage.removeItem("resetCode");
-      updateEmailUser("");
-      toast.success("Sucesso", {
-        description: "Senha alterada com sucesso",
-      });
-      setOpenModalInputToken(false);
-      setValueToken("");
-      setTokenIsValid(false);
-    } else {
+    try {
+      const response = await resetPassword(emailUser, valueToken, data.newPassword);
+      
+      if (response && isSuccessRequest(response?.status)) {
+        await resetCodeDelete(emailUser, valueToken);
+        localStorage.removeItem("resetCode");
+        updateEmailUser("");
+        toast.success("Sucesso", {
+          description: "Senha alterada com sucesso",
+        });
+        setOpenModalInputToken(false);
+        setValueToken("");
+        setTokenIsValid(false);
+      } else {
+        const errorMessage = (response as any)?.response?.data?.message || 
+                            (response as any)?.message || 
+                            "Erro ao alterar a senha";
+        toast.error("Error", {
+          description: errorMessage,
+        });
+        // Se o token for inválido, volta para a tela de inserir token
+        if (errorMessage.toLowerCase().includes("token") || errorMessage.toLowerCase().includes("inválido")) {
+          setTokenIsValid(false);
+        }
+      }
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || 
+                          error?.message || 
+                          "Erro ao alterar a senha. Verifique se o token está correto.";
       toast.error("Error", {
-        description: "Erro ao alterar a Senha",
+        description: errorMessage,
       });
+      // Se o token for inválido, volta para a tela de inserir token
+      if (errorMessage.toLowerCase().includes("token") || errorMessage.toLowerCase().includes("inválido")) {
+        setTokenIsValid(false);
+      }
     }
   };
   return (

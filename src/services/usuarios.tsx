@@ -127,7 +127,7 @@ export const resetPassword = async (
     return response;
   } catch (error) {
     console.error("Erro no resetPassword:", error);
-    return error;
+    throw error;
   }
 };
 

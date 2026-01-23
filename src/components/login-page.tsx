@@ -52,16 +52,18 @@ export function LoginPage() {
       if (result.success) {
         // Redireciona baseado no perfil
         const perfil = result.profileUser || profileUser;
-        const isCondominioProfile = perfil?.toLowerCase() === "condomínio" || perfil?.toLowerCase() === "condominio";
+        const isCondominioProfile =
+          perfil?.toLowerCase() === "condomínio" ||
+          perfil?.toLowerCase() === "condominio";
         const isMoradorProfile = perfil?.toLowerCase() === "morador";
-        
+
         let redirectPath = "/home";
         if (isCondominioProfile) {
           redirectPath = "/condominio/home";
         } else if (isMoradorProfile) {
           redirectPath = "/home";
         }
-        
+
         navigate({ to: redirectPath });
       } else {
         setSubmitError(result.message || t("auth.errors.invalidCredentials"));
@@ -83,10 +85,9 @@ export function LoginPage() {
           </div>
         </div>
         <div className="space-y-6">
-          <h1 className="text-4xl font-bold">{t("auth.hero.title")}</h1>
-          <div className="space-y-2">
-            <p className="text-xl">{t("auth.hero.subtitle")}</p>
-          </div>
+          <h2 className="text-2xl font-semibold text-white uppercase mt-5 mb-5">
+            {t("auth.subtitle")}
+          </h2>
           <div className="space-y-4">
             <div>
               <p className="mb-4">{t("auth.hero.callToAction")}</p>
@@ -94,7 +95,9 @@ export function LoginPage() {
                 type="button"
                 variant="default"
                 className="border-white text-white hover:bg-white/10 hover:text-white"
-                onClick={() => window.open('https://www.lab808.com.br/', '_blank')}
+                onClick={() =>
+                  window.open("https://www.lab808.com.br/", "_blank")
+                }
               >
                 {t("auth.hero.contactButton")}
               </Button>
@@ -110,12 +113,20 @@ export function LoginPage() {
         <div className="w-full max-w-md">
           <div className="text-center">
             <div className="flex justify-center items-center">
-              <img src="/logo-light-small.png" alt="Lab808 Tech" className="dark:hidden w-44" />
-              <img src="/logo-transparente-small.png" alt="Lab808 Tech" className="hidden dark:flex w-44" />
+              {/* <img
+                src="/lab808.png"
+                alt="Lab808 Tech"
+                className="dark:hidden w-44"
+              />
+              <img
+                src="/lab808.png"
+                alt="Lab808 Tech"
+                className="hidden dark:flex w-44"
+              /> */}
             </div>
-            <h2 className="text-lg font-semibold text-indigo-600 uppercase mt-5 mb-5">
+            {/* <h2 className="text-lg font-semibold text-indigo-600 uppercase mt-5 mb-5">
               {t("auth.subtitle")}
-            </h2>
+            </h2> */}
             <h2 className="text-2xl font-semibold text-indigo-600 uppercase">
               {t("auth.form.title")}
             </h2>
@@ -142,7 +153,7 @@ export function LoginPage() {
                   className={cn(
                     "border-indigo-200 focus-visible:ring-indigo-500 dark:text-white",
                     errors.email &&
-                      "border-red-500 focus-visible:ring-red-500 focus-visible:ring-offset-0"
+                      "border-red-500 focus-visible:ring-red-500 focus-visible:ring-offset-0",
                   )}
                   aria-invalid={errors.email ? "true" : "false"}
                   {...register("email")}
@@ -164,7 +175,7 @@ export function LoginPage() {
                   className={cn(
                     "border-indigo-200 focus-visible:ring-indigo-500 dark:text-white",
                     errors.password &&
-                      "border-red-500 focus-visible:ring-red-500 focus-visible:ring-offset-0"
+                      "border-red-500 focus-visible:ring-red-500 focus-visible:ring-offset-0",
                   )}
                   aria-invalid={errors.password ? "true" : "false"}
                   {...register("password")}

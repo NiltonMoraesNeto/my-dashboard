@@ -51,10 +51,9 @@ export function ModalResetPassword({
     try {
       updateEmailUser(data.email);
       const response = await resetPasswordSendToken(data.email);
-      if (response) {
-        localStorage.setItem("resetCode", response.resetCode);
+      if (response && response.message) {
         toast.success("Sucesso", {
-          description: "Token enviado com sucesso",
+          description: "Token enviado para seu email. Verifique sua caixa de entrada.",
         });
         setValue("email", "");
         setOpenModalResetPassword(false);
@@ -67,7 +66,7 @@ export function ModalResetPassword({
     } catch (error) {
       console.error("Erro ao enviar solicitação", error);
       toast.error("Error", {
-        description: "Email não encontrado",
+        description: "Erro ao enviar token. Verifique se o email está correto.",
       });
     }
   };
