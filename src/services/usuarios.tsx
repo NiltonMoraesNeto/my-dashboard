@@ -113,6 +113,19 @@ export const resetPasswordSendToken = async (email: string) => {
   }
 };
 
+export const validateResetCode = async (email: string, resetCode: string) => {
+  try {
+    const response = await api.post("/users/validate-reset-code", {
+      email,
+      resetCode,
+    });
+    return response;
+  } catch (error) {
+    console.error("Erro ao validar token:", error);
+    throw error;
+  }
+};
+
 export const resetPassword = async (
   email: string,
   resetCode: string,

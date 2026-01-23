@@ -4,7 +4,11 @@ import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { schemaNewPassword } from "../schemas/new-password-schema";
-import { resetCodeDelete, resetPassword } from "../services/usuarios";
+import {
+  resetCodeDelete,
+  resetPassword,
+  validateResetCode,
+} from "../services/usuarios";
 import { useUserStore } from "../stores/use-user";
 import { isSuccessRequest } from "../utils/response-request";
 import { Button } from "./ui/button";
@@ -34,10 +38,11 @@ export function ModalInputToken({
   setTokenIsValid,
 }: ModalInputTokenProps) {
   const [valueToken, setValueToken] = useState("");
+  const [emailInput, setEmailInput] = useState("");
   const emailUser = useUserStore((state) => state.emailUser);
   const updateEmailUser = useUserStore((state) => state.updateEmailUser);
 
-  const handleValidarToken = () => {
+  const handleValidarToken = async () => {
     if (!valueToken || valueToken.length !== 4) {
       toast.error("Error", {
         description: "Por favor, digite o token completo de 4 dígitos",
@@ -45,9 +50,41 @@ export function ModalInputToken({
       return;
     }
 
-    // Remove a validação local - o token será validado no backend quando o usuário tentar alterar a senha
-    // Por enquanto, apenas permite prosseguir para a tela de nova senha
-    setTokenIsValid(true);
+    const emailToUse = (emailUser || emailInput)?.trim().toLowerCase();
+    if (!emailToUse) {
+      toast.error("Error", {
+        description: "Por favor, informe seu email",
+      });
+      return;
+    }
+
+    if (!emailUser && emailInput) {
+      updateEmailUser(emailInput.trim().toLowerCase());
+    }
+
+    try {
+      const tokenToValidate = String(valueToken).trim();
+
+      const response = await validateResetCode(emailToUse, tokenToValidate);
+
+      if (response && isSuccessRequest(response.status)) {
+        setTokenIsValid(true);
+        toast.success("Sucesso", {
+          description: "Token válido. Agora você pode definir sua nova senha.",
+        });
+      } else {
+        toast.error("Error", {
+          description: "Token inválido",
+        });
+      }
+    } catch (error: any) {
+      console.error("Token validation error:", error);
+      const errorMessage =
+        error?.response?.data?.message || error?.message || "Token inválido";
+      toast.error("Error", {
+        description: errorMessage,
+      });
+    }
   };
 
   const {
@@ -67,8 +104,12 @@ export function ModalInputToken({
     newPasswordConfirmation: string;
   }> = async (data) => {
     try {
-      const response = await resetPassword(emailUser, valueToken, data.newPassword);
-      
+      const response = await resetPassword(
+        emailUser,
+        valueToken,
+        data.newPassword,
+      );
+
       if (response && isSuccessRequest(response?.status)) {
         await resetCodeDelete(emailUser, valueToken);
         localStorage.removeItem("resetCode");
@@ -80,26 +121,34 @@ export function ModalInputToken({
         setValueToken("");
         setTokenIsValid(false);
       } else {
-        const errorMessage = (response as any)?.response?.data?.message || 
-                            (response as any)?.message || 
-                            "Erro ao alterar a senha";
+        const errorMessage =
+          (response as any)?.response?.data?.message ||
+          (response as any)?.message ||
+          "Erro ao alterar a senha";
         toast.error("Error", {
           description: errorMessage,
         });
-        // Se o token for inválido, volta para a tela de inserir token
-        if (errorMessage.toLowerCase().includes("token") || errorMessage.toLowerCase().includes("inválido")) {
+
+        if (
+          errorMessage.toLowerCase().includes("token") ||
+          errorMessage.toLowerCase().includes("inválido")
+        ) {
           setTokenIsValid(false);
         }
       }
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || 
-                          error?.message || 
-                          "Erro ao alterar a senha. Verifique se o token está correto.";
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Erro ao alterar a senha. Verifique se o token está correto.";
       toast.error("Error", {
         description: errorMessage,
       });
-      // Se o token for inválido, volta para a tela de inserir token
-      if (errorMessage.toLowerCase().includes("token") || errorMessage.toLowerCase().includes("inválido")) {
+
+      if (
+        errorMessage.toLowerCase().includes("token") ||
+        errorMessage.toLowerCase().includes("inválido")
+      ) {
         setTokenIsValid(false);
       }
     }
@@ -132,7 +181,9 @@ export function ModalInputToken({
                     />
                   )}
                 />
-                <Label className="text-red-500">{errors.newPassword?.message}</Label>
+                <Label className="text-red-500">
+                  {errors.newPassword?.message}
+                </Label>
               </div>
               <div className="flex flex-col gap-4">
                 <Label htmlFor="newPasswordConfirmation" className="text-right">
@@ -150,33 +201,54 @@ export function ModalInputToken({
                     />
                   )}
                 />
-                <Label className="text-red-500">{errors.newPasswordConfirmation?.message}</Label>
+                <Label className="text-red-500">
+                  {errors.newPasswordConfirmation?.message}
+                </Label>
               </div>
             </>
           ) : (
-            <div className="flex flex-col gap-4">
-              <Label htmlFor="token" className="text-right">
-                Token
-              </Label>
-              <InputOTP
-                maxLength={4}
-                value={valueToken}
-                onChange={(value) => setValueToken(value)}
-                className="w-full"
-              >
-                <InputOTPGroup>
-                  <InputOTPSlot index={0} />
-                  <InputOTPSlot index={1} />
-                  <InputOTPSlot index={2} />
-                  <InputOTPSlot index={3} />
-                </InputOTPGroup>
-              </InputOTP>
-            </div>
+            <>
+              {!emailUser && (
+                <div className="flex flex-col gap-4">
+                  <Label htmlFor="email" className="text-right">
+                    Email
+                  </Label>
+                  <Input
+                    type="email"
+                    placeholder="Digite seu email cadastrado"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+              )}
+              <div className="flex flex-col gap-4">
+                <Label htmlFor="token" className="text-right">
+                  Token
+                </Label>
+                <InputOTP
+                  maxLength={4}
+                  value={valueToken}
+                  onChange={(value) => setValueToken(value)}
+                  className="w-full"
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+            </>
           )}
         </div>
         <div className="flex justify-start mt-4">
           {tokenIsValid ? (
-            <Button type="button" onClick={handleSubmit(handleSubmitNewPassword)}>
+            <Button
+              type="button"
+              onClick={handleSubmit(handleSubmitNewPassword)}
+            >
               Alterar Senha
             </Button>
           ) : (
