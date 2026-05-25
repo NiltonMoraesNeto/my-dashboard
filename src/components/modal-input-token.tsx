@@ -24,6 +24,20 @@ import { Input } from "./ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { Label } from "./ui/label";
 
+type ErrorWithResponse = {
+  message?: string;
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
+function getErrorMessage(error: unknown, fallback: string) {
+  const typedError = error as ErrorWithResponse;
+  return typedError.response?.data?.message || typedError.message || fallback;
+}
+
 interface ModalInputTokenProps {
   openModalInputToken: boolean;
   setOpenModalInputToken: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,9 +57,9 @@ export function ModalInputToken({
   const updateEmailUser = useUserStore((state) => state.updateEmailUser);
 
   const handleValidarToken = async () => {
-    if (!valueToken || valueToken.length !== 4) {
+    if (!valueToken || valueToken.length !== 6) {
       toast.error("Error", {
-        description: "Por favor, digite o token completo de 4 dígitos",
+        description: "Por favor, digite o token completo de 6 dígitos",
       });
       return;
     }
@@ -77,10 +91,9 @@ export function ModalInputToken({
           description: "Token inválido",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Token validation error:", error);
-      const errorMessage =
-        error?.response?.data?.message || error?.message || "Token inválido";
+      const errorMessage = getErrorMessage(error, "Token inválido");
       toast.error("Error", {
         description: errorMessage,
       });
@@ -112,7 +125,6 @@ export function ModalInputToken({
 
       if (response && isSuccessRequest(response?.status)) {
         await resetCodeDelete(emailUser, valueToken);
-        localStorage.removeItem("resetCode");
         updateEmailUser("");
         toast.success("Sucesso", {
           description: "Senha alterada com sucesso",
@@ -121,10 +133,7 @@ export function ModalInputToken({
         setValueToken("");
         setTokenIsValid(false);
       } else {
-        const errorMessage =
-          (response as any)?.response?.data?.message ||
-          (response as any)?.message ||
-          "Erro ao alterar a senha";
+        const errorMessage = getErrorMessage(response, "Erro ao alterar a senha");
         toast.error("Error", {
           description: errorMessage,
         });
@@ -136,11 +145,11 @@ export function ModalInputToken({
           setTokenIsValid(false);
         }
       }
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        "Erro ao alterar a senha. Verifique se o token está correto.";
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(
+        error,
+        "Erro ao alterar a senha. Verifique se o token está correto.",
+      );
       toast.error("Error", {
         description: errorMessage,
       });
@@ -227,7 +236,7 @@ export function ModalInputToken({
                   Token
                 </Label>
                 <InputOTP
-                  maxLength={4}
+                  maxLength={6}
                   value={valueToken}
                   onChange={(value) => setValueToken(value)}
                   className="w-full"
@@ -237,6 +246,8 @@ export function ModalInputToken({
                     <InputOTPSlot index={1} />
                     <InputOTPSlot index={2} />
                     <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
                   </InputOTPGroup>
                 </InputOTP>
               </div>

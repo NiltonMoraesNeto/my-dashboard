@@ -4,7 +4,7 @@ import api from "./api";
 interface CreateMoradorPayload {
   nome: string;
   email: string;
-  password?: string;
+  password: string;
   cep?: string;
 }
 
@@ -86,4 +86,3 @@ export const deleteMorador = async (id: string) => {
     throw error;
   }
 };
-

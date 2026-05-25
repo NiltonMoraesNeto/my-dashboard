@@ -15,6 +15,18 @@ import type { EmpresaList } from "../model/empresa-model";
 import { deleteEmpresa, toggleEmpresaStatus } from "../services/empresas";
 import { toast } from "sonner";
 
+type ErrorWithResponse = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
+function getErrorMessage(error: unknown, fallback: string) {
+  return (error as ErrorWithResponse).response?.data?.message || fallback;
+}
+
 interface TableEmpresaProps {
   search: string;
   setSearch: (search: string) => void;
@@ -48,8 +60,8 @@ export function TableEmpresa({
       await deleteEmpresa(id);
       toast.success("Empresa excluída com sucesso!");
       handleListData();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Erro ao excluir empresa");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Erro ao excluir empresa"));
     } finally {
       setIsDeleting(null);
     }
@@ -61,8 +73,8 @@ export function TableEmpresa({
       await toggleEmpresaStatus(id);
       toast.success("Status da empresa atualizado com sucesso!");
       handleListData();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Erro ao alterar status da empresa");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Erro ao alterar status da empresa"));
     } finally {
       setIsToggling(null);
     }

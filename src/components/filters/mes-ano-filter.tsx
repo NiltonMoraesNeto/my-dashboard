@@ -49,9 +49,6 @@ export function MesAnoFilter({
     (_, i) => new Date().getFullYear() - 5 + i
   );
 
-  const mesSelecionado = meses.find((m) => m.value === mes);
-  console.log("🚀 ~ MesAnoFilter ~ mesSelecionado:", mesSelecionado);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       {/* Filtro Mês */}

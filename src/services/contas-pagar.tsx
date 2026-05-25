@@ -228,27 +228,27 @@ export const deleteContaPagar = async (id: string): Promise<void> => {
   }
 };
 
-export const downloadContaPagarAnexo = async (anexoPath: string) => {
+export const downloadContaPagarAnexo = async (id: string) => {
   try {
-    // O anexoPath já é o caminho relativo (ex: uploads/contas-pagar/arquivo.pdf)
-    // Precisamos construir a URL completa usando a base da API
-    const baseURL = import.meta.env.VITE_API_URL || "http://localhost:4000";
-    const url = `${baseURL}/${anexoPath}`;
-    
-    const response = await fetch(url, {
-      method: "GET",
-      credentials: "include",
+    const response = await api.get(`/condominio/contas-pagar/${id}/download`, {
+      responseType: "blob",
     });
 
-    if (!response.ok) {
-      throw new Error("Erro ao baixar anexo");
-    }
-
-    const blob = await response.blob();
+    const contentDisposition = response.headers["content-disposition"];
+    const fileNameMatch =
+      typeof contentDisposition === "string"
+        ? contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+        : null;
+    const fileName = fileNameMatch?.[1]?.replace(/['"]/g, "") || "anexo";
+    const contentType =
+      typeof response.headers["content-type"] === "string"
+        ? response.headers["content-type"]
+        : "application/octet-stream";
+    const blob = new Blob([response.data], { type: contentType });
     const downloadUrl = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = downloadUrl;
-    link.download = anexoPath.split("/").pop() || "anexo";
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

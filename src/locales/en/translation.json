@@ -262,11 +262,6 @@
         "emptyMessage": "No units found."
       }
     },
-    "contasPagar": {
-      "title": "Accounts Payable",
-      "addButton": "New Account",
-      "emptyMessage": "No accounts payable registered. Click 'New Account' to get started."
-    },
     "balancete": {
       "title": "Balance Sheet",
       "emptyMessage": "No balance sheet available at the moment.",
@@ -559,9 +554,9 @@
         "nomePlaceholder": "Enter name",
         "email": "Email",
         "emailPlaceholder": "Enter email",
-        "password": "Provisional password (optional)",
-        "passwordPlaceholder": "Leave blank to use default password (123456)",
-        "passwordHint": "If not provided, the default password will be 123456",
+        "password": "Provisional password",
+        "passwordPlaceholder": "Enter a provisional password",
+        "passwordHint": "The resident should change the password after first access",
         "cep": "ZIP Code (optional)",
         "cepPlaceholder": "Enter ZIP code",
         "save": "Save",
@@ -660,6 +655,9 @@
       }
     },
     "contasPagar": {
+      "title": "Accounts Payable",
+      "addButton": "New Account",
+      "emptyMessage": "No accounts payable registered. Click 'New Account' to get started.",
       "new": {
         "title": "New Account Payable",
         "back": "Back",
@@ -766,4 +764,3 @@
     "backToHome": "Back to Home"
   }
 }
-

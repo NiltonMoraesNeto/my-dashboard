@@ -25,12 +25,8 @@ interface MovimentacoesComparisonChartProps {
 export function MovimentacoesComparisonChart({
   entradasData,
   saidasData,
-  condominioId,
+  condominioId: _condominioId,
 }: MovimentacoesComparisonChartProps) {
-  console.log(
-    "🚀 ~ MovimentacoesComparisonChart ~ condominioId:",
-    condominioId
-  );
   const meses = [
     "Jan",
     "Fev",

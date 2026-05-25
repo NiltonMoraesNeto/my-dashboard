@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function formatDateToInput(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  if (isNaN(dateObj.getTime())) {
+  if (Number.isNaN(dateObj.getTime())) {
     return '';
   }
   const year = dateObj.getFullYear();
@@ -37,7 +37,7 @@ export function parseDateFromInput(dateString: string): Date {
  */
 export function formatDateDisplay(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  if (isNaN(dateObj.getTime())) {
+  if (Number.isNaN(dateObj.getTime())) {
     return '';
   }
   return dateObj.toLocaleDateString("pt-BR", {

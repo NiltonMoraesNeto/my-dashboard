@@ -1,18 +1,26 @@
 import axios from "axios";
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+if (import.meta.env.PROD && !apiBaseUrl) {
+  throw new Error("VITE_API_BASE_URL must be configured in production");
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:4000",
-  withCredentials: true, // Envia cookies automaticamente
+  baseURL: apiBaseUrl || "http://localhost:4000",
+  withCredentials: true,
+  withXSRFToken: true,
+  xsrfCookieName: "csrf_token",
+  xsrfHeaderName: "X-CSRF-Token",
+  headers: {
+    "X-Requested-With": "XMLHttpRequest",
+  },
 });
 
-// Interceptador para tratar respostas e erros de autenticação
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expirado ou inválido - redireciona para login
       if (
         !error.config?.url?.includes("/auth/login") &&
         !error.config?.url?.includes("/auth/check")

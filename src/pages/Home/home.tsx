@@ -60,10 +60,6 @@ export function HomePage() {
   // Identificar perfil: SuperAdmin tem perfilId === 99
   const isSuperAdmin = dataUser?.perfilId === 99;
   const isAdmin = profileUser?.toLowerCase().includes("admin") && !isSuperAdmin;
-  const isCondominio =
-    profileUser?.toLowerCase().includes("condomínio") ||
-    profileUser?.toLowerCase().includes("condominio");
-  console.log("🚀 ~ HomePage ~ isCondominio:", isCondominio);
 
   // Carregar lista de condomínios baseado no perfil
   useEffect(() => {

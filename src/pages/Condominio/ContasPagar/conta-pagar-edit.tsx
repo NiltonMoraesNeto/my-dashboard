@@ -89,7 +89,7 @@ export function ContaPagarEdit() {
       
       if (data.vencimento) {
         const date = new Date(data.vencimento);
-        if (!isNaN(date.getTime())) {
+        if (!Number.isNaN(date.getTime())) {
           mes = date.getMonth() + 1;
           ano = date.getFullYear();
         }

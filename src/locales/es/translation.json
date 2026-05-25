@@ -262,11 +262,6 @@
         "emptyMessage": "No se encontraron unidades."
       }
     },
-    "contasPagar": {
-      "title": "Cuentas por Pagar",
-      "addButton": "Nueva Cuenta",
-      "emptyMessage": "No hay cuentas por pagar registradas. Haz clic en 'Nueva Cuenta' para comenzar."
-    },
     "balancete": {
       "title": "Balance",
       "emptyMessage": "No hay balance disponible en este momento.",
@@ -559,9 +554,9 @@
         "nomePlaceholder": "Ingresa el nombre",
         "email": "Correo electrónico",
         "emailPlaceholder": "Ingresa el correo electrónico",
-        "password": "Contraseña provisional (opcional)",
-        "passwordPlaceholder": "Deja en blanco para usar contraseña por defecto (123456)",
-        "passwordHint": "Si no se proporciona, la contraseña por defecto será 123456",
+        "password": "Contraseña provisional",
+        "passwordPlaceholder": "Ingresa una contraseña provisional",
+        "passwordHint": "El residente debe cambiar la contraseña después del primer acceso",
         "cep": "Código Postal (opcional)",
         "cepPlaceholder": "Ingresa el código postal",
         "save": "Guardar",
@@ -660,6 +655,9 @@
       }
     },
     "contasPagar": {
+      "title": "Cuentas por Pagar",
+      "addButton": "Nueva Cuenta",
+      "emptyMessage": "No hay cuentas por pagar registradas. Haz clic en 'Nueva Cuenta' para comenzar.",
       "new": {
         "title": "Nueva Cuenta por Pagar",
         "back": "Volver",

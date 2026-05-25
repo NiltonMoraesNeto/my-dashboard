@@ -181,19 +181,25 @@ export const downloadEntregaAnexo = async (id: string) => {
     });
     
     // Tentar extrair o nome do arquivo do header Content-Disposition
-    const contentDisposition = response.headers['content-disposition'];
+    const contentDispositionHeader = response.headers["content-disposition"];
+    const contentDisposition =
+      typeof contentDispositionHeader === "string"
+        ? contentDispositionHeader
+        : undefined;
     let fileName = `anexo-entrega-${id}`;
     
     if (contentDisposition) {
       const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-      if (fileNameMatch && fileNameMatch[1]) {
+      if (fileNameMatch?.[1]) {
         fileName = fileNameMatch[1].replace(/['"]/g, '');
       }
     }
     
     // Se não conseguiu extrair do header, tentar determinar pela extensão do Content-Type
     if (!fileName.includes('.')) {
-      const contentType = response.headers['content-type'];
+      const contentTypeHeader = response.headers["content-type"];
+      const contentType =
+        typeof contentTypeHeader === "string" ? contentTypeHeader : undefined;
       let ext = '';
       if (contentType?.includes('image/jpeg')) {
         ext = '.jpg';
@@ -209,7 +215,12 @@ export const downloadEntregaAnexo = async (id: string) => {
       fileName = `${fileName}${ext}`;
     }
     
-    const blob = new Blob([response.data], { type: response.headers['content-type'] });
+    const contentTypeHeader = response.headers["content-type"];
+    const contentType =
+      typeof contentTypeHeader === "string"
+        ? contentTypeHeader
+        : "application/octet-stream";
+    const blob = new Blob([response.data], { type: contentType });
     const downloadUrl = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = downloadUrl;

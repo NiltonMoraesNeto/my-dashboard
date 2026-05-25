@@ -11,7 +11,7 @@ export const formatCurrency = (value: number | string | null | undefined): strin
     numValue = value;
   }
   
-  if (isNaN(numValue) || numValue === 0) return "";
+  if (Number.isNaN(numValue) || numValue === 0) return "";
   
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -31,5 +31,5 @@ export const unformatCurrency = (value: string): number => {
   
   const numValue = parseFloat(cleaned);
   
-  return isNaN(numValue) ? 0 : numValue;
+  return Number.isNaN(numValue) ? 0 : numValue;
 };

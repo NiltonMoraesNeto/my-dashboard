@@ -58,9 +58,9 @@ export function TableContasPagarList({
     }
   };
 
-  const handleDownloadAnexo = async (anexoPath: string) => {
+  const handleDownloadAnexo = async (id: string) => {
     try {
-      await downloadContaPagarAnexo(anexoPath);
+      await downloadContaPagarAnexo(id);
       toast.success("Anexo baixado com sucesso");
     } catch (error) {
       console.error("Erro ao baixar anexo:", error);
@@ -74,7 +74,6 @@ export function TableContasPagarList({
         return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
       case "Vencida":
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
-      case "Pendente":
       default:
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
     }
@@ -145,7 +144,7 @@ export function TableContasPagarList({
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleDownloadAnexo(contaPagar.anexo!)}
+                      onClick={() => handleDownloadAnexo(contaPagar.id)}
                       className="h-8 w-8 p-0"
                     >
                       <Download className="h-4 w-4" />

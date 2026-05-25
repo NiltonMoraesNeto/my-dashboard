@@ -1,12 +1,12 @@
-export interface TokenPayload {
-  sub: string; // user id
+export interface AuthUserPayload {
+  sub: string;
   email: string;
   perfilId: number;
-  exp: number; // expiração do token
-  iat?: number; // issued at
-  nome?: string; // nome do usuário
-  avatar?: string; // avatar do usuário
+  nome?: string;
+  avatar?: string;
 }
+
+export type TokenPayload = AuthUserPayload;
 
 export interface ProfileList {
   id: number;

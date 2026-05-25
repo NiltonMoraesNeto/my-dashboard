@@ -35,7 +35,7 @@ export function MoradorNew() {
       await createMorador({
         nome: data.nome,
         email: data.email,
-        password: data.password || undefined,
+        password: data.password,
         cep: data.cep || undefined,
       });
 
@@ -96,7 +96,7 @@ export function MoradorNew() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">{t("condominio.moradores.new.password")}</Label>
+            <Label htmlFor="password">{t("condominio.moradores.new.password")} *</Label>
             <Input
               id="password"
               type="password"

@@ -51,7 +51,7 @@ export function ModalResetPassword({
     try {
       updateEmailUser(data.email);
       const response = await resetPasswordSendToken(data.email);
-      if (response && response.message) {
+      if (response?.message) {
         toast.success("Sucesso", {
           description: "Token enviado para seu email. Verifique sua caixa de entrada.",
         });

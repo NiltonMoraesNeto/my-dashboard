@@ -10,7 +10,7 @@ Dashboard administrativo moderno desenvolvido com React, TypeScript e tecnologia
 - **Componentes**: [shadcn/ui](https://ui.shadcn.com/) para componentes reutilizáveis
 - **Gráficos**: [Recharts](https://recharts.org/)
 - **Formulários**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
-- **Autenticação**: JWT com Context API
+- **Autenticação**: Cookie httpOnly com Context API
 - **HTTP Client**: [Axios](https://axios-http.com/)
 
 ## 📦 Instalação
@@ -39,7 +39,8 @@ npm run preview
 ### 🔐 Autenticação
 
 - Login com email e senha
-- JWT tokens com renovação automática
+- Sessão via cookie httpOnly
+- Proteção CSRF para requisições autenticadas
 - Proteção de rotas privadas
 - Logout automático em caso de token expirado
 
@@ -76,7 +77,7 @@ npm run preview
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-VITE_API_URL=http://localhost:4000
+VITE_API_BASE_URL=http://localhost:4000
 ```
 
 ### Backend
@@ -123,9 +124,9 @@ npm run type-check       # Verificar tipos TypeScript
 ### Autenticação
 
 - Context API para gerenciamento de estado global
-- JWT tokens armazenados no localStorage
-- Interceptors Axios para injeção automática de tokens
-- Renovação automática de tokens
+- Cookie de autenticação httpOnly enviado com `withCredentials`
+- Header CSRF enviado automaticamente pelo Axios
+- Validação de sessão via backend
 
 ### Roteamento
 

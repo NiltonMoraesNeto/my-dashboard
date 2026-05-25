@@ -262,11 +262,6 @@
         "errorDelete": "Erro ao deletar a unidade"
       }
     },
-    "contasPagar": {
-      "title": "Contas a Pagar",
-      "addButton": "Nova Conta",
-      "emptyMessage": "Nenhuma conta a pagar cadastrada. Clique em 'Nova Conta' para começar."
-    },
     "boletos": {
       "title": "Boletos",
       "addButton": "Novo Boleto",
@@ -499,9 +494,9 @@
         "nomePlaceholder": "Digite o nome",
         "email": "Email",
         "emailPlaceholder": "Digite o email",
-        "password": "Senha provisória (opcional)",
-        "passwordPlaceholder": "Deixe em branco para usar senha padrão (123456)",
-        "passwordHint": "Se não informada, a senha padrão será 123456",
+        "password": "Senha provisória",
+        "passwordPlaceholder": "Digite uma senha provisória",
+        "passwordHint": "O morador deve alterar a senha após o primeiro acesso",
         "cep": "CEP (opcional)",
         "cepPlaceholder": "Digite o CEP",
         "save": "Salvar",
@@ -660,6 +655,9 @@
       }
     },
     "contasPagar": {
+      "title": "Contas a Pagar",
+      "addButton": "Nova Conta",
+      "emptyMessage": "Nenhuma conta a pagar cadastrada. Clique em 'Nova Conta' para começar.",
       "new": {
         "title": "Nova Conta a Pagar",
         "back": "Voltar",

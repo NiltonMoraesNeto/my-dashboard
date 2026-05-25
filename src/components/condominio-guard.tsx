@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 import { useAuth } from "../contexts/auth-context";
 import { useCondominio } from "../contexts/condominio-context";
 import { useNavigate, Link } from "@tanstack/react-router";
@@ -12,18 +12,18 @@ export function CondominioGuard({ children }: CondominioGuardProps) {
   const { selectedCondominioId, shouldShowSelector } = useCondominio();
   const navigate = useNavigate();
   const isSuperAdmin = profileUser?.toLowerCase() === "superadmin";
+  const shouldRequireCondominio = shouldShowSelector && isSuperAdmin;
 
-  // Se não for SuperAdmin, renderiza normalmente (usa seu próprio userId)
-  if (!shouldShowSelector || !isSuperAdmin) {
-    return <>{children}</>;
-  }
-
-  // Se for SuperAdmin mas não selecionou condomínio, redireciona para home
   useEffect(() => {
-    if (!selectedCondominioId) {
+    if (shouldRequireCondominio && !selectedCondominioId) {
       navigate({ to: "/condominio/home" });
     }
-  }, [selectedCondominioId, navigate]);
+  }, [shouldRequireCondominio, selectedCondominioId, navigate]);
+
+  // Se não for SuperAdmin, renderiza normalmente (usa seu próprio userId)
+  if (!shouldRequireCondominio) {
+    return <>{children}</>;
+  }
 
   if (!selectedCondominioId) {
     return (

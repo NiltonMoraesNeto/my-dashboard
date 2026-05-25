@@ -23,7 +23,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           sub: response.data.user.id,
           email: response.data.user.email,
           perfilId: response.data.user.perfilId,
-          exp: 0, // Não precisamos mais disso, o backend gerencia
           nome: response.data.user.nome,
           avatar: response.data.user.avatar,
         };
@@ -58,7 +57,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           sub: response.data.user.id,
           email: response.data.user.email,
           perfilId: response.data.user.perfilId,
-          exp: 0,
           nome: response.data.user.nome,
           avatar: response.data.user.avatar,
         };
