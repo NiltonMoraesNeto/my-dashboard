@@ -90,7 +90,7 @@ export function BoletoEdit() {
       }
     };
     loadUnidades();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     const loadBoleto = async () => {
@@ -125,7 +125,7 @@ export function BoletoEdit() {
       }
     };
     loadBoleto();
-  }, [id, reset, navigate]);
+  }, [id, reset, navigate, t]);
 
   const onSubmit = async (data: z.infer<typeof schemaBoletoEdit>) => {
     if (!id) return;

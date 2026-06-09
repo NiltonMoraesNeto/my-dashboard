@@ -47,6 +47,7 @@ export function Boletos() {
   }, [loadBoletoData]);
 
   // Resetar página quando filtros mudarem
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset pagination when filter values change.
   useEffect(() => {
     setPage(1);
   }, [mes, ano]);

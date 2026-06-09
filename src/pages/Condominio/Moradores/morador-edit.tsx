@@ -64,7 +64,7 @@ export function MoradorEdit() {
       }
     };
     loadMorador();
-  }, [id, reset, navigate]);
+  }, [id, reset, navigate, t]);
 
   const onSubmit = async (data: z.infer<typeof schemaMoradorEdit>) => {
     if (!id) return;

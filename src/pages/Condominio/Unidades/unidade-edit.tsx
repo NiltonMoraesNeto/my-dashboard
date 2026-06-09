@@ -110,7 +110,7 @@ export function UnidadeEdit() {
       }
     };
     loadUnidade();
-  }, [id, reset, navigate]);
+  }, [id, reset, navigate, t]);
 
   const onSubmit = async (data: z.infer<typeof schemaUnidadeEdit>) => {
     if (!id) return;

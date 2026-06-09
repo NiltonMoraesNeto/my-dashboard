@@ -19,6 +19,18 @@ import { buscarCnpj } from "../../services/minha-receita";
 import { InputDate } from "../../components/ui/input-date";
 import { formatCurrency, unformatCurrency } from "../../utils/format-currency";
 
+type ErrorWithResponse = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
+function getErrorMessage(error: unknown, fallback: string) {
+  return (error as ErrorWithResponse).response?.data?.message || fallback;
+}
+
 export function EmpresaNew() {
   const navigate = useNavigate();
   const [isLoadingCnpj, setIsLoadingCnpj] = useState(false);
@@ -221,8 +233,8 @@ export function EmpresaNew() {
       });
       toast.success("Empresa criada com sucesso!");
       navigate({ to: "/admin/empresas" });
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Erro ao criar empresa");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Erro ao criar empresa"));
     }
   };
 

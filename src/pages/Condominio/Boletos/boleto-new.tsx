@@ -71,7 +71,7 @@ export function BoletoNew() {
       }
     };
     loadUnidades();
-  }, []);
+  }, [t]);
 
   const onSubmit = async (data: z.infer<typeof schemaBoletoNew>) => {
     try {
@@ -275,4 +275,3 @@ export function BoletoNew() {
     </div>
   );
 }
-

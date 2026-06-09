@@ -87,7 +87,7 @@ export function EntregaEdit() {
       }
     };
     loadData();
-  }, [id, reset]);
+  }, [id, reset, t]);
 
   const onSubmit = async (data: z.infer<typeof schemaEntregaEdit>) => {
     if (!id) return;

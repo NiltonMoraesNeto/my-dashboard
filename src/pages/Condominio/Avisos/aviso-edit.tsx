@@ -86,7 +86,7 @@ export function AvisoEdit() {
       }
     };
     loadAviso();
-  }, [id, reset, navigate]);
+  }, [id, reset, navigate, t]);
 
   const onSubmit = async (data: z.infer<typeof schemaAvisoEdit>) => {
     if (!id) return;

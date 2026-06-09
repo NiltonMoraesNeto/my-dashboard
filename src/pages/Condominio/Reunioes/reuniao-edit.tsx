@@ -81,7 +81,7 @@ export function ReuniaoEdit() {
       }
     };
     loadReuniao();
-  }, [id, reset, navigate]);
+  }, [id, reset, navigate, t]);
 
   const onSubmit = async (data: z.infer<typeof schemaReuniaoEdit>) => {
     if (!id) return;

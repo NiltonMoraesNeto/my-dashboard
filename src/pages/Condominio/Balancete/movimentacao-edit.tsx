@@ -74,7 +74,7 @@ export function MovimentacaoEdit() {
     };
 
     loadMovimentacao();
-  }, [id, reset, navigate]);
+  }, [id, reset, navigate, t]);
 
   const onSubmit = async (
     data: z.infer<typeof schemaBalanceteMovimentacaoEdit>

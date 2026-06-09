@@ -19,6 +19,18 @@ import { buscarCnpj } from "../../services/minha-receita";
 import { InputDate } from "../../components/ui/input-date";
 import { formatCurrency, unformatCurrency } from "../../utils/format-currency";
 
+type ErrorWithResponse = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
+function getErrorMessage(error: unknown, fallback: string) {
+  return (error as ErrorWithResponse).response?.data?.message || fallback;
+}
+
 export function EmpresaEdit() {
   const navigate = useNavigate();
   const { id } = useParams({ strict: false });
@@ -204,7 +216,7 @@ export function EmpresaEdit() {
         });
         previousCnpjRef.current = empresa.cnpj ? maskCnpj(empresa.cnpj) : "";
         isInitialLoad.current = false;
-      } catch (_error: any) {
+      } catch (_error: unknown) {
         console.error("Erro ao carregar dados da empresa:", _error);
         toast.error("Erro ao carregar dados da empresa");
         navigate({ to: "/admin/empresas" });
@@ -262,8 +274,8 @@ export function EmpresaEdit() {
       });
       toast.success("Empresa atualizada com sucesso!");
       navigate({ to: "/admin/empresas" });
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Erro ao atualizar empresa");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Erro ao atualizar empresa"));
     }
   };
 

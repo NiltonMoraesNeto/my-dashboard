@@ -69,7 +69,7 @@ export function EntregaNew() {
       }
     };
     loadUnidades();
-  }, []);
+  }, [t]);
 
   const onSubmit = async (data: z.infer<typeof schemaEntregaNew>) => {
     try {

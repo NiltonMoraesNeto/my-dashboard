@@ -83,7 +83,7 @@ export function HomePage() {
     };
 
     loadCondominios();
-  }, [isSuperAdmin, isAdmin]);
+  }, [isSuperAdmin, isAdmin, t]);
 
   // Buscar dados de movimentações (gráfico individual)
   useEffect(() => {
@@ -115,7 +115,7 @@ export function HomePage() {
     };
 
     fetchData();
-  }, [ano, tipo, condominioId]);
+  }, [ano, tipo, condominioId, t]);
 
   // Buscar dados para gráfico comparativo (sempre busca ambos)
   useEffect(() => {
@@ -147,7 +147,7 @@ export function HomePage() {
     };
 
     fetchComparisonData();
-  }, [ano, condominioId]);
+  }, [ano, condominioId, t]);
 
   // Gerar lista de anos (últimos 5 anos + ano atual + próximos 2 anos)
   const anosDisponiveis = Array.from(
